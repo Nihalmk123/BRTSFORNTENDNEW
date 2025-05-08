@@ -1,0 +1,120 @@
+/* General styles */
+.bg-home {
+  background-color: #f4f6ff;
+}
+
+.bg-light {
+  background-color: #f4f6ff;
+}
+
+/* Heading styles */
+.heading-custom {
+  color: #000;
+  margin-top: 20px;
+}
+
+/* Highlighted text */
+.highlighted-text {
+  color: #f3c623;
+}
+
+.highlighted-secondary {
+  color: #10375c;
+}
+
+/* Paragraph styles */
+.custom-para {
+  font-size: 1.25rem;
+}
+
+/* Media Query for mobile screens */
+@media (max-width: 768px) {
+  .heading-custom {
+    font-size: 1.75rem;
+  }
+
+  .btn-width {
+    width: 100%;
+    padding: 125px;
+  }
+
+  .custom-para {
+    font-size: 1rem;
+  }
+
+  /* Adjust image size for mobile view */
+  .img-fluid {
+    max-height: 400px;
+    width: 100%;
+  }
+}
+
+/* overview section */
+.card {
+  padding: 16px;
+}
+
+.card h5 {
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.icon-img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 10px;
+}
+
+.custom-height {
+  height: 900px; /* Set your desired height */
+}
+
+.card-color{
+  background: #002F6778;
+  color: white;
+}
+.card {
+  padding: 16px; /* Adjust padding as needed */
+}
+
+.card-title {
+  font-weight: 700; /* Bold titles */
+}
+
+.card-text {
+  color: #555; /* Text color */
+}
+
+.overview-section{
+box-shadow: 0px 0px 27px 4px rgba(0, 0, 0, 0.12);
+border-radius: 10px;
+}
+.overview-text{
+  font-size: 2.2rem;
+  text-align: center;
+}
+
+
+@media (max-width: 768px) {
+  .card-color.d-flex {
+    flex-direction: column; /* Stack image on top and text below */
+    align-items: center; /* Center the content */
+  }
+
+  .card-color img {
+    width: 30%; /* Increase image size for mobile */
+    margin: 0 auto 15px; /* Center the image and add space below it */
+  }
+
+  .card-title {
+    font-size: 1.2rem; /* Reduce card title size for mobile */
+  }
+
+  .card-text {
+    font-size: 1rem; /* Reduce card text size for mobile */
+  }
+}
+
+
+
+

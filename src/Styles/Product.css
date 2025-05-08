@@ -1,0 +1,19 @@
+.custom-card {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.1s ease, box-shadow 0.3s ease;
+}
+
+/* .custom-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+} */
+.course_cards img {
+    width: 50px;
+    margin-bottom: 15px;
+}
+
+.cloud_computing_card {
+    background-color: #fff; /* Light background for cards */
+    border-radius: 10px;
+    padding: 20px;
+}

@@ -1,0 +1,307 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+  font-family: 'Roboto';
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .divider::before,
+  .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #ddd; 
+    margin: 0 15px;
+  }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  /* //sidebaar */
+  .sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      flex-shrink: 1;
+    }
+  
+    .main-content {
+      padding: 10px;
+    }
+  }
+
+  /* signin */
+  
+  .signin-section {
+    background-color: #f0f2f5;
+  }
+  
+  .custom-card {
+    max-width: 420px; 
+    margin: auto; 
+  }
+  
+  @media (max-width: 576px) {
+    .custom-card {
+      max-width: 100%; 
+    }
+  }
+  
+  /* siggnup */
+  .signup-section {
+    background-color: #f0f2f5;
+}
+
+.custom-card {
+    max-width: 420px; 
+    margin: auto; 
+}
+
+@media (max-width: 576px) {
+    .custom-card {
+        max-width: 100%; 
+    }
+}
+/* support */
+.support-tickets{
+  border-left: 5px solid #98DED9;
+  cursor: pointer;
+}
+
+/* contact us */
+.float-image {
+  position: absolute;
+  top: -65px;
+  right: 35px;
+  max-width: 55%;
+  max-height: 350px;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .contact-row {
+    display: flex;
+    flex-direction: column-reverse; /* Reverse the order of image and content */
+    align-items: center;
+    text-align: center;
+  }
+
+  .float-image {
+    position: relative; /* Make it relative for mobile */
+    top: 0;
+    right: 0;
+    margin: 20px auto;
+    max-width: 80%;
+    max-height: none;
+  }
+}
+ /* pnf */
+ .pnf {
+  background: #536493;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.pnf-title {
+  font-size: 4rem; /* Adjust as necessary */
+}
+
+.pnf-heading {
+  font-size: 2rem; /* Adjust as necessary */
+}
+
+.pnf img {
+  max-width: 100%;
+  height: auto;
+  margin: 20px 0;
+}
+
+/* Ensure the number input arrows are always visible */
+input[type="number"] {
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  /* -webkit-appearance: none; Hides the arrows */
+  display: inline-block; /* Forces them to always be visible */
+  opacity: 1; /* Makes sure they are visible */
+  margin: 0; /* Adjusts positioning if needed */
+}
+
+input[type="number"]:focus::-webkit-inner-spin-button,
+input[type="number"]:focus::-webkit-outer-spin-button {
+  display: inline-block; /* Ensures they stay visible when focused */
+}
+
+/* Ensuring the number input arrows are always visible on mobile */
+@media (max-width: 768px) { 
+  input[type="number"] {
+    /* Override to show arrows on mobile */
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    display: inline-block; 
+    opacity: 1; 
+    margin: 0; 
+  }
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+ opacity: 1 !important;
+ margin: 0;
+ width: 15px;
+ height: 35px;
+}
+
+/* goole logo */
+.gsi-material-button {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-appearance: none;
+  background-color: WHITE;
+  background-image: none;
+  border: 1px solid #747775;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #1f1f1f;
+  cursor: pointer;
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 14px;
+  height: 40px;
+  letter-spacing: 0.25px;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  position: relative;
+  text-align: center;
+  -webkit-transition: background-color .218s, border-color .218s, box-shadow .218s;
+  transition: background-color .218s, border-color .218s, box-shadow .218s;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: auto;
+  max-width: 400px;
+  min-width: min-content;
+}
+
+.gsi-material-button .gsi-material-button-icon {
+  height: 20px;
+  margin-right: 12px;
+  min-width: 20px;
+  width: 20px;
+}
+
+.gsi-material-button .gsi-material-button-content-wrapper {
+  -webkit-align-items: center;
+  align-items: center;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  height: 100%;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.gsi-material-button .gsi-material-button-contents {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  font-family: 'Roboto', arial, sans-serif;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+
+.gsi-material-button .gsi-material-button-state {
+  -webkit-transition: opacity .218s;
+  transition: opacity .218s;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.gsi-material-button:disabled {
+  cursor: default;
+  background-color: #ffffff61;
+  border-color: #1f1f1f1f;
+}
+
+.gsi-material-button:disabled .gsi-material-button-contents {
+  opacity: 38%;
+}
+
+.gsi-material-button:disabled .gsi-material-button-icon {
+  opacity: 38%;
+}
+
+.gsi-material-button:not(:disabled):active .gsi-material-button-state, 
+.gsi-material-button:not(:disabled):focus .gsi-material-button-state {
+  background-color: #303030;
+  opacity: 12%;
+}
+
+.gsi-material-button:not(:disabled):hover {
+  -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+}
+
+.gsi-material-button:not(:disabled):hover .gsi-material-button-state {
+  background-color: #303030;
+  opacity: 8%;
+}
+
+/* Style the scrollbar */
+.container-scroll {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #024CAA #E0E0E0; /* Scrollbar color for Firefox */
+}
+
+/* Scrollbar customization for WebKit browsers (Chrome, Edge, Safari) */
+.container-scroll::-webkit-scrollbar {
+  width: 1px; 
+}
+
+.container-scroll::-webkit-scrollbar-thumb {
+  background: #024CAA; /* Scrollbar thumb color */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.container-scroll::-webkit-scrollbar-thumb:hover {
+  background: #0077CC; /* Thumb color on hover */
+}
+
+.container-scroll::-webkit-scrollbar-track {
+  background: #E0E0E0; /* Scrollbar track color */
+  border-radius: 4px; /* Rounded corners */
+}
