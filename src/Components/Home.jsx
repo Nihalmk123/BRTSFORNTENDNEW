@@ -71,7 +71,7 @@ const Home = () => {
               <div className="col-lg-6 order-last order-lg-1">
                 <h2 className="display-6 fw-bold heading-custom">
                   <span className="highlighted-text">Book Your Bus Ticket</span> Online and Ride with a{" "}
-                  <span className="highlighted-secondary">QR Codes!</span>
+                  <span className="highlighted-secondary">QR Code!</span>
                 </h2>
                 <p className="lead mt-3 mb-4 custom-para">
                   Experience the future of bus travel with <strong className='fw-bold fs-4'>SmartBus Ticketing </strong>– your all-in-one solution for effortless and efficient ticketing. Our platform is designed to streamline and automate the entire ticketing process, ensuring a smooth and hassle-free journey from start to finish.
