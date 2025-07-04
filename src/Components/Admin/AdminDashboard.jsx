@@ -984,6 +984,17 @@ import {
   Avatar,
   Fade,
   Paper,
+  Dialog,
+  TextField,
+  Tabs,
+  Tab,
+  Chip,
+  InputAdornment,
+  OutlinedInput,
+  InputLabel,
+  FormControl,
+  ToggleButtonGroup,
+  ToggleButton,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -1003,6 +1014,8 @@ import { useAxiosWithInterceptor } from '../Api/Axios';
 import { useAuth } from '../Context/Context';
 import Header from '../Layout/Header';
 import { Link } from 'react-router-dom';
+import { Button } from '@mui/material';
+import { CreditCardIcon, InfoIcon, SearchIcon } from 'lucide-react';
 
 const drawerWidth = 280;
 
@@ -1032,6 +1045,42 @@ const AdminDashboard = () => {
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { auth = {} } = useAuth() || {};
   const api = useAxiosWithInterceptor();
+
+  const [openRfidDialog, setOpenRfidDialog] = useState(false);
+  const [rfidNumber, setRfidNumber] = useState('');
+  const [cardHolderName, setCardHolderName] = useState('');
+
+const [activeTab, setActiveTab] = useState(0);
+
+const [checkRfid, setCheckRfid] = useState('');
+const [cardBalance, setCardBalance] = useState(null);
+
+// Simulated API call for checking balance
+const checkBalance = async () => {
+  try {
+    const response = await api.get(
+      `/tsn/v1/rfid/balance/${checkRfid}`, // use cardId directly in URL
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: auth?.accessToken, // include if backend is protected
+        },
+      }
+    );
+
+    if (response.data && typeof response.data.balance === 'number') {
+      setCardBalance(response.data.balance);
+    } else {
+      setCardBalance(null);
+      console.warn('Invalid response structure');
+    }
+  } catch (err) {
+    console.error('Error fetching balance:', err);
+    setCardBalance(null);
+  }
+};
+
+
 
   // Enhanced color scheme
   const appColors = {
@@ -1303,29 +1352,475 @@ const AdminDashboard = () => {
         }}
       >
         <Toolbar>
-          <IconButton
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ 
-              mr: 2, 
-              display: { md: 'none' },
-              color: appColors.header.text
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Link to={'/'} style={{ textDecoration: 'none' }}>
-            <Typography
-              variant="h6"
-              sx={{
-                color: appColors.header.text,
-                fontWeight: 600,
+  <IconButton
+    edge="start"
+    onClick={handleDrawerToggle}
+    sx={{ 
+      mr: 2, 
+      display: { md: 'none' },
+      color: appColors.header.text
+    }}
+  >
+    <MenuIcon />
+  </IconButton>
+  
+  <Link to="/" style={{ textDecoration: 'none' }}>
+    <Typography
+      variant="h6"
+      sx={{
+        color: appColors.header.text,
+        fontWeight: 600,
+      }}
+    >
+      Home
+    </Typography>
+  </Link>
+
+  {/* Spacer */}
+  <Box sx={{ flexGrow: 1 }} />
+
+  {/* Add RFID Card Button */}
+  <Button
+    variant="contained"
+    color="secondary"
+    onClick={() => setOpenRfidDialog(true)}
+    sx={{
+      textTransform: 'none',
+      fontWeight: 500,
+      borderRadius: 2,
+      boxShadow: 'none',
+    }}
+  >
+    Add RFID Card
+  </Button>
+</Toolbar>
+
+<Dialog 
+  open={openRfidDialog} 
+  onClose={() => setOpenRfidDialog(false)} 
+  fullWidth 
+  maxWidth="md"
+  PaperProps={{
+    sx: {
+      borderRadius: 4,
+      background: '#ffffff',
+      boxShadow: '0 32px 64px rgba(0,0,0,0.08)',
+      overflow: 'hidden',
+      border: '1px solid #f0f0f0'
+    }
+  }}
+>
+  {/* Header */}
+  <Box sx={{ 
+    background: '#fafafa',
+    borderBottom: '1px solid #e8e8e8',
+    p: 3,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }}>
+    <Box>
+      <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 0.5 }}>
+        RFID Management
+      </Typography>
+      <Typography variant="body2" sx={{ color: '#666', fontSize: '0.875rem' }}>
+        Create cards, recharge balance, and check account status
+      </Typography>
+    </Box>
+    <IconButton 
+      onClick={() => setOpenRfidDialog(false)}
+      sx={{ 
+        bgcolor: '#f5f5f5',
+        '&:hover': { bgcolor: '#e8e8e8' }
+      }}
+    >
+      {/* <CloseIcomn /> */}
+    </IconButton>
+  </Box>
+
+  <Box sx={{ p: 4 }}>
+    {/* Advanced Tab Component */}
+    <Box sx={{ mb: 4 }}>
+      <ToggleButtonGroup
+        value={activeTab}
+        exclusive
+        onChange={(e, val) => val !== null && setActiveTab(val)}
+        sx={{
+          width: '100%',
+          '& .MuiToggleButton-root': {
+            flex: 1,
+            textTransform: 'none',
+            fontWeight: 500,
+            fontSize: '0.95rem',
+            py: 1.5,
+            border: '1px solid #e0e0e0',
+            borderRadius: '12px !important',
+            mx: 0.5,
+            '&.Mui-selected': {
+              bgcolor: '#1976d2',
+              color: 'white',
+              '&:hover': {
+                bgcolor: '#1565c0'
+              }
+            },
+            '&:hover': {
+              bgcolor: '#f5f5f5'
+            }
+          }
+        }}
+      >
+        <ToggleButton value={0}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* <AddCardIcon /> */}
+            Create/Recharge Card
+          </Box>
+        </ToggleButton>
+        <ToggleButton value={1}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* <AccountBalanceWalletIcon /> */}
+            Check Balance
+          </Box>
+        </ToggleButton>
+      </ToggleButtonGroup>
+    </Box>
+
+    {/* Create/Recharge Tab */}
+    {activeTab === 0 && (
+      <Box>
+        <Grid container spacing={3}>
+          {/* Form Section */}
+          <Grid item xs={12} md={8}>
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: 3, 
+                borderRadius: 3,
+                border: '1px solid #e8e8e8',
+                bgcolor: '#fcfcfc'
               }}
             >
-              Home
-            </Typography>
-          </Link>
-        </Toolbar>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                <Avatar sx={{ bgcolor: '#1976d2', width: 40, height: 40 }}>
+                  <CreditCardIcon />
+                </Avatar>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#1a1a1a' }}>
+                    Card Information
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#666' }}>
+                    Enter the RFID details and amount
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <FormControl fullWidth>
+                  {/* <InputLabel sx={{ color: '#666' }}>RFID Number</InputLabel> */}
+                  <OutlinedInput
+                    value={rfidNumber}
+                    onChange={(e) => setRfidNumber(e.target.value)}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <Chip 
+                          label="RFID" 
+                          size="small" 
+                          sx={{ 
+                            bgcolor: '#e3f2fd', 
+                            color: '#1976d2',
+                            fontWeight: 500,
+                            fontSize: '0.75rem'
+                          }} 
+                        />
+                      </InputAdornment>
+                    }
+                    sx={{
+                      borderRadius: 2,
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1976d2'
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1976d2'
+                      }
+                    }}
+                  />
+                </FormControl>
+
+                <FormControl fullWidth>
+                  {/* <InputLabel sx={{ color: '#666' }}>Amount</InputLabel> */}
+                  <OutlinedInput
+                    value={cardHolderName}
+                    onChange={(e) => setCardHolderName(e.target.value)}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <Chip 
+                          label="₹" 
+                          size="small" 
+                          sx={{ 
+                            bgcolor: '#e8f5e8', 
+                            color: '#2e7d32',
+                            fontWeight: 700,
+                            fontSize: '0.75rem'
+                          }} 
+                        />
+                      </InputAdornment>
+                    }
+                    sx={{
+                      borderRadius: 2,
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1976d2'
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1976d2'
+                      }
+                    }}
+                  />
+                </FormControl>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Info Section */}
+          <Grid item xs={12} md={4}>
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: 3, 
+                borderRadius: 3,
+                border: '1px solid #e8e8e8',
+                bgcolor: '#f8f9fa',
+                height: 'fit-content'
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#1a1a1a', mb: 2 }}>
+                Quick Info
+              </Typography>
+              
+              <List dense>
+                <ListItem sx={{ px: 0 }}>
+                  <ListItemIcon sx={{ minWidth: 32 }}>
+                    <InfoIcon sx={{ color: '#1976d2', fontSize: 20 }} />
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary="RFID Format" 
+                    secondary="16-digit number"
+                    primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 500 }}
+                    secondaryTypographyProps={{ fontSize: '0.75rem' }}
+                  />
+                </ListItem>
+                <ListItem sx={{ px: 0 }}>
+                  <ListItemIcon sx={{ minWidth: 32 }}>
+                    {/* <SecurityIcon sx={{ color: '#2e7d32', fontSize: 20 }} /> */}
+                  </ListItemIcon>
+                  <ListItemText 
+                    // primary="Secure Transaction" 
+                    // secondary="End-to-end encrypted"
+                    primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 500 }}
+                    secondaryTypographyProps={{ fontSize: '0.75rem' }}
+                  />
+                </ListItem>
+              </List>
+            </Paper>
+          </Grid>
+        </Grid>
+
+        {/* Action Buttons */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 4 }}>
+          <Button 
+            onClick={() => setOpenRfidDialog(false)} 
+            sx={{ 
+              textTransform: 'none',
+              borderRadius: 2,
+              px: 3,
+              py: 1,
+              color: '#666',
+              fontWeight: 500,
+              '&:hover': {
+                backgroundColor: '#f5f5f5'
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              console.log("Creating card:", rfidNumber, cardHolderName);
+              setOpenRfidDialog(false);
+            }}
+            sx={{
+              textTransform: 'none',
+              borderRadius: 2,
+              px: 4,
+              py: 1,
+              bgcolor: '#1976d2',
+              fontWeight: 500,
+              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+              '&:hover': {
+                bgcolor: '#1565c0',
+                boxShadow: '0 6px 16px rgba(25, 118, 210, 0.4)'
+              }
+            }}
+            startIcon={''}
+          >
+            Create/Recharge Card
+          </Button>
+        </Box>
+      </Box>
+    )}
+
+    {/* Check Balance Tab */}
+    {activeTab === 1 && (
+      <Box>
+        <Grid container spacing={3}>
+          {/* Balance Check Form */}
+          <Grid item xs={12} md={8}>
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: 3, 
+                borderRadius: 3,
+                border: '1px solid #e8e8e8',
+                bgcolor: '#fcfcfc'
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                <Avatar sx={{ bgcolor: '#2e7d32', width: 40, height: 40 }}>
+                  <SearchIcon />
+                </Avatar>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#1a1a1a' }}>
+                    Balance Inquiry
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#666' }}>
+                    Enter your RFID number to check balance
+                  </Typography>
+                </Box>
+              </Box>
+
+              <FormControl fullWidth sx={{ mb: 3 }}>
+                {/* <InputLabel sx={{ color: '#666' }}>RFID Number</InputLabel> */}
+                <OutlinedInput
+                  value={checkRfid}
+                  onChange={(e) => setCheckRfid(e.target.value)}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <Chip 
+                        label="RFID" 
+                        size="small" 
+                        sx={{ 
+                          bgcolor: '#e3f2fd', 
+                          color: '#1976d2',
+                          fontWeight: 500,
+                          fontSize: '0.75rem'
+                        }} 
+                      />
+                    </InputAdornment>
+                  }
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton onClick={checkBalance} sx={{ color: '#1976d2' }}>
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  sx={{
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1976d2'
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#1976d2'
+                    }
+                  }}
+                />
+              </FormControl>
+
+              <Button 
+                onClick={checkBalance} 
+                variant="outlined"
+                fullWidth
+                sx={{
+                  textTransform: 'none',
+                  borderRadius: 2,
+                  py: 1.5,
+                  borderColor: '#1976d2',
+                  color: '#1976d2',
+                  fontWeight: 500,
+                  '&:hover': {
+                    borderColor: '#1565c0',
+                    backgroundColor: 'rgba(25, 118, 210, 0.04)'
+                  }
+                }}
+                startIcon={<SearchIcon />}
+              >
+                Check Balance
+              </Button>
+            </Paper>
+          </Grid>
+
+          {/* Balance Display */}
+          <Grid item xs={12} md={4}>
+            {cardBalance !== null ? (
+              <Paper 
+                elevation={0} 
+                sx={{ 
+                  p: 3, 
+                  borderRadius: 3,
+                  border: '1px solid #e8e8e8',
+                  bgcolor: '#f8f9fa',
+                  textAlign: 'center'
+                }}
+              >
+                <Avatar sx={{ bgcolor: '#2e7d32', width: 60, height: 60, mx: 'auto', mb: 2 }}>
+                  {/* <AccountBalanceWalletIcon sx={{ fontSize: 30 }} /> */}
+                </Avatar>
+                <Typography variant="body2" sx={{ color: '#666', mb: 1 }}>
+                  Available Balance
+                </Typography>
+                <Typography variant="h3" sx={{ fontWeight: 700, color: '#2e7d32', mb: 1 }}>
+                  ₹{cardBalance}
+                </Typography>
+                <Chip 
+                  label="Active" 
+                  size="small" 
+                  sx={{ 
+                    bgcolor: '#e8f5e8', 
+                    color: '#2e7d32',
+                    fontWeight: 500
+                  }} 
+                />
+              </Paper>
+            ) : (
+              <Paper 
+                elevation={0} 
+                sx={{ 
+                  p: 3, 
+                  borderRadius: 3,
+                  border: '1px solid #e8e8e8',
+                  bgcolor: '#f8f9fa',
+                  textAlign: 'center'
+                }}
+              >
+                <Avatar sx={{ bgcolor: '#9e9e9e', width: 60, height: 60, mx: 'auto', mb: 2 }}>
+                  {/* <HelpOutlineIcon sx={{ fontSize: 30 }} /> */}
+                </Avatar>
+                <Typography variant="body1" sx={{ color: '#666', mb: 1 }}>
+                  No Balance Data
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#999' }}>
+                  Enter RFID number to check balance
+                </Typography>
+              </Paper>
+            )}
+          </Grid>
+        </Grid>
+      </Box>
+    )}
+  </Box>
+</Dialog>
+
+
+
       </AppBar>
 
       <Box
