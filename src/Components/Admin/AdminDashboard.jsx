@@ -1080,6 +1080,42 @@ const checkBalance = async () => {
   }
 };
 
+const rechargeCard = async (cardId, amount) => {
+  try {
+    const response = await api.post(
+      '/tsn/v1/rfid/recharge',
+      {
+        cardId: cardId,
+        amount: amount
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: auth?.accessToken, // remove this if not needed
+        },
+      }
+    );
+
+    if (response.data === "Recharge successful") {
+      // Show success message or toast
+      alert("Recharge successful");
+      // Optionally update UI state here
+    } else {
+      console.warn("Unexpected response:", response.data);
+    }
+  } catch (error) {
+    console.error("Recharge failed:", error);
+  }
+};
+
+const handleRecharge = () => {
+  const cardId = rfidNumber;
+  const amount = cardHolderName;
+
+  rechargeCard(cardId, amount);
+};
+
+
 
 
   // Enhanced color scheme
@@ -1402,6 +1438,654 @@ const checkBalance = async () => {
   maxWidth="md"
   PaperProps={{
     sx: {
+      borderRadius: 6,
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.25)',
+      overflow: 'hidden',
+      border: 'none',
+      backdropFilter: 'blur(20px)',
+      position: 'relative'
+    }
+  }}
+>
+  {/* Glassmorphism Overlay */}
+  <Box sx={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(10px)',
+    zIndex: 1
+  }} />
+
+  {/* Header */}
+  <Box sx={{ 
+    position: 'relative',
+    zIndex: 2,
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+    p: 4,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }}>
+    <Box>
+      <Typography variant="h4" sx={{ 
+        fontWeight: 800, 
+        color: '#1a1a1a', 
+        mb: 1,
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text'
+      }}>
+        RFID Hub
+      </Typography>
+      <Typography variant="body1" sx={{ color: '#666', fontSize: '1rem', fontWeight: 500 }}>
+        Next-gen card management system
+      </Typography>
+    </Box>
+    <Box sx={{ display: 'flex', gap: 1 }}>
+      <IconButton 
+        onClick={() => setOpenRfidDialog(false)}
+        sx={{ 
+          bgcolor: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          '&:hover': { 
+            bgcolor: 'rgba(255, 255, 255, 0.2)',
+            transform: 'scale(1.05)'
+          },
+          transition: 'all 0.2s ease'
+        }}
+      >
+        ✕
+      </IconButton>
+    </Box>
+  </Box>
+
+  <Box sx={{ position: 'relative', zIndex: 2, p: 4 }}>
+    {/* Floating Tab System */}
+    <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{
+        background: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: 4,
+        p: 0.5,
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+      }}>
+        <ToggleButtonGroup
+          value={activeTab}
+          exclusive
+          onChange={(e, val) => val !== null && setActiveTab(val)}
+          sx={{
+            '& .MuiToggleButton-root': {
+              border: 'none',
+              borderRadius: 3,
+              px: 4,
+              py: 2,
+              color: 'rgba(255, 255, 255, 0.8)',
+              fontWeight: 600,
+              fontSize: '0.95rem',
+              textTransform: 'none',
+              transition: 'all 0.3s ease',
+              '&.Mui-selected': {
+                bgcolor: 'rgba(255, 255, 255, 0.9)',
+                color: '#667eea',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                transform: 'translateY(-2px)'
+              },
+              '&:hover': {
+                bgcolor: 'rgba(255, 255, 255, 0.15)',
+                transform: 'translateY(-1px)'
+              }
+            }
+          }}
+        >
+          <ToggleButton value={0}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Box sx={{ 
+                width: 24, 
+                height: 24, 
+                borderRadius: '50%',
+                bgcolor: activeTab === 0 ? '#667eea' : 'rgba(255,255,255,0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: activeTab === 0 ? 'white' : 'inherit',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}>
+                +
+              </Box>
+              Create/Recharge
+            </Box>
+          </ToggleButton>
+          <ToggleButton value={1}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Box sx={{ 
+                width: 24, 
+                height: 24, 
+                borderRadius: '50%',
+                bgcolor: activeTab === 1 ? '#667eea' : 'rgba(255,255,255,0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: activeTab === 1 ? 'white' : 'inherit',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}>
+                ?
+              </Box>
+              Check Balance
+            </Box>
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+    </Box>
+
+    {/* Create/Recharge Tab */}
+    {activeTab === 0 && (
+      <Box>
+        <Grid container spacing={4}>
+          {/* Form Section */}
+          <Grid item xs={12} md={8}>
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: 4, 
+                borderRadius: 4,
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 4 }}>
+                <Box sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 3,
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)'
+                }}>
+                  💳
+                </Box>
+                <Box>
+                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 0.5 }}>
+                    Card Setup
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666', fontWeight: 500 }}>
+                    Configure your RFID card details
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {/* RFID Input */}
+                <Box>
+                  <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#333' }}>
+                    RFID Number
+                  </Typography>
+                  <OutlinedInput
+                    fullWidth
+                    value={rfidNumber}
+                    onChange={(e) => setRfidNumber(e.target.value)}
+                    placeholder="Enter 16-digit RFID number"
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <Box sx={{
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          borderRadius: 2,
+                          px: 2,
+                          py: 1,
+                          color: 'white',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.5px'
+                        }}>
+                          RFID
+                        </Box>
+                      </InputAdornment>
+                    }
+                    sx={{
+                      borderRadius: 3,
+                      bgcolor: 'rgba(255, 255, 255, 0.8)',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: '2px solid transparent',
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                      },
+                      '& input': {
+                        fontSize: '1.1rem',
+                        fontWeight: 500,
+                        letterSpacing: '1px'
+                      }
+                    }}
+                  />
+                </Box>
+
+                {/* Amount Input */}
+                <Box>
+                  <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#333' }}>
+                    Amount
+                  </Typography>
+                  <OutlinedInput
+                    fullWidth
+                    value={cardHolderName}
+                    onChange={(e) => setCardHolderName(e.target.value)}
+                    placeholder="Enter amount to load"
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <Box sx={{
+                          background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
+                          borderRadius: 2,
+                          px: 2,
+                          py: 1,
+                          color: 'white',
+                          fontSize: '0.85rem',
+                          fontWeight: 700
+                        }}>
+                          ₹
+                        </Box>
+                      </InputAdornment>
+                    }
+                    sx={{
+                      borderRadius: 3,
+                      bgcolor: 'rgba(255, 255, 255, 0.8)',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: '2px solid transparent',
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #4caf50, #2e7d32) border-box'
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #4caf50, #2e7d32) border-box'
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #4caf50, #2e7d32) border-box'
+                      },
+                      '& input': {
+                        fontSize: '1.1rem',
+                        fontWeight: 500
+                      }
+                    }}
+                  />
+                </Box>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Info Section */}
+          <Grid item xs={12} md={4}>
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: 4, 
+                borderRadius: 4,
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 3 }}>
+                Quick Info
+              </Typography>
+              
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '16px'
+                  }}>
+                    ℹ️
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#333' }}>
+                      RFID Format
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: '#666' }}>
+                      16-digit number
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '16px'
+                  }}>
+                    🔒
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#333' }}>
+                      Secure Process
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: '#666' }}>
+                      End-to-end encrypted
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Paper>
+          </Grid>
+        </Grid>
+
+        {/* Action Buttons */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 4 }}>
+          <Button 
+            onClick={() => setOpenRfidDialog(false)} 
+            sx={{ 
+              textTransform: 'none',
+              borderRadius: 3,
+              px: 4,
+              py: 1.5,
+              color: 'rgba(255, 255, 255, 0.8)',
+              fontWeight: 600,
+              fontSize: '1rem',
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              '&:hover': {
+                background: 'rgba(255, 255, 255, 0.2)',
+                transform: 'translateY(-2px)'
+              },
+              transition: 'all 0.3s ease'
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={(handleRecharge)}
+            sx={{
+              textTransform: 'none',
+              borderRadius: 3,
+              px: 6,
+              py: 1.5,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              fontWeight: 600,
+              fontSize: '1rem',
+              boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+                boxShadow: '0 15px 40px rgba(102, 126, 234, 0.6)',
+                transform: 'translateY(-2px)'
+              },
+              transition: 'all 0.3s ease'
+            }}
+          >
+            Create/Recharge Card
+          </Button>
+        </Box>
+      </Box>
+    )}
+
+    {/* Check Balance Tab */}
+    {activeTab === 1 && (
+      <Box>
+        <Grid container spacing={4}>
+          {/* Balance Check Form */}
+          <Grid item xs={12} md={8}>
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: 4, 
+                borderRadius: 4,
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 4 }}>
+                <Box sx={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 3,
+                  background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '24px',
+                  fontWeight: 'bold',
+                  boxShadow: '0 10px 30px rgba(76, 175, 80, 0.4)'
+                }}>
+                  🔍
+                </Box>
+                <Box>
+                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 0.5 }}>
+                    Balance Check
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666', fontWeight: 500 }}>
+                    Instant balance verification
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#333' }}>
+                  RFID Number
+                </Typography>
+                <OutlinedInput
+                  fullWidth
+                  value={checkRfid}
+                  onChange={(e) => setCheckRfid(e.target.value)}
+                  placeholder="Enter your RFID number"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <Box sx={{
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        borderRadius: 2,
+                        px: 2,
+                        py: 1,
+                        color: 'white',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.5px'
+                      }}>
+                        RFID
+                      </Box>
+                    </InputAdornment>
+                  }
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton 
+                        onClick={checkBalance} 
+                        sx={{ 
+                          color: '#667eea',
+                          background: 'rgba(102, 126, 234, 0.1)',
+                          '&:hover': {
+                            background: 'rgba(102, 126, 234, 0.2)'
+                          }
+                        }}
+                      >
+                        🔍
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  sx={{
+                    borderRadius: 3,
+                    bgcolor: 'rgba(255, 255, 255, 0.8)',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: '2px solid transparent',
+                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                    },
+                    '& input': {
+                      fontSize: '1.1rem',
+                      fontWeight: 500,
+                      letterSpacing: '1px'
+                    }
+                  }}
+                />
+              </Box>
+
+              <Button 
+                onClick={checkBalance} 
+                variant="contained"
+                fullWidth
+                sx={{
+                  textTransform: 'none',
+                  borderRadius: 3,
+                  py: 2,
+                  background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                  boxShadow: '0 10px 30px rgba(76, 175, 80, 0.4)',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #43a047 0%, #2e7d32 100%)',
+                    boxShadow: '0 15px 40px rgba(76, 175, 80, 0.6)',
+                    transform: 'translateY(-2px)'
+                  },
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                Check Balance
+              </Button>
+            </Paper>
+          </Grid>
+
+          {/* Balance Display */}
+          <Grid item xs={12} md={4}>
+            {cardBalance !== null ? (
+              <Paper 
+                elevation={0} 
+                sx={{ 
+                  p: 4, 
+                  borderRadius: 4,
+                  background: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)',
+                  color: 'white',
+                  textAlign: 'center',
+                  boxShadow: '0 20px 40px rgba(76, 175, 80, 0.4)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <Box sx={{
+                  position: 'absolute',
+                  top: -20,
+                  right: -20,
+                  width: 80,
+                  height: 80,
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)'
+                }} />
+                <Box sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mx: 'auto',
+                  mb: 3,
+                  fontSize: '32px'
+                }}>
+                  💰
+                </Box>
+                <Typography variant="body1" sx={{ mb: 2, opacity: 0.9, fontWeight: 500 }}>
+                  Available Balance
+                </Typography>
+                <Typography variant="h2" sx={{ fontWeight: 800, mb: 2, letterSpacing: '-1px' }}>
+                  ₹{cardBalance}
+                </Typography>
+                <Box sx={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1,
+                  display: 'inline-block',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    ACTIVE
+                  </Typography>
+                </Box>
+              </Paper>
+            ) : (
+              <Paper 
+                elevation={0} 
+                sx={{ 
+                  p: 4, 
+                  borderRadius: 4,
+                  background: 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  textAlign: 'center',
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+                }}
+              >
+                <Box sx={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: '50%',
+                  background: 'rgba(158, 158, 158, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mx: 'auto',
+                  mb: 3,
+                  fontSize: '32px'
+                }}>
+                  ❓
+                </Box>
+                <Typography variant="h6" sx={{ color: '#666', mb: 1, fontWeight: 600 }}>
+                  No Balance Data
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#999', fontWeight: 500 }}>
+                  Enter RFID number to check balance
+                </Typography>
+              </Paper>
+            )}
+          </Grid>
+        </Grid>
+      </Box>
+    )}
+  </Box>
+</Dialog><Dialog 
+  open={openRfidDialog} 
+  onClose={() => setOpenRfidDialog(false)} 
+  fullWidth 
+  maxWidth="md"
+  PaperProps={{
+    sx: {
       borderRadius: 4,
       background: '#ffffff',
       boxShadow: '0 32px 64px rgba(0,0,0,0.08)',
@@ -1643,10 +2327,7 @@ const checkBalance = async () => {
           </Button>
           <Button
             variant="contained"
-            onClick={() => {
-              console.log("Creating card:", rfidNumber, cardHolderName);
-              setOpenRfidDialog(false);
-            }}
+            onClick={handleRecharge}
             sx={{
               textTransform: 'none',
               borderRadius: 2,

@@ -477,7 +477,7 @@ const Home = () => {
                     <div className="col-12 overview-section" style={{ background: "#00215E" }}>
                       <div className="col-12 mb-3 ">
                         <div className="mt-4 card p-3 text-center card-color d-flex flex-lg-row flex-column align-items-center justify-content-center">
-
+                          
                           <div className="text-center">
                             <h5 className="card-title">Commitment to Quality and Client Satisfaction</h5>
                             <p className="card-text text-white">Your success is our priority. We are dedicated to providing top-notch quality and outstanding customer service</p>
@@ -486,7 +486,7 @@ const Home = () => {
                       </div>
                       <div className="col-12 mb-3">
                         <div className="card p-3 text-center card-color d-flex flex-lg-row flex-column align-items-center justify-content-center">
-
+                          
                           <div className="text-center">
                             <h5 className="card-title"> Innovative Solutions Tailored to Your Needs</h5>
                             <p className="card-text text-white">We specialize in crafting innovative, custom-built solutions that meet the unique needs of your business</p>
@@ -495,7 +495,7 @@ const Home = () => {
                       </div>
                       <div className="col-12">
                         <div className="card p-3 text-center card-color d-flex flex-lg-row flex-column align-items-center justify-content-center">
-
+                         
                           <div className="text-center">
                             <h5 className="card-title">Dedicated Team of Experts</h5>
                             <p className="card-text text-white">Our passionate and skilled team is committed to driving your success. With diverse expertise in various domains</p>
@@ -584,7 +584,7 @@ const Home = () => {
                   <h2 className="display-7 mt-3 fw-bold text-white">Ready to automate your Bus Ticketing System?</h2>
                   <p className="lead text-white">Start Using now</p>
                   <Link to="/contact">
-                    <Button className='btn-width btn fw-bold text-white px-3 py-2' style={{ background: "#FFC55A" }}>Contact Us</Button>
+                  <Button className='btn-width btn fw-bold text-white px-3 py-2' style={{ background: "#FFC55A" }}>Contact Us</Button>
                   </Link>
                 </div>
               </div>
