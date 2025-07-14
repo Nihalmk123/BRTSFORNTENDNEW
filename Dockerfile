@@ -3,6 +3,9 @@ FROM node:alpine3.18 AS build
 
 WORKDIR /app
 
+# Copy env first so it can be used by Vite
+COPY .env ./
+
 COPY package.json package-lock.json ./
 RUN npm install
 

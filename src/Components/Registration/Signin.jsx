@@ -317,7 +317,7 @@ useEffect(() => {
         const { access_token } = user;
 
         api
-            .post(`/tsn/v1/user/signInWithGoogle`, {
+             .post(`/tsn/v1/user/signInWithGoogle`, {
                 "accessToken": access_token,
             })
             .then((res) => {
