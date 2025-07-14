@@ -54,7 +54,7 @@ const Home = () => {
     <>
       <Layout>
         <Helmet>
-          <title>Home</title>
+          <title>Home </title>
           <meta name='description' content='Beginner friendly page for learning React Helmet.' />
         </Helmet>
 
