@@ -33,6 +33,8 @@ WORKDIR /app
 # Copy .env first so it can be used by Vite
 COPY .env ./
 
+RUN echo "VITE_API_BASE_URL is: $(grep VITE_API_BASE_URL .env)"
+
 # Install dependencies
 COPY package.json package-lock.json ./
 RUN npm install
