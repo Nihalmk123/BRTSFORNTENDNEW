@@ -60,3 +60,5 @@ EXPOSE 80
 # Start nginx server
 CMD ["nginx", "-g", "daemon off;"]
 
+# deployment test
+

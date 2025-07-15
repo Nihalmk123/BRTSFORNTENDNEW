@@ -192,8 +192,7 @@ import Layout from '../Layout/Layout';
 import { useAuth } from '../Context/Context';
 // import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { GoogleLogin } from '@react-oauth/google';
-import { googleLogout, useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import api from "../Api/Axios"
 import ReCAPTCHA from 'react-google-recaptcha';
 import toast, { Toaster } from 'react-hot-toast';
@@ -303,8 +302,6 @@ const handleSignin = async (e) => {
         setIsSubmitting(false);
     }
 };
-
-
 
 // Google OAuth Login
 const googleLogin = useGoogleLogin({
