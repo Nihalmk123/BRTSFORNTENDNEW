@@ -37,7 +37,7 @@ jobs:
         run: docker rm -f reactcontainer || true
 
       - name: Run Docker Container
-        run: docker run -d -p 80:80 --name reactcontainer mdnihal/reactjs-app:latest
+        run: docker run -d -p 5173:80 --name reactcontainer mdnihal/reactjs-app:latest
 
 
 
