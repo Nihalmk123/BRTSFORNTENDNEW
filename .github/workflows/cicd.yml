@@ -38,12 +38,3 @@ jobs:
 
       - name: Run Docker Container
         run: docker run -d -p 5173:80 --name reactcontainer mdnihal/reactjs-app:latest
-
-
-
-
-
-
-
-
-
