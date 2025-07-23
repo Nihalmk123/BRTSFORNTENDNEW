@@ -540,7 +540,7 @@ export default function FullWidthTabs() {
 
                           <TableCell align="right">
                             <Stack spacing={1.5}>
-                              <Link to={'/paymentInfo'} style={{ textDecoration: 'none' }}>
+                              {/* <Link to={'/paymentInfo'} style={{ textDecoration: 'none' }}>
                                 <Button
                                   fullWidth
                                   variant="contained"
@@ -555,7 +555,7 @@ export default function FullWidthTabs() {
                                 >
                                   View Details
                                 </Button>
-                              </Link>
+                              </Link> */}
                               {!ticket.active && (
                                 <Tooltip title={ticket.expiredMessage || 'Ticket has expired'} arrow>
                                   <Button
@@ -835,7 +835,7 @@ export default function FullWidthTabs() {
 
                           <TableCell align="right">
                             <Stack spacing={1.5}>
-                              <Button
+                              {/* <Button
                                 fullWidth
                                 variant="contained"
                                 size="medium"
@@ -849,7 +849,7 @@ export default function FullWidthTabs() {
                                 }}
                               >
                                 View More
-                              </Button>
+                              </Button> */}
                               {!ticket.active && (
                                 <Tooltip title={ticket.expiredMessage || 'Ticket has expired'} arrow>
                                   <Button
@@ -1127,7 +1127,7 @@ export default function FullWidthTabs() {
 
                           <TableCell align="right">
                             <Stack spacing={1.5}>
-                              <Button
+                              {/* <Button
                                 fullWidth
                                 variant="contained"
                                 size="medium"
@@ -1141,7 +1141,7 @@ export default function FullWidthTabs() {
                                 }}
                               >
                                 View More
-                              </Button>
+                              </Button> */}
                               {!ticket.active && (
                                 <Tooltip title={ticket.expiredMessage || 'Ticket has expired'} arrow>
                                   <Button

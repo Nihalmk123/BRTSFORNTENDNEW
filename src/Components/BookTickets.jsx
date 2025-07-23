@@ -540,95 +540,8 @@ const BookTickets = () => {
             }}
           >
             {/* Enhanced Left Section */}
-            <Box
-              sx={{
-                flex: '0 0 450px',
-                color: 'white',
-                pt: { xs: 2, lg: 8 }
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  fontWeight: 900,
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
-                  mb: 3,
-                  background: 'linear-gradient(90deg, #FFFFFF 0%, #E8EAF6 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  color: 'transparent',
-                  letterSpacing: '-0.02em'
-                }}
-              >
-                Smart Travel Simplified-BRTS
-              </Typography>
+            
 
-              <Typography
-                variant="h6"
-                sx={{
-                  opacity: 0.9,
-                  mb: 4,
-                  lineHeight: 1.6,
-                  fontWeight: 400
-                }}
-              >
-                Book your journey with confidence. Experience seamless travel booking with real-time updates and exclusive benefits.
-              </Typography>
-
-              <Stack spacing={3} sx={{ mb: 6 }}>
-                <Stack direction="row" spacing={2}>
-                  <Chip
-                    icon={<AccessTime sx={{ color: '#1A237E' }} />}
-                    label="Instant Booking"
-                    sx={{
-                      bgcolor: 'white',
-                      fontWeight: 600,
-                      '& .MuiChip-label': { color: '#1A237E' }
-                    }}
-                  />
-                  <Chip
-                    icon={<Security sx={{ color: '#1A237E' }} />}
-                    label="Secure Payment"
-                    sx={{
-                      bgcolor: 'white',
-                      fontWeight: 600,
-                      '& .MuiChip-label': { color: '#1A237E' }
-                    }}
-                  />
-                </Stack>
-
-                <Paper
-                  elevation={0}
-                  sx={{
-                    p: 3,
-                    bgcolor: 'rgba(255, 255, 255, 0.1)',
-                    borderRadius: '16px',
-                    backdropFilter: 'blur(10px)'
-                  }}
-                >
-                  <Stack spacing={2}>
-                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 700 }}>
-                      Today's Special Offers
-                    </Typography>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <LocalOffer sx={{ color: '#FFC107' }} />
-                      <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
-                        20% off on weekend bookings
-                      </Typography>
-                    </Stack>
-                    <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <LocalOffer sx={{ color: '#FFC107' }} />
-                      <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
-                        Free cancellation within 24 hours
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                </Paper>
-              </Stack>
-            </Box>
-
-            {/* Enhanced Right Section */}
             <Card
               sx={{
                 borderRadius: { xs: '20px', sm: '24px' },
@@ -835,7 +748,7 @@ const BookTickets = () => {
                     </Paper>
 
                     {/* Verification Alert */}
-                    {(userProfile?.googleUser && !userProfile?.phoneNumberVerified) && (
+                    {/* {(userProfile?.googleUser && !userProfile?.phoneNumberVerified) && (
                       <Alert
                         severity="warning"
                         icon={<Mail sx={{ color: '#F59E0B', fontSize: '1.25rem' }} />}
@@ -872,9 +785,30 @@ const BookTickets = () => {
                           Verify Now
                         </Button>
                       </Alert>
-                    )}
+                    )} */}
 
                     {/* Confirm Button */}
+                    {/* <Button
+                      variant="contained"
+                      fullWidth
+                      onClick={handleOpenModal}
+                      disabled={!userProfile?.emailVerified || !userProfile?.phoneNumberVerified}
+                      sx={{
+                        borderRadius: '12px',
+                        py: 1.5,
+                        fontSize: '1rem',
+                        fontWeight: 700,
+                        background: 'linear-gradient(135deg, #133E87 0%, #0F2F66 100%)',
+                        boxShadow: '0 4px 16px rgba(19, 62, 135, 0.25)',
+                        '&:hover': {
+                          background: 'linear-gradient(135deg, #0F2F66 0%, #0A1F40 100%)',
+                          transform: 'translateY(-1px)'
+                        }
+                      }}
+                      endIcon={<ArrowForward />}
+                    >
+                      Confirm Purchase
+                    </Button> */}
                     <Button
                       variant="contained"
                       fullWidth
@@ -900,6 +834,94 @@ const BookTickets = () => {
                 </form>
               </Box>
             </Card>
+            {/* Enhanced Right Section */}
+            <Box
+              sx={{
+                flex: '0 0 450px',
+                color: 'white',
+                pt: { xs: 2, lg: 8 }
+              }}
+            >
+              <Typography
+                variant="h2"
+                sx={{
+                  fontWeight: 900,
+                  fontSize: { xs: '2.5rem', md: '3.5rem' },
+                  mb: 3,
+                  background: 'linear-gradient(90deg, #FFFFFF 0%, #E8EAF6 100%)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  color: 'transparent',
+                  letterSpacing: '-0.02em'
+                }}
+              >
+                Smart Travel Simplified-BRTS
+              </Typography>
+
+              <Typography
+                variant="h6"
+                sx={{
+                  opacity: 0.9,
+                  mb: 4,
+                  lineHeight: 1.6,
+                  fontWeight: 400
+                }}
+              >
+                Book your journey with confidence. Experience seamless travel booking with real-time updates and exclusive benefits.
+              </Typography>
+
+              <Stack spacing={3} sx={{ mb: 6 }}>
+                <Stack direction="row" spacing={2}>
+                  <Chip
+                    icon={<AccessTime sx={{ color: '#1A237E' }} />}
+                    label="Instant Booking"
+                    sx={{
+                      bgcolor: 'white',
+                      fontWeight: 600,
+                      '& .MuiChip-label': { color: '#1A237E' }
+                    }}
+                  />
+                  <Chip
+                    icon={<Security sx={{ color: '#1A237E' }} />}
+                    label="Secure Payment"
+                    sx={{
+                      bgcolor: 'white',
+                      fontWeight: 600,
+                      '& .MuiChip-label': { color: '#1A237E' }
+                    }}
+                  />
+                </Stack>
+
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    bgcolor: 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '16px',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <Stack spacing={2}>
+                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 700 }}>
+                      Today's Special Offers
+                    </Typography>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <LocalOffer sx={{ color: '#FFC107' }} />
+                      <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
+                        20% off on weekend bookings
+                      </Typography>
+                    </Stack>
+                    <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <LocalOffer sx={{ color: '#FFC107' }} />
+                      <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
+                        Free cancellation within 24 hours
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Paper>
+              </Stack>
+            </Box>
           </Box>
         </Container>
       </Box>

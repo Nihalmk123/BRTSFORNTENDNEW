@@ -109,7 +109,8 @@ const Contact = () => {
               </span>
               <h5 className="main_headings display-5 fw-bold line-height text-center display-6 highlighted-secondary">Get in Touch</h5>
               <p className="lead">
-                Lorem ipsum dolor, sit amet elit. Quam nitm veniam dicta, quos nemo minima nulla ducimus offici nulla ducimus officiis! Lorem ipsum dolor, sit amet elit Quam nitm.
+                Need assistance or further information?
+                Contact us at your convenience and we’ll be happy to help.
               </p>
             </div>
           </div>

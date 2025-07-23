@@ -290,19 +290,19 @@ const About = () => {
           </Grid>
 
           {/* Stats Section */}
-          <Grid container spacing={4}>
+          {/* <Grid container spacing={4}>
             {stats.map((stat, index) => (
               <Grid item xs={12} md={4} key={index}>
                 <StatItem {...stat} />
               </Grid>
             ))}
-          </Grid>
+          </Grid> */}
         </Container>
       </Box>
       {/* our mission */}
 
       {/* Meet the Team */}
-      <section className="py-5">
+      {/* <section className="py-5">
         <div className="container">
           <div className="row justify-content-center text-center mb-2 mb-lg-4">
             <div className="col-12 col-lg-8 col-xxl-7 text-center mx-auto">
@@ -360,10 +360,9 @@ const About = () => {
                 </div>
               </div>
             </div>
-            {/* Repeat for other team members */}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* call to action */}
       <section className="my-md-8 rounded-2 position-relative px-5 py-2 mb-5"
