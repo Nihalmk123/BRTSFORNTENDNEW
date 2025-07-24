@@ -729,21 +729,33 @@ const handleClose = () => {
       {/* <Close /> */}
     {/* </IconButton> */}
   </Box>
-  <Box display="flex" justifyContent="center" alignItems="center" sx={{ p: 2 }}>
-    {selectedTicket && selectedTicket.qrCodeLink ? (
-      <img
-        src={selectedTicket.qrCodeLink}
-        alt="QR Code"
-        style={{
-          maxWidth: '100%',
-          height: 'auto',
-          borderRadius: 8,
-        }}
-      />
-    ) : (
-      <QrCode size={160} color="#9e9e9e" />
-    )}
-  </Box>
+  <Box
+  display="flex"
+  flexDirection="column"
+  alignItems="center"
+  justifyContent="center"
+  sx={{
+    p: isMobile ? 2 : 4,
+    minHeight: isMobile ? '80vh' : '400px',
+    width: '100%',
+  }}
+>
+  {selectedTicket && selectedTicket.qrCodeLink ? (
+    <img
+      src={selectedTicket.qrCodeLink}
+      alt="QR Code"
+      style={{
+        width: isMobile ? '80vw' : '300px',
+        maxWidth: '100%',
+        height: 'auto',
+        borderRadius: 8,
+      }}
+    />
+  ) : (
+    <QrCode size={isMobile ? 120 : 160} color="#9e9e9e" />
+  )}
+</Box>
+
       </Dialog>
     </Box>
     </Layout>
