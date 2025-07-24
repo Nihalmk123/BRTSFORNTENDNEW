@@ -13,6 +13,8 @@ import {
   Dialog,
   Grow,
   Tooltip,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import { QrCode, MapPin, Clock, Calendar, InfoIcon } from 'lucide-react';
 import Layout from '../../src/Components/Layout/Layout';
@@ -32,6 +34,11 @@ const BookedTickets = () => {
   const [loading, setLoading] = useState(true);
   const { auth = {} } = useAuth() || {};
   const [open, setOpen] = useState(false);
+
+  const theme = useTheme();
+const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  
 
   // At top of BookedTickets:
 const [selectedTicket, setSelectedTicket] = useState(null); // ticket shown in modal
@@ -702,15 +709,13 @@ const handleClose = () => {
 
       {/* QR Code Modal */}
       <Dialog
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Grow}
-        fullWidth
-        maxWidth="sm"
-        PaperProps={{
-          sx: { p: 2, borderRadius: 4 },
-        }}
-      >
+  open={open}
+  onClose={handleClose}
+  fullScreen={isMobile}
+  TransitionComponent={Grow}
+  fullWidth
+  maxWidth="sm"
+>
         {/* Close Button */}
         <Box display="flex" justifyContent="flex-end">
           <IconButton onClick={handleClose}>
