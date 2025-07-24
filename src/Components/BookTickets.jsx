@@ -748,8 +748,7 @@ const BookTickets = () => {
                     </Paper>
 
                     {/* Verification Alert */}
-                    {/* {(userProfile?.googleUser && !userProfile?.phoneNumberVerified) && (
-                      <Alert
+                      {/* <Alert
                         severity="warning"
                         icon={<Mail sx={{ color: '#F59E0B', fontSize: '1.25rem' }} />}
                         sx={{
@@ -784,36 +783,15 @@ const BookTickets = () => {
                         >
                           Verify Now
                         </Button>
-                      </Alert>
-                    )} */}
+                      </Alert> */}
+                   
 
                     {/* Confirm Button */}
-                    {/* <Button
-                      variant="contained"
-                      fullWidth
-                      onClick={handleOpenModal}
-                      disabled={!userProfile?.emailVerified || !userProfile?.phoneNumberVerified}
-                      sx={{
-                        borderRadius: '12px',
-                        py: 1.5,
-                        fontSize: '1rem',
-                        fontWeight: 700,
-                        background: 'linear-gradient(135deg, #133E87 0%, #0F2F66 100%)',
-                        boxShadow: '0 4px 16px rgba(19, 62, 135, 0.25)',
-                        '&:hover': {
-                          background: 'linear-gradient(135deg, #0F2F66 0%, #0A1F40 100%)',
-                          transform: 'translateY(-1px)'
-                        }
-                      }}
-                      endIcon={<ArrowForward />}
-                    >
-                      Confirm Purchase
-                    </Button> */}
                     <Button
                       variant="contained"
                       fullWidth
                       onClick={handleOpenModal}
-                      disabled={!userProfile?.emailVerified || !userProfile?.phoneNumberVerified}
+                      // disabled={!userProfile?.emailVerified || !userProfile?.phoneNumberVerified}
                       sx={{
                         borderRadius: '12px',
                         py: 1.5,
@@ -1166,7 +1144,7 @@ const BookTickets = () => {
               Razorpay Checkout is not supported on IE.
             </Typography>
           </Paper> */}
-                  <Alert
+                  {/* <Alert
                     severity="warning"
                     sx={{ mb: 3, borderRadius: 2 }}
                     icon={<Warning />}
@@ -1179,7 +1157,7 @@ const BookTickets = () => {
                     icon={<InfoIcon />}
                   >
                     Razorpay Checkout is not supported on IE.
-                  </Alert>
+                  </Alert> */}
                 </Stack>
               </Box>
               {/* Grand Total */}

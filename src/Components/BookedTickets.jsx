@@ -33,6 +33,10 @@ const BookedTickets = () => {
   const { auth = {} } = useAuth() || {};
   const [open, setOpen] = useState(false);
 
+  // At top of BookedTickets:
+const [selectedTicket, setSelectedTicket] = useState(null); // ticket shown in modal
+
+
   useEffect(() => {
     const getTickets = async () => {
       try {
@@ -59,8 +63,16 @@ const BookedTickets = () => {
   }, [timeZone, api]);
 
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = (ticket) => {
+  setSelectedTicket(ticket);
+  setOpen(true);
+};
+
+const handleClose = () => {
+  setOpen(false);
+  setSelectedTicket(null);
+};
+
 
 
   return (
@@ -486,8 +498,8 @@ const BookedTickets = () => {
                   </Box>
 
                   {/* QR Code Section */}
-                  <Box
-                    onClick={handleOpen}
+                 <Box 
+                 onClick={() => handleOpen(ticket)}
                     sx={{
                       p: 2,
                       mb: 2.5,
@@ -707,26 +719,26 @@ const BookedTickets = () => {
         </Box>
 
         {/* QR Code in Modal */}
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ p: 2 }}
-        >
-          {/* {ticket.qrCodeLink ? ( */}
-            <img
-              // src={ticket.qrCodeLink}
-              alt="QR Code"
-              style={{
-                maxWidth: '100%',
-                height: 'auto',
-                borderRadius: 8,
-              }}
-            />
-          ) : (
-            <QrCode size={160} color="#9e9e9e" />
-          )}
-        </Box>
+         <Box display="flex" justifyContent="flex-end">
+    {/* <IconButton onClick={handleClose}> */}
+      {/* <Close /> */}
+    {/* </IconButton> */}
+  </Box>
+  <Box display="flex" justifyContent="center" alignItems="center" sx={{ p: 2 }}>
+    {selectedTicket && selectedTicket.qrCodeLink ? (
+      <img
+        src={selectedTicket.qrCodeLink}
+        alt="QR Code"
+        style={{
+          maxWidth: '100%',
+          height: 'auto',
+          borderRadius: 8,
+        }}
+      />
+    ) : (
+      <QrCode size={160} color="#9e9e9e" />
+    )}
+  </Box>
       </Dialog>
     </Box>
     </Layout>

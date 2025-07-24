@@ -142,7 +142,7 @@ const About = () => {
                 <p className="display-7 lead fw-normal text-muted">
                   We are a fresh and dynamic company, passionate about using technology to create impactful solutions that benefit both people and the environment. Our focus is on developing products that address real-world challenges with sustainability in mind.
                 </p>
-                <Button className='btn-width btn text-white px-3 py-2' style={{ background: "#FFC55A" }}>Learn More</Button>
+                {/* <Button className='btn-width btn text-white px-3 py-2' style={{ background: "#FFC55A" }}>Learn More</Button> */}
               </div>
             </div>
 
