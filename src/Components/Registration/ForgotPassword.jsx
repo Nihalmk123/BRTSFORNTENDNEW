@@ -615,13 +615,13 @@ const ForgotPassword = () => {
             </Helmet>
             <h1 className='text-center mt-5'>Reset Password</h1>
             <Container component="main" maxWidth="sm" sx={{
-                minHeight: '80vh',
+                minHeight: '70vh',
                 display: 'flex',
                 alignItems: 'center',
                 // py: 4
             }}>
-                <Paper elevation={3} sx={{ width: '100%', p: 4 }}>
-                    <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+                <Paper sx={{ width: '100%', overflowX: 'auto', padding:'3px' }}>
+                    <Stepper activeStep={activeStep} sx={{ mb: 4, marginTop:'20px' }}>
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel>{label}</StepLabel>

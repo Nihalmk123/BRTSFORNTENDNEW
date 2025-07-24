@@ -76,7 +76,7 @@ const Home = () => {
                 <p className="lead mt-3 mb-4 custom-para">
                   Experience the future of bus travel with <strong className='fw-bold fs-4'>SmartBus Ticketing </strong>– your all-in-one solution for effortless and efficient ticketing. Our platform is designed to streamline and automate the entire ticketing process, ensuring a smooth and hassle-free journey from start to finish.
                 </p>
-             <Link to='/bookTickets'>   <Button className='btn-width btn text-white px-3 py-2' style={{ background: "#10375c" }}>Book Ticket Now</Button></Link>
+                <Button className='btn-width btn text-white px-3 py-2' style={{ background: "#10375c" }}>Book Ticket Now</Button>
                 <div className="z-10 flex min-h-64 items-center justify-center">
                 </div>
               </div>
@@ -513,7 +513,64 @@ const Home = () => {
 
         {/* testimonials */}
         {/* Testimonial 4 - Bootstrap Brain Component */}
-       
+        <section className="py-3 py-md-5 py-xl-8 mt-4">
+          <div className="container">
+            <div className="row">
+              <div className="col-12 col-md-10 col-lg-8">
+                <h3 className="fs-5 mb-2 text-secondary text-uppercase">Testimonials</h3>
+                <h2 className="display-7 mb-4">Our valued clients' testimonials speak volumes about our work's power.</h2>
+              </div>
+            </div>
+          </div>
+          <div className="container overflow-hidden">
+            <div className="row gy-3 gy-lg-4">
+              <div className="col-12 col-lg-6">
+                <div className="card" style={{ borderLeft: "3px solid #10375c" }}>
+                  <div className="card-body">
+                    <span class="star-rating">
+                      <i class="fas fa-star text-warning"></i>
+                      <i class="fas fa-star text-warning"></i>
+                      <i class="fas fa-star text-warning"></i>
+                      <i class="fas fa-star text-warning"></i>
+                      <i class="far fa-star text-warning"></i>
+                    </span>
+                    <blockquote className="bsb-blockquote-icon mb-3">We were struggling to manage our finances effectively. We needed help developing a financial plan. They create a financial plan that worked for us, and they showed us how to track our spending more effectively. We are so grateful for the help.</blockquote>
+                    <figure className="d-flex align-items-center m-0 p-0">
+                      {/* <img className="img-fluid rounded rounded-circle m-0 border border-5" loading="lazy" src="./assets/img/testimonial-img-3.jpg" alt="Michael Wilson" /> */}
+                      <i class="fas fa-user"></i>
+                      <figcaption className="ms-3">
+                        <h4 className="mb-1 h5">Michael Wilson</h4>
+                        <h5 className="fs-6 text-secondary mb-0">SEO Expert</h5>
+                      </figcaption>
+                    </figure>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-lg-6">
+                <div className="card" style={{ borderLeft: "3px solid #10375c" }}>
+                  <div className="card-body">
+                    <span class="star-rating">
+                      <i class="fas fa-star text-warning"></i>
+                      <i class="fas fa-star text-warning"></i>
+                      <i class="fas fa-star text-warning"></i>
+                      <i class="fas fa-star text-warning"></i>
+                      <i class="far fa-star text-warning"></i>
+                    </span>
+                    <blockquote className="bsb-blockquote-icon mb-3">We were looking for a company that could help us with our branding. We needed a website and marketing materials. They were able to create a brand identity that we loved. They worked with us to develop a logo that represented our company.</blockquote>
+                    <figure className="d-flex align-items-center m-0 p-0">
+                      {/* <img className="img-fluid rounded rounded-circle m-0 border border-5" loading="lazy" src="./assets/img/testimonial-img-4.jpg" alt="Luke Reeves" /> */}
+                      <i class="fas fa-user"></i>
+                      <figcaption className="ms-3">
+                        <h4 className="mb-1 h5">Luke Reeves</h4>
+                        <h5 className="fs-6 text-secondary mb-0">Sales Manager</h5>
+                      </figcaption>
+                    </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* testimonials */}
 
