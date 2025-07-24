@@ -57,6 +57,15 @@ const Header = () => {
         // Initialize MDB UI kit if needed
     }, [location.pathname]);
 
+    const toggleTheme = () => {};
+const themeMode = "light";
+
+// const listItemStyle = {
+//   borderRadius: 2,
+//   mb: 0.5,
+//   "&:hover": { bgcolor: "#eaf1fb" },
+// };
+
     // Logout function
     // const handleLogout = async () => {
     //     try {
@@ -131,368 +140,519 @@ const Header = () => {
                         <MenuIcon style={{ fontSize: "30px", color: "#0a4275" }} />
                     </IconButton>
 
-                    <Drawer
-                        anchor="right"
-                        open={drawerOpen}
-                        onClose={toggleDrawer(false)}
-                        PaperProps={{
-                            sx: {
-                                width: '100%',
-                                maxWidth: '320px',
-                                backgroundColor: "#f4f6ff"
-                            }
+                     <Drawer
+      anchor="right"
+      open={drawerOpen}
+      onClose={toggleDrawer(false)}
+      PaperProps={{
+        sx: {
+          width: "100%",
+          maxWidth: "350px",
+          background: "linear-gradient(115deg,#f4f6ff 60%,#eef2fb 100%)",
+          boxShadow: "0 8px 36px 0 rgba(31,80,154,0.13)",
+          borderTopLeftRadius: 18,
+          borderBottomLeftRadius: 18,
+          minHeight: "100vh",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+        }}
+      >
+        {/* Close Button */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            p: 1,
+            position: "absolute",
+            right: 8,
+            top: 8,
+            zIndex: 2,
+          }}
+        >
+          <IconButton
+            onClick={toggleDrawer(false)}
+            sx={{
+              bgcolor: "#f4f8fc",
+              "&:hover": { bgcolor: "#eceef7" },
+              boxShadow: "0 2px 8px rgba(31,80,154,0.07)",
+              width: 40,
+              height: 40,
+            }}
+          >
+            <CloseIcon sx={{ fontSize: 24, color: "#1F509A" }} />
+          </IconButton>
+        </Box>
+
+        {/* Profile Section */}
+        <Box
+  sx={{
+    padding: 4,
+    textAlign: 'center',
+    background: 'linear-gradient(117deg, #e1eafe 60%, #cfd8fc 100%)',
+    borderBottom: '1.5px solid #d1dcfa',
+    boxShadow: '0 4px 24px rgba(31, 80, 154, 0.07)',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    mb: 3,
+    position: 'relative'
+  }}
+>
+  <Avatar
+    sx={{
+      width: 96,
+      height: 96,
+      mx: 'auto',
+      mb: 2,
+      bgcolor: 'linear-gradient(135deg, #3156ad 78%, #4fa5fa 100%)',
+      fontSize: 38,
+      boxShadow: '0 8px 28px 0 rgba(49,86,173,0.13)',
+      border: '4px solid #cfd8fc',
+      transition: 'transform .2s',
+      background: 'linear-gradient(135deg, #3156ad 70%, #4fa5fa 100%)',
+      '&:hover': {
+        transform: 'scale(1.06)'
+      }
+    }}
+    src={userProfile?.profilePicLink || undefined}
+  >
+    {!userProfile?.profilePicLink && firstLetter}
+  </Avatar>
+
+  <Typography
+    variant="h5"
+    sx={{
+      fontWeight: 700,
+      color: '#263868',
+      mb: 0.5,
+      letterSpacing: '0.8px'
+    }}
+  >
+    Welcome!
+  </Typography>
+
+  <Typography
+    variant="body1"
+    sx={{
+      color: '#39536b',
+      opacity: 0.82,
+      mb: 1,
+      wordBreak: 'break-word',
+      fontSize: '1.09rem'
+    }}
+  >
+    {userProfile?.email || userProfile?.error}
+  </Typography>
+
+  <Box display="flex" justifyContent="center" alignItems="center" mb={2} mt={1}>
+    {!userProfile?.emailVerified || !userProfile?.phoneNumberVerified ? (
+      <Tooltip title="Complete your profile verification">
+        <Typography
+          component="span"
+          variant="body2"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            background: 'linear-gradient(90deg, #fae8e8 50%, #ffe5ed 100%)',
+            px: 2,
+            py: 0.7,
+            color: "#e34444",
+            fontWeight: 600,
+            borderRadius: "30px",
+            fontSize: '0.97rem',
+            boxShadow: '0 1px 3px rgba(255,0,29,0.09)'
+          }}
+        >
+          <Error sx={{ fontSize: '1rem', mr: 1, color: "#e34444" }} />
+          Unverified Account
+        </Typography>
+      </Tooltip>
+    ) : (
+      <Typography
+        component="span"
+        variant="body2"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          background: 'linear-gradient(93deg, #e2fbec 60%, #d2ffe2 100%)',
+          px: 2,
+          py: 0.7,
+          color: "#289c4d",
+          fontWeight: 600,
+          borderRadius: "30px",
+          fontSize: '0.97rem',
+          boxShadow: '0 1px 3px rgba(44,255,29,0.07)'
+        }}
+      >
+        <CheckCircle sx={{ fontSize: '1rem', mr: 1, color: "#289c4d" }} />
+        Verified Account
+      </Typography>
+    )}
+  </Box>
+</Box>
+
+
+
+        {/* Email & Phone Section */}
+        {auth?.accessToken && (
+          <Box sx={{ px: 2, mb: 2 }}>
+            {/* Email */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                p: 2,
+                mb: 1,
+                boxShadow: "0 3px 7px rgba(27,51,97,0.03)",
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: 38,
+                  height: 38,
+                  mr: 2,
+                  bgcolor: "#1F509A",
+                  fontSize: 20,
+                }}
+              >
+                <MailIcon sx={{ fontSize: 18 }} />
+              </Avatar>
+              <Box flex={1}>
+                <Typography variant="body2" fontWeight={600}>
+                  Email Address
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {userProfile?.email || "Not available"}
+                  {!userProfile?.emailVerified && (
+                    <Tooltip title="Please verify your email">
+                      <Error
+                        color="error"
+                        sx={{
+                          fontSize: "16px",
+                          ml: 0.5,
+                          verticalAlign: "middle",
                         }}
-                    >
-                        <Box
-                            sx={{
-                                height: '100%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                            }}
-                        >
-                            {/* Close Button */}
-                            <Box sx={{
-                                display: 'flex',
-                                justifyContent: 'flex-end',
-                                p: 1,
-                                position: 'absolute',
-                                right: 8,
-                                top: 8,
-                                zIndex: 1
-                            }}>
-                                <IconButton onClick={toggleDrawer(false)}>
-                                    <CloseIcon />
-                                </IconButton>
-                            </Box>
+                      />
+                    </Tooltip>
+                  )}
+                </Typography>
+              </Box>
+            </Box>
+            {/* Phone */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                p: 2,
+                boxShadow: "0 3px 7px rgba(27,51,97,0.03)",
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: 38,
+                  height: 38,
+                  mr: 2,
+                  bgcolor: "#1F509A",
+                  fontSize: 20,
+                }}
+              >
+                <PhoneIcon sx={{ fontSize: 18 }} />
+              </Avatar>
+              <Box flex={1}>
+                <Typography variant="body2" fontWeight={600}>
+                  Phone Number
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {userProfile?.googleUser ? userProfile?.phoneNumber : ""}
+                  {!userProfile?.phoneNumberVerified && (
+                    <Tooltip title="Please verify your phone number">
+                      <Error
+                        color="error"
+                        sx={{
+                          fontSize: "16px",
+                          ml: 0.5,
+                          verticalAlign: "middle",
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        )}
 
-                            {/* Profile Section with Verification Status */}
-                            <Box
-                                sx={{
-                                    padding: 3,
-                                    textAlign: 'center',
-                                    backgroundColor: '#ffffff',
-                                    borderBottom: '1px solid #e0e0e0',
-                                    mb: 2,
-                                    pt: 5
-                                }}
-                            >
-                                <Avatar
-                                    sx={{
-                                        width: 80,
-                                        height: 80,
-                                        margin: '0 auto 16px',
-                                        boxShadow: '0 6px 12px rgba(0,0,0,0.1)',
-                                        bgcolor: '#1F509A',
-                                        fontSize: '2.5rem',
-                                    }}
-                                    src={userProfile?.profilePicLink || undefined}
-                                >
-                                    {!userProfile?.profilePicLink && firstLetter}
-                                </Avatar>
+        {/* Navigation List with partitions */}
+        <List sx={{ flex: 1, px: 2, pt: 0.5 }}>
+          {/* Main partition */}
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+              color: "#63688e",
+              letterSpacing: 1.1,
+              ml: 1.5,
+              mt: 0.5,
+              mb: 0.1,
+              textTransform: "uppercase",
+            }}
+          >
+            General
+          </Typography>
+          <ListItem button component={Link} to="/" sx={listItemStyle}>
+            <HomeIcon sx={{ mr: 2, color: "#5671c6", fontSize: 25 }} />
+            <ListItemText primary="Home" />
+          </ListItem>
+          <ListItem button component={Link} to="/about" sx={listItemStyle}>
+            <InfoIcon sx={{ mr: 2, color: "#5671c6", fontSize: 25 }} />
+            <ListItemText primary="About" />
+          </ListItem>
+          <ListItem button component={Link} to="/contact" sx={listItemStyle}>
+            <ContactMailIcon sx={{ mr: 2, color: "#5671c6", fontSize: 25 }} />
+            <ListItemText primary="Contact" />
+          </ListItem>
+          <Divider sx={{ my: 1.3, opacity: 0.55 }} />
 
-                                <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-                                    Welcome!
-                                </Typography>
-                                <Typography variant="body1" color="textSecondary" sx={{ mb: 1 }}>
-                                    {userProfile?.email || userProfile?.error}
-                                </Typography>
+          {/* Account partition */}
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+              color: "#63688e",
+              letterSpacing: 1.1,
+              ml: 1.5,
+              mt: 0.5,
+              mb: 0.1,
+              textTransform: "uppercase",
+            }}
+          >
+            Account
+          </Typography>
+          <ListItem button component={Link} to="/editProfile" sx={listItemStyle}>
+            <Settings sx={{ mr: 2, color: "#5671c6", fontSize: 25 }} />
+            <ListItemText primary="Settings" />
+          </ListItem>
+          <Divider sx={{ my: 1.3, opacity: 0.5 }} />
 
-                                <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
-                                    {!userProfile?.emailVerified || !userProfile?.phoneNumberVerified ? (
-                                        <Tooltip title="Complete your profile verification">
-                                            <Typography
-                                                variant="body2"
-                                                color="error"
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    backgroundColor: 'rgba(255,0,0,0.05)',
-                                                    px: 1,
-                                                    py: 0.5,
-                                                    borderRadius: '20px'
-                                                }}
-                                            >
-                                                <Error sx={{ fontSize: '1rem', mr: 0.5 }} />
-                                                Unverified Account
-                                            </Typography>
-                                        </Tooltip>
-                                    ) : (
-                                        <Typography
-                                            variant="body2"
-                                            color="success.main"
-                                            sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                backgroundColor: 'rgba(76,175,80,0.05)',
-                                                px: 1,
-                                                py: 0.5,
-                                                borderRadius: '20px'
-                                            }}
-                                        >
-                                            <CheckCircle sx={{ fontSize: '1rem', mr: 0.5 }} />
-                                            Verified Account
-                                        </Typography>
-                                    )}
-                                </Box>
-                            </Box>
-                            {auth?.accessToken && (
-                                <Box sx={{ px: 2, mb: 2 }}>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            backgroundColor: '#ffffff',
-                                            borderRadius: '10px',
-                                            p: 2,
-                                            mb: 1,
-                                            boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
-                                        }}
-                                    >
-                                        <Avatar
-                                            sx={{
-                                                width: 40,
-                                                height: 40,
-                                                mr: 2,
-                                                bgcolor: '#1F509A'
-                                            }}
-                                        >
-                                            <MailIcon />
-                                        </Avatar>
-                                        <Box flex={1}>
-                                            <Typography variant="body2" fontWeight={600}>
-                                                Email Address
-                                            </Typography>
-                                            <Typography variant="caption" color="textSecondary">
-                                                {userProfile?.email || 'Not available'}
-                                                {!userProfile?.emailVerified && (
-                                                    <Tooltip title="Please verify your email">
-                                                        <Error
-                                                            color="error"
-                                                            sx={{
-                                                                fontSize: '1rem',
-                                                                ml: 0.5,
-                                                                verticalAlign: 'middle'
-                                                            }}
-                                                        />
-                                                    </Tooltip>
-                                                )}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
+          {/* Tickets partition */}
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontWeight: 600,
+              color: "#63688e",
+              letterSpacing: 1.1,
+              ml: 1.5,
+              mt: 0.5,
+              mb: 0.1,
+              textTransform: "uppercase",
+            }}
+          >
+            Tickets
+          </Typography>
+          <ListItem button component={Link} to="/ticketHistory" sx={listItemStyle}>
+            <History sx={{ mr: 2, color: "#5671c6", fontSize: 25 }} />
+            <ListItemText primary="Ticket History" />
+          </ListItem>
+          <ListItem button component={Link} to="/bookTickets" sx={listItemStyle}>
+            <ConfirmationNumberIcon sx={{ mr: 2, color: "#5671c6", fontSize: 25 }} />
+            <ListItemText primary="Purchase Ticket" />
+          </ListItem>
+          {auth.accessToken && (
+            <ListItem button component={Link} to="/bookedTicket" sx={listItemStyle}>
+              <ReceiptIcon sx={{ mr: 2, color: "#5671c6", fontSize: 25 }} />
+              <ListItemText primary="Recent Ticket" />
+            </ListItem>
+          )}
+          {!auth.accessToken && (
+            <Box sx={{ px: 2, mt: 2 }}>
+              <Button
+                component={Link}
+                to="/signin"
+                variant="contained"
+                fullWidth
+                sx={{
+                  mb: 2,
+                  backgroundColor: "#10375c",
+                  height: "44px",
+                  borderRadius: "10px",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  letterSpacing: 1,
+                  "&:hover": {
+                    backgroundColor: "#0d2e4c",
+                  },
+                }}
+              >
+                Sign In
+              </Button>
+              <Button
+                component={Link}
+                to="/signup"
+                variant="outlined"
+                fullWidth
+                sx={{
+                  border: "1.5px solid #10375c",
+                  color: "#10375c",
+                  height: "44px",
+                  borderRadius: "10px",
+                  fontWeight: 700,
+                  fontSize: "1rem",
+                  letterSpacing: 1,
+                  "&:hover": {
+                    backgroundColor: "rgba(16, 55, 92, 0.04)",
+                  },
+                }}
+              >
+                Sign Up
+              </Button>
+            </Box>
+          )}
+        </List>
 
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            backgroundColor: '#ffffff',
-                                            borderRadius: '10px',
-                                            p: 2,
-                                            boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
-                                        }}
-                                    >
-                                        <Avatar
-                                            sx={{
-                                                width: 40,
-                                                height: 40,
-                                                mr: 2,
-                                                bgcolor: '#1F509A'
-                                            }}
-                                        >
-                                            <PhoneIcon />
-                                        </Avatar>
-                                        <Box flex={1}>
-                                            <Typography variant="body2" fontWeight={600}>
-                                                Phone Number
-                                            </Typography>
-                                            <Typography variant="caption" color="textSecondary">
-                                                {userProfile?.googleUser ? userProfile?.phoneNumber : ""}
-                                                {!userProfile?.phoneNumberVerified && (
-                                                    <Tooltip title="Please verify your phone number">
-                                                        <Error
-                                                            color="error"
-                                                            sx={{
-                                                                fontSize: '1rem',
-                                                                ml: 0.5,
-                                                                verticalAlign: 'middle'
-                                                            }}
-                                                        />
-                                                    </Tooltip>
-                                                )}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </Box>
-                            )}
+        {/* Quick Actions */}
+        <Divider sx={{ my: 2 }} />
+        <Typography
+          variant="caption"
+          sx={{
+            color: "#63688e",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            ml: 2,
+            mb: 1,
+            letterSpacing: 1.1,
+          }}
+        >
+          Quick Actions
+        </Typography>
+        <Box
+          sx={{
+            px: 2,
+            mb: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 1,
+          }}
+        >
+          <Tooltip title="Edit Profile">
+            <IconButton
+              component={Link}
+              to="/editProfile"
+              sx={{
+                bgcolor: "#f7fafd",
+                border: "1px solid #e3e8f3",
+                "&:hover": { bgcolor: "#edf3fa" },
+              }}
+            >
+              <Settings sx={{ color: "#4064ba" }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Tickets">
+            <IconButton
+              component={Link}
+              to="/ticketHistory"
+              sx={{
+                bgcolor: "#f7fafd",
+                border: "1px solid #e3e8f3",
+                "&:hover": { bgcolor: "#edf3fa" },
+              }}
+            >
+              <ReceiptIcon sx={{ color: "#4064ba" }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Support">
+            <IconButton
+              component="a"
+              href="mailto:support@email.com"
+              sx={{
+                bgcolor: "#f7fafd",
+                border: "1px solid #e3e8f3",
+                "&:hover": { bgcolor: "#edf3fa" },
+              }}
+            >
+              <SupportIcon sx={{ color: "#4064ba" }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Switch Theme">
+            <IconButton
+              onClick={toggleTheme}
+              sx={{
+                bgcolor: "#f7fafd",
+                border: "1px solid #e3e8f3",
+                "&:hover": { bgcolor: "#edf3fa" },
+              }}
+            >
+              {themeMode === "light" ? (
+                ''
+              ) : (
+                ''
+              )}
+            </IconButton>
+          </Tooltip>
+        </Box>
 
-                            {/* Navigation List */}
-                            <List sx={{ flex: 1, px: 2 }}>
-                                <ListItem
-                                    button
-                                    component={Link}
-                                    to="/"
-                                    sx={listItemStyle}
-                                >
-                                    <HomeIcon sx={{ mr: 2, color: '#536493' }} />
-                                    <ListItemText primary="Home" />
-                                </ListItem>
-                                <ListItem
-                                    button
-                                    component={Link}
-                                    to="/about"
-                                    sx={listItemStyle}
-                                >
-                                    <InfoIcon sx={{ mr: 2, color: '#536493' }} />
-                                    <ListItemText primary="About" />
-                                </ListItem>
-                                <ListItem
-                                    button
-                                    component={Link}
-                                    to="/contact"
-                                    sx={listItemStyle}
-                                >
-                                    <ContactMailIcon sx={{ mr: 2, color: '#536493' }} />
-                                    <ListItemText primary="Contact" />
-                                </ListItem>
-                                <ListItem
-                                    button
-                                    component={Link}
-                                    to="/support"
-                                    sx={listItemStyle}
-                                >
-                                    <SupportIcon sx={{ mr: 2, color: '#536493' }} />
-                                    <ListItemText primary="Support" />
-                                </ListItem>
-                                <ListItem
-                                    button
-                                    component={Link}
-                                    to="/editProfile"
-                                    sx={listItemStyle}
-                                >
-                                    <Settings sx={{ mr: 2, color: '#536493' }} />
-                                    <ListItemText primary="Settings" />
-                                </ListItem>
-                                <ListItem
-                                    button
-                                    component={Link}
-                                    to="/ticketHistory"
-                                    sx={listItemStyle}
-                                >
-                                    <History sx={{ mr: 2, color: '#536493' }} />
-                                    <ListItemText primary="Ticket History" />
-                                </ListItem>
-                                <ListItem
-                                    button
-                                    component={Link}
-                                    to="/bookTickets"
-                                    sx={listItemStyle}
-                                >
-                                    <ConfirmationNumberIcon sx={{ mr: 2, color: '#536493' }} />
-                                    <ListItemText primary="Purchase Ticket" />
-                                </ListItem>
-
-                                {auth.accessToken && (
-                                    <ListItem
-                                        button
-                                        component={Link}
-                                        to="/bookedTicket"
-                                        sx={listItemStyle}
-                                    >
-                                        <ReceiptIcon sx={{ mr: 2, color: '#536493' }} />
-                                        <ListItemText primary="Recent Ticket" />
-                                    </ListItem>
-                                )}
-                                {!auth.accessToken && (
-                                    <Box sx={{ px: 2, mt: 2 }}>
-                                        <Button
-                                            component={Link}
-                                            to="/signin"
-                                            variant="contained"
-                                            fullWidth
-                                            sx={{
-                                                mb: 2,
-                                                backgroundColor: "#10375c",
-                                                height: '44px',
-                                                borderRadius: '10px',
-                                                '&:hover': {
-                                                    backgroundColor: "#0d2e4c"
-                                                }
-                                            }}
-                                        >
-                                            Sign In
-                                        </Button>
-                                        <Button
-                                            component={Link}
-                                            to="/signup"
-                                            variant="outlined"
-                                            fullWidth
-                                            sx={{
-                                                border: "1px solid #10375c",
-                                                color: "#10375c",
-                                                height: '44px',
-                                                borderRadius: '10px',
-                                                '&:hover': {
-                                                    backgroundColor: 'rgba(16, 55, 92, 0.04)'
-                                                }
-                                            }}
-                                        >
-                                            Sign Up
-                                        </Button>
-                                    </Box>
-                                )}
-                            </List>
-
-                            {/* Bottom Section */}
-                            <Divider sx={{ mt: 'auto' }} />
-                            <Box
-                                sx={{
-                                    p: 2,
-                                    textAlign: 'center',
-                                    backgroundColor: '#fff'
-                                }}
-                            >
-                                {auth.accessToken ? (
-                                    <Button
-                                        startIcon={<LogoutIcon />}
-                                        onClick={handleLogout}
-                                        fullWidth
-                                        sx={{
-                                            color: "#ffffff",
-                                            backgroundColor: "#1F509A",
-                                            fontSize: '1rem',
-                                            fontWeight: 600,
-                                            py: 1,
-                                            borderRadius: '10px',
-                                            '&:hover': {
-                                                backgroundColor: "#183a6e"
-                                            }
-                                        }}
-                                    >
-                                        Sign Out
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        startIcon={<ConfirmationNumberIcon />}
-                                        component={Link}
-                                        to="/bookTickets"
-                                        fullWidth
-                                        sx={{
-                                            color: "#ffffff",
-                                            backgroundColor: "#1F509A",
-                                            fontSize: '1rem',
-                                            fontWeight: 600,
-                                            py: 1,
-                                            borderRadius: '10px',
-                                            '&:hover': {
-                                                backgroundColor: "#183a6e"
-                                            }
-                                        }}
-                                    >
-                                        Book Your Ticket
-                                    </Button>
-                                )}
-                            </Box>
-                        </Box>
-                    </Drawer>
+        {/* Bottom Section */}
+        <Divider sx={{ mt: "auto" }} />
+        <Box
+          sx={{
+            p: 2,
+            textAlign: "center",
+            backgroundColor: "#fff",
+            borderBottomLeftRadius: 18,
+          }}
+        >
+          {auth.accessToken ? (
+            <Button
+              startIcon={<LogoutIcon />}
+              onClick={handleLogout}
+              fullWidth
+              sx={{
+                color: "#fff",
+                backgroundColor: "#1F509A",
+                fontSize: "1rem",
+                fontWeight: 600,
+                py: 1,
+                borderRadius: "10px",
+                "&:hover": {
+                  backgroundColor: "#183a6e",
+                },
+              }}
+            >
+              Sign Out
+            </Button>
+          ) : (
+            <Button
+              startIcon={<ConfirmationNumberIcon />}
+              component={Link}
+              to="/bookTickets"
+              fullWidth
+              sx={{
+                color: "#fff",
+                backgroundColor: "#1F509A",
+                fontSize: "1rem",
+                fontWeight: 600,
+                py: 1,
+                borderRadius: "10px",
+                "&:hover": {
+                  backgroundColor: "#183a6e",
+                },
+              }}
+            >
+              Book Your Ticket
+            </Button>
+          )}
+        </Box>
+      </Box>
+    </Drawer>
                     {/* Toggle button for mobile view */}
                     <button
                         className="navbar-toggler"
