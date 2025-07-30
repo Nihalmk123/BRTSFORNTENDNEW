@@ -1,5 +1,5 @@
 import  { useState, useEffect } from 'react';
-import { Drawer, IconButton, Button, Box, Typography, Menu, MenuItem, List, ListItem, ListItemText, Alert, Badge, Divider, Tooltip, Avatar, Chip } from '@mui/material';
+import { Drawer, IconButton, Button, Box, Typography, Menu, MenuItem, List, ListItem, ListItemText, Alert, Badge, Divider, Tooltip, Avatar, Chip, Paper } from '@mui/material';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/Context/Context';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -56,15 +56,6 @@ const Header = () => {
     useEffect(() => {
         // Initialize MDB UI kit if needed
     }, [location.pathname]);
-
-    const toggleTheme = () => {};
-const themeMode = "light";
-
-// const listItemStyle = {
-//   borderRadius: 2,
-//   mb: 0.5,
-//   "&:hover": { bgcolor: "#eaf1fb" },
-// };
 
     // Logout function
     // const handleLogout = async () => {
@@ -140,7 +131,7 @@ const themeMode = "light";
                         <MenuIcon style={{ fontSize: "30px", color: "#0a4275" }} />
                     </IconButton>
 
-                     <Drawer
+                   <Drawer
   anchor="right"
   open={drawerOpen}
   onClose={toggleDrawer(false)}
@@ -750,7 +741,7 @@ const themeMode = "light";
       </Tooltip>
       <Tooltip title="Switch Theme" arrow>
         <IconButton
-          onClick={toggleTheme}
+        //   onClick={toggleTheme}
           sx={{
             bgcolor: "rgba(255, 255, 255, 0.8)",
             backdropFilter: "blur(10px)",
@@ -766,7 +757,7 @@ const themeMode = "light";
             },
           }}
         >
-          {themeMode === "light" ? (
+          {'themeMode' === "light" ? (
             <Box sx={{ color: "#f59e0b", fontSize: 22 }}>🌙</Box>
           ) : (
             <Box sx={{ color: "#f59e0b", fontSize: 22 }}>☀️</Box>
@@ -1013,8 +1004,8 @@ const themeMode = "light";
                                     fontWeight: isActive ? "bold" : "normal",
                                     borderRadius: "5px",
                                     padding: "4px 10px",
-                                    display: "inline-block",
-                                    marginRight:"10px" 
+                                    display: "inline-block", 
+                                    marginRight:'13px'
                                   })}
                                 >
                                   Sign In
