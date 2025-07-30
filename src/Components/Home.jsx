@@ -76,7 +76,7 @@ const Home = () => {
                 <p className="lead mt-3 mb-4 custom-para">
                   Experience the future of bus travel with <strong className='fw-bold fs-4'>SmartBus Ticketing </strong>– your all-in-one solution for effortless and efficient ticketing. Our platform is designed to streamline and automate the entire ticketing process, ensuring a smooth and hassle-free journey from start to finish.
                 </p>
-                <Button className='btn-width btn text-white px-3 py-2' style={{ background: "#10375c" }}>Book Ticket Now</Button>
+               <Link to="/bookTickets"> <Button className='btn-width btn text-white px-3 py-2' style={{ background: "#10375c" }}>Book Ticket Now</Button></Link>
                 <div className="z-10 flex min-h-64 items-center justify-center">
                 </div>
               </div>
@@ -172,16 +172,16 @@ const Home = () => {
                   <div className="row mt-4">
                     <div className="col-lg-6 col-12 mb-3">
                       <div className="card p-3 card-color h-100">
-                        <h5 className="card-title">Card 1</h5>
+                        <h5 className="card-title">Seamless Digital Ticketings</h5>
                         <hr className='text-white' style={{ fontWeight: "bolder" }} />
-                        <p className="card-text text-white">Content for Card 1 goes here.</p>
+                        <p className="card-text text-white">Digital Tickets for public transport offers a fast and paperless way to generate and validate tickets using QR codes. Users can easily book tickets online, access them through their smartphones, and enter terminals with just a scan — eliminating queues and manual processes.</p>
                       </div>
                     </div>
                     <div className="col-lg-6 col-12 mb-3">
                       <div className="card p-3 card-color h-100">
-                        <h5 className="card-title">Card 2</h5>
+                        <h5 className="card-title">Smart & Sustainable Mobility</h5>
                         <hr />
-                        <p className="card-text text-white">Content for Card 2 goes here.</p>
+                        <p className="card-text text-white">Our system promotes eco-friendly practices by reducing paper usage and operational costs. By combining IoT hardware with cloud technology, Digi Tickets supports a cleaner, more efficient public transportation ecosystem.</p>
                       </div>
                     </div>
                   </div>
@@ -277,7 +277,7 @@ const Home = () => {
                   </div>
                   <h5 className="fw-bold mt-3">User-Centric Development</h5>
                   <p className="mt-3 text-wrap" style={{ wordWrap: "break-word", maxWidth: "75%", margin: "0 auto" }}>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit
+                    We design with our users in mind — engaging directly with commuters, conductors, and operators to ensure that every feature is built to solve real problems, save time, and improve the travel experience.
 
                   </p>
                 </div>
@@ -287,7 +287,7 @@ const Home = () => {
                   </div>
                   <h5 className="fw-bold mt-3">Team Collaboration</h5>
                   <p className="mt-3 text-wrap" style={{ wordWrap: "break-word", maxWidth: "75%", margin: "0 auto" }}>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit
+                   Behind every solution is a passionate and diverse team. Developers, designers, and transport experts work together using agile methods and shared creativity to bring meaningful innovations to life.
                   </p>
                 </div>
                 <div className="text-center">
@@ -296,7 +296,7 @@ const Home = () => {
                   </div>
                   <h5 className="fw-bold mt-3">User-Friendly Experience</h5>
                   <p className="mt-3 text-wrap" style={{ wordWrap: "break-word", maxWidth: "75%", margin: "0 auto" }}>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit .
+                    Digi Tickets is crafted to be simple, intuitive, and accessible for everyone. Whether you’re scanning a ticket or managing a fleet, the platform ensures a seamless and hassle-free experience.
                   </p>
                 </div>
               </div>
@@ -321,8 +321,7 @@ const Home = () => {
                   </div>
                   <h5 className="fw-bold mt-3">Innovative Technology</h5>
                   <p className="mt-3 text-wrap" style={{ wordWrap: "break-word", maxWidth: "75%", margin: "0 auto" }}>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit
-                  </p>
+We leverage modern technologies such as QR code validation, IoT-enabled hardware, and cloud infrastructure to deliver a scalable and secure system. Our solutions are designed to ensure seamless integration, high reliability, and future readiness                  </p>
                 </div>
                 <div className="my-5 text-center">
                   <div className="text-muted">
@@ -330,7 +329,7 @@ const Home = () => {
                   </div>
                   <h5 className="fw-bold mt-3">Continuous Improvement</h5>
                   <p className="mt-3 text-wrap" style={{ wordWrap: "break-word", maxWidth: "75%", margin: "0 auto" }}>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit
+                    We’re always learning. By actively gathering feedback and monitoring performance, we regularly improve our platform to stay ahead of evolving needs.
                   </p>
                 </div>
                 <div className="text-center">
@@ -339,7 +338,7 @@ const Home = () => {
                   </div>
                   <h5 className="fw-bold mt-3">Exceptional Customer Support</h5>
                   <p className="mt-3 text-wrap" style={{ wordWrap: "break-word", maxWidth: "75%", margin: "0 auto" }}>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit
+                    Our users are at the center of everything we do. From setup to daily use, we provide timely and personalized support to ensure smooth operations and user satisfaction.
                   </p>
                 </div>
               </div>
@@ -366,8 +365,7 @@ const Home = () => {
                   <div className="col-12 col-xl-11">
                     <h5 className="main_headings display-5 fw-bold line-height display-6 highlighted-secondary">Who Are We?</h5>
                     <p className="fs-5 text- mb-3">
-                      At SIN, we are dedicated to transforming the travel experience through innovative software solutions for bus ticket generation and scanning. Our mission is to streamline the ticketing process, enabling seamless entry into terminals and enhancing the overall travel journey.
-                    </p>
+At SIN (sustainable innovation and nature), we are committed to transforming the way people travel by developing innovative software and hardware solutions for bus ticket generation and scanning. Our mission is to simplify and modernize the ticketing process — enabling seamless entry into terminals and delivering a faster, smarter, and more efficient travel experience.                    </p>
                     <p className="mb-5">
                     </p>
                     <div className="row gy-4 gy-md-0 gx-xxl-5X">
@@ -378,7 +376,7 @@ const Home = () => {
                           </div>
                           <div>
                             <h2 className="h4 mb-3">Innovative Ticketing Solutions</h2>
-                            <p className="text-secondary mb-0">We are crafting a digital method that subsists life across all mediums.</p>
+                            <p className="text-secondary mb-0">We are building a next-generation digital ticketing platform that works effortlessly across devices and environments, redefining how tickets are issued, scanned, and validated.</p>
                           </div>
                         </div>
                       </div>
@@ -389,7 +387,7 @@ const Home = () => {
                           </div>
                           <div>
                             <h2 className="h4 mb-3">Sustainable Travel</h2>
-                            <p className="text-secondary mb-0">We believe in enhancing journeys through innovative technology, merging efficiency with eco-friendly practices for a better tomorrow.</p>
+                            <p className="text-secondary mb-0">We believe in empowering smart mobility through technology. Our solutions not only optimize operations but also promote eco-friendly practices by reducing paper waste and operational inefficiencies — driving sustainable change for a better tomorrow.</p>
                           </div>
                         </div>
                       </div>
@@ -513,64 +511,7 @@ const Home = () => {
 
         {/* testimonials */}
         {/* Testimonial 4 - Bootstrap Brain Component */}
-        <section className="py-3 py-md-5 py-xl-8 mt-4">
-          <div className="container">
-            <div className="row">
-              <div className="col-12 col-md-10 col-lg-8">
-                <h3 className="fs-5 mb-2 text-secondary text-uppercase">Testimonials</h3>
-                <h2 className="display-7 mb-4">Our valued clients' testimonials speak volumes about our work's power.</h2>
-              </div>
-            </div>
-          </div>
-          <div className="container overflow-hidden">
-            <div className="row gy-3 gy-lg-4">
-              <div className="col-12 col-lg-6">
-                <div className="card" style={{ borderLeft: "3px solid #10375c" }}>
-                  <div className="card-body">
-                    <span class="star-rating">
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="far fa-star text-warning"></i>
-                    </span>
-                    <blockquote className="bsb-blockquote-icon mb-3">We were struggling to manage our finances effectively. We needed help developing a financial plan. They create a financial plan that worked for us, and they showed us how to track our spending more effectively. We are so grateful for the help.</blockquote>
-                    <figure className="d-flex align-items-center m-0 p-0">
-                      {/* <img className="img-fluid rounded rounded-circle m-0 border border-5" loading="lazy" src="./assets/img/testimonial-img-3.jpg" alt="Michael Wilson" /> */}
-                      <i class="fas fa-user"></i>
-                      <figcaption className="ms-3">
-                        <h4 className="mb-1 h5">Michael Wilson</h4>
-                        <h5 className="fs-6 text-secondary mb-0">SEO Expert</h5>
-                      </figcaption>
-                    </figure>
-                  </div>
-                </div>
-              </div>
-              <div className="col-12 col-lg-6">
-                <div className="card" style={{ borderLeft: "3px solid #10375c" }}>
-                  <div className="card-body">
-                    <span class="star-rating">
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="fas fa-star text-warning"></i>
-                      <i class="far fa-star text-warning"></i>
-                    </span>
-                    <blockquote className="bsb-blockquote-icon mb-3">We were looking for a company that could help us with our branding. We needed a website and marketing materials. They were able to create a brand identity that we loved. They worked with us to develop a logo that represented our company.</blockquote>
-                    <figure className="d-flex align-items-center m-0 p-0">
-                      {/* <img className="img-fluid rounded rounded-circle m-0 border border-5" loading="lazy" src="./assets/img/testimonial-img-4.jpg" alt="Luke Reeves" /> */}
-                      <i class="fas fa-user"></i>
-                      <figcaption className="ms-3">
-                        <h4 className="mb-1 h5">Luke Reeves</h4>
-                        <h5 className="fs-6 text-secondary mb-0">Sales Manager</h5>
-                      </figcaption>
-                    </figure>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+      
 
         {/* testimonials */}
 

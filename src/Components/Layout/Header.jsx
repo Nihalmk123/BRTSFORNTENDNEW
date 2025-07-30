@@ -830,7 +830,8 @@ const themeMode = "light";
                                     fontWeight: isActive ? "bold" : "normal",
                                     borderRadius: "5px",
                                     padding: "4px 10px",
-                                    display: "inline-block", 
+                                    display: "inline-block",
+                                    marginRight:"10px" 
                                   })}
                                 >
                                   Sign In

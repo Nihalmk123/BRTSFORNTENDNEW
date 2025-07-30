@@ -26,6 +26,7 @@ import {
   Business
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: '100%',
@@ -140,7 +141,8 @@ const About = () => {
               <div className="mb-5 mb-lg-0 text-center text-lg-start">
                 <h1 className="display-3 lh-1 mb-3">About us</h1>
                 <p className="display-7 lead fw-normal text-muted">
-                  We are a fresh and dynamic company, passionate about using technology to create impactful solutions that benefit both people and the environment. Our focus is on developing products that address real-world challenges with sustainability in mind.
+At SIN (sustainable innovation and nature), we are a passionate team of innovators focused on using technology to solve real-world challenges — starting with public transportation. Our flagship product, Digital Ticketing System for Public Transport, is a smart, digital ticketing solution designed to make travel simpler, faster, and greener.
+As a fresh and dynamic company, we blend creativity, technical expertise, and a deep understanding of user needs to develop tools that enhance everyday experiences. Whether it’s a city bus or a terminal gate, SIN is committed to making mobility smarter, more secure, and future-ready.
                 </p>
                 {/* <Button className='btn-width btn text-white px-3 py-2' style={{ background: "#FFC55A" }}>Learn More</Button> */}
               </div>
@@ -168,7 +170,8 @@ const About = () => {
             <div className="col-12 col-md-10 col-lg-8 col-xl-7 col-xl-5">
               <h5 className="main_headings display-5 fw-bold line-height text-center display-6 highlighted-secondary">Our vision</h5>
               <p className="text-secondary mb-5 text-center fs-6">
-                Our commitment to excellence is evident in every project we undertake, ensuring that you receive nothing but the highest quality products and services.
+At SIN, our vision is to redefine the future of ticketing and travel by building seamless, smart, and sustainable digital solutions. We aim to eliminate the friction of traditional systems by creating technology that is accessible, eco-friendly, and user-first.
+We envision a world where every journey is effortless, where standing in long queues becomes a thing of the past, and where smart mobility systems contribute to a greener planet. Through innovation and collaboration, we strive to become a trusted name in intelligent ticketing solutions — across public transport, events, and beyond.
               </p>
               <hr className="w-50 mx-auto mb-5 mb-xl-7 border-dark-subtle" />
             </div>
@@ -270,14 +273,9 @@ const About = () => {
                 borderRadius: 2
               }}
             />
-            <Typography
-              variant="h5"
-              color="text.secondary"
-              sx={{ maxWidth: 800, mx: 'auto' }}
-            >
-              We strive to deliver innovative solutions that empower businesses
-              and individuals to achieve their full potential.
-            </Typography>
+            <p className="text-secondary mb-5 text-center fs-6">
+              At SIN, our mission is to simplify and modernize travel through smart, paperless ticketing solutions. We aim to make transportation more efficient, eco-friendly, and user-focused by reducing paper waste and streamlining entry with secure, digital systems.
+            </p>
           </Box>
 
           {/* Features Grid */}
@@ -372,7 +370,7 @@ const About = () => {
             <div className="col-lg-6 col-md-6">
               <h2 className="display-6 fw-bold">Conect with us</h2>
               <p>Join us in revolutionizing the ticketing experience. Explore our digital solutions today and say goodbye to paper tickets and long queues!</p>
-              <Button className='btn-width btn fw-bold text-white px-3 py-2' style={{ background: "#FFC55A" }}>Contact Us</Button>
+            <Link to="/contact">  <Button className='btn-width btn fw-bold text-white px-3 py-2' style={{ background: "#FFC55A" }}>Contact Us</Button></Link>
             </div>
             <div className="col-lg-6 col-md-6">
               <img src={contact} alt="contact_us" className="float-image" />
