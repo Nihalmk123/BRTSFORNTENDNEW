@@ -162,10 +162,11 @@ const Footer = () => {
     <Box 
       component="footer" 
       sx={{ 
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: "#113F67",
         color: theme.palette.primary.contrastText,
         py: 6,
-        boxShadow: '0 -4px 6px rgba(0,0,0,0.1)'
+        boxShadow: '0 -4px 6px rgba(0,0,0,0.1)',
+        // marginTop:"35px"
       }}
     >
       <Container maxWidth="lg">

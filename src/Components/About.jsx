@@ -1,12 +1,10 @@
 import React from 'react';
 import Layout from './Layout/Layout';
 import { Button } from '@mui/material';
-import Landing_img from '../../src/assets/4207380.png';
 import ourVision from '../../src/assets/our-vision.jpg';
 import contact from '../../src/assets/contact_img.png';
-import our_team from '../../src/assets/our_team.jpg';
 import { Helmet } from 'react-helmet-async';
-import our_mission from '../../src/assets/our_mission.jpg'
+import img from '../assets/hero-img.png'
 import {
   Box,
   Container,
@@ -46,9 +44,6 @@ const IconWrapper = styled(Box)(({ theme, bgcolor }) => ({
 }));
 
 const About = () => {
-
-
-
 
   const features = [
     {
@@ -133,35 +128,30 @@ const About = () => {
         <title>About us</title>
         <meta name='description' content='Beginner friendly page for learning React Helmet.' />
       </Helmet>
-      <section className="py-1 mb-5" style={{  borderBottomRightRadius: "20%", background: "linear-gradient(to bottom, #AAD7D9, #B5E4E5)", boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)", }}>
-        <div className="container mt-4 highlighted-secondary" style={{ overflowX: 'hidden' }}>
-          <div className="row gx-5 align-items-center">
-            {/* Text Section */}
-            <div className="col-lg-6">
-              <div className="mb-5 mb-lg-0 text-center text-lg-start">
-                <h1 className="display-3 lh-1 mb-3">About us</h1>
-                <p className="display-7 lead fw-normal text-muted">
-At SIN (sustainable innovation and nature), we are a passionate team of innovators focused on using technology to solve real-world challenges — starting with public transportation. Our flagship product, Digital Ticketing System for Public Transport, is a smart, digital ticketing solution designed to make travel simpler, faster, and greener.
-As a fresh and dynamic company, we blend creativity, technical expertise, and a deep understanding of user needs to develop tools that enhance everyday experiences. Whether it’s a city bus or a terminal gate, SIN is committed to making mobility smarter, more secure, and future-ready.
-                </p>
-                {/* <Button className='btn-width btn text-white px-3 py-2' style={{ background: "#FFC55A" }}>Learn More</Button> */}
+      <section id="hero" className="hero section">
+        <div className="container">
+          <div className="row gy-4">
+            <div className="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+              <h1>About us</h1>
+              <p>At SIN, our vision is to redefine the future of ticketing and travel by building seamless, smart, and sustainable digital solutions. We aim to eliminate the friction of traditional systems by creating technology that is accessible, eco-friendly, and user-first.</p>
+              <div className="d-flex">
+                <a href="#about" className="btn-get-started" style={{backgroundColor:"#113F67", color:"white"}}>Cooming soon</a>
+                {/* <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" className="glightbox btn-watch-video d-flex align-items-center" /> */}
               </div>
             </div>
-
-            {/* Image Section */}
-            <div className="col-lg-6">
-              <div className="masthead-device-mockup">
-                <img src={Landing_img} alt="App showcase" className="img-fluid" style={{ width: "90%" }} />
-                <div className="device-wrapper">
-                  <div className="device" data-device="iPhoneX" data-orientation="portrait" data-color="black">
-                    <div className="screen bg-black"></div>
-                  </div>
-                </div>
-              </div>
+            <div className="col-lg-6 order-1 order-lg-2 hero-img">
+              <img src={img} className="img-fluid animated" alt />
             </div>
           </div>
         </div>
       </section>
+
+      {/* Clients Section */}
+<section id="clients" className="clients section light-background">
+  
+</section>{/* /Clients Section */}
+
+
 
       {/* Our Vision */}
       <section className="bsb-about-6 py-md-5 py-xl-8" style={{ overflowX: 'hidden' }}>
@@ -170,8 +160,8 @@ As a fresh and dynamic company, we blend creativity, technical expertise, and a 
             <div className="col-12 col-md-10 col-lg-8 col-xl-7 col-xl-5">
               <h5 className="main_headings display-5 fw-bold line-height text-center display-6 highlighted-secondary">Our vision</h5>
               <p className="text-secondary mb-5 text-center fs-6">
-At SIN, our vision is to redefine the future of ticketing and travel by building seamless, smart, and sustainable digital solutions. We aim to eliminate the friction of traditional systems by creating technology that is accessible, eco-friendly, and user-first.
-We envision a world where every journey is effortless, where standing in long queues becomes a thing of the past, and where smart mobility systems contribute to a greener planet. Through innovation and collaboration, we strive to become a trusted name in intelligent ticketing solutions — across public transport, events, and beyond.
+                At SIN, our vision is to redefine the future of ticketing and travel by building seamless, smart, and sustainable digital solutions. We aim to eliminate the friction of traditional systems by creating technology that is accessible, eco-friendly, and user-first.
+                We envision a world where every journey is effortless, where standing in long queues becomes a thing of the past, 
               </p>
               <hr className="w-50 mx-auto mb-5 mb-xl-7 border-dark-subtle" />
             </div>
@@ -231,23 +221,23 @@ We envision a world where every journey is effortless, where standing in long qu
       </section>
 
       {/* What Problem We Are Solving */}
-      <section className="py-5 mt-4" style={{ background: "#C1D8C3", overflowX: 'hidden' }}>
+      <section className="py-5 mt-4" style={{ background: "#254D70", overflowX: 'hidden' }}>
         <div className="container my-5">
           <div className="row">
             <div className="col-md-5">
-              <h2 className="display-6 fw-bold">
+              <h2 className="display-6 fw-bold " style={{ color: 'white' }}>
                 Solving the Problem of Paper-Based Tickets and Long Wait Times
               </h2>
               <div className="d-flex align-items-center">
-                <p className="mb-2">Learn more</p>
-                <i className="fas fa-arrow-right ms-2"></i>
+                <p className="mb-2" style={{ color: 'white' }}>Learn more</p>
+                <i className="fas fa-arrow-right ms-2" style={{ color: 'white' }}></i>
               </div>
             </div>
             <div className="col-md-6 offset-md-1">
-              <p className="">
+              <p style={{ color: 'white' }}>
                 In today's fast-paced world, paper-based ticketing systems create significant inefficiencies, leading to long wait times and customer dissatisfaction. These traditional methods not only hinder seamless transactions but also contribute to environmental waste and operational challenges for service providers.
               </p>
-              <p className="">
+              <p style={{ color: 'white' }}>
                 By transitioning to digital ticketing solutions, including mobile apps and QR code integration, we can enhance user experience, reduce queue times, and promote sustainability. Embracing technology will streamline operations, increase customer satisfaction, and ultimately transform the way tickets are issued and processed.
               </p>
             </div>
@@ -260,8 +250,8 @@ We envision a world where every journey is effortless, where standing in long qu
         <Container maxWidth="lg">
           {/* Header Section */}
           <Box sx={{ textAlign: 'center', mb: 8 }}>
-          
-          <h5 className="main_headings display-5 fw-bold line-height text-center display-6 highlighted-secondary">Our Mission</h5>
+
+            <h5 className="main_headings display-5 fw-bold line-height text-center display-6 highlighted-secondary">Our Mission</h5>
 
             <Box
               sx={{
@@ -370,7 +360,7 @@ We envision a world where every journey is effortless, where standing in long qu
             <div className="col-lg-6 col-md-6">
               <h2 className="display-6 fw-bold">Conect with us</h2>
               <p>Join us in revolutionizing the ticketing experience. Explore our digital solutions today and say goodbye to paper tickets and long queues!</p>
-            <Link to="/contact">  <Button className='btn-width btn fw-bold text-white px-3 py-2' style={{ background: "#FFC55A" }}>Contact Us</Button></Link>
+              <Link to="/contact">  <Button className='btn-width btn fw-bold text-white px-3 py-2' style={{ background: "#FFC55A" }}>Contact Us</Button></Link>
             </div>
             <div className="col-lg-6 col-md-6">
               <img src={contact} alt="contact_us" className="float-image" />

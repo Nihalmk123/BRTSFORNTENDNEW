@@ -192,7 +192,7 @@ const Header = () => {
                                 sx={{
                                     padding: 4,
                                     textAlign: 'center',
-                                    background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)',
+                                    background: '#34699A',
                                     borderBottom: '1px solid rgba(59, 130, 246, 0.1)',
                                     boxShadow: '0 4px 20px rgba(59, 130, 246, 0.1)',
                                     borderTopLeftRadius: 24,
@@ -207,7 +207,7 @@ const Header = () => {
                                         height: 100,
                                         mx: 'auto',
                                         mb: 3,
-                                        background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%)',
+                                        background: '#1B3C53',
                                         fontSize: 40,
                                         boxShadow: '0 8px 32px rgba(59, 130, 246, 0.3), 0 0 0 4px rgba(255, 255, 255, 0.8)',
                                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -228,13 +228,13 @@ const Header = () => {
                                         color: '#1e293b',
                                         mb: 1,
                                         letterSpacing: '0.5px',
-                                        background: 'linear-gradient(135deg, #1e293b 0%, #475569 100%)',
+                                        background: 'white',
                                         backgroundClip: 'text',
                                         WebkitBackgroundClip: 'text',
                                         WebkitTextFillColor: 'transparent',
                                     }}
                                 >
-                                    Hey there! 👋
+                                    Hey there!
                                 </Typography>
 
                                 <Typography
@@ -398,7 +398,7 @@ const Header = () => {
                             )}
 
                             {/* Navigation List */}
-                            <Box sx={{ flex: 1, px: 3 }}>
+                            <Box sx={{ flex: 1, px: 2 }}>
                                 {/* Main Section */}
                                 <Typography
                                     variant="overline"
@@ -414,6 +414,7 @@ const Header = () => {
                                 >
                                     🏠 General
                                 </Typography>
+                                <hr></hr>
 
                                 <List sx={{ mb: 3 }}>
                                     <ListItem
@@ -492,6 +493,7 @@ const Header = () => {
                                 >
                                     ⚙️ Account
                                 </Typography>
+                                <hr></hr>
 
                                 <List sx={{ mb: 3 }}>
                                     <ListItem
@@ -530,6 +532,7 @@ const Header = () => {
                                 >
                                     🎫 Tickets
                                 </Typography>
+                                <hr></hr>
 
                                 <List sx={{ mb: 3 }}>
                                     <ListItem
@@ -605,7 +608,7 @@ const Header = () => {
                                             fullWidth
                                             sx={{
                                                 mb: 2,
-                                                background: "linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)",
+                                                background: "#0D5EA6",
                                                 height: "48px",
                                                 borderRadius: "14px",
                                                 fontWeight: 600,
@@ -614,13 +617,13 @@ const Header = () => {
                                                 boxShadow: "0 4px 20px rgba(59, 130, 246, 0.3)",
                                                 transition: "all 0.3s ease",
                                                 "&:hover": {
-                                                    background: "linear-gradient(135deg, #2563eb 0%, #5b21b6 100%)",
+                                                    background: "#0D5EA6",
                                                     boxShadow: "0 8px 30px rgba(59, 130, 246, 0.4)",
                                                     transform: "translateY(-2px)",
                                                 },
                                             }}
                                         >
-                                            Sign In ✨
+                                            Sign In 
                                         </Button>
                                         <Button
                                             component={Link}
@@ -628,7 +631,7 @@ const Header = () => {
                                             variant="outlined"
                                             fullWidth
                                             sx={{
-                                                border: "2px solid #3b82f6",
+                                                border: "2px solid #0D5EA6",
                                                 color: "#3b82f6",
                                                 height: "48px",
                                                 borderRadius: "14px",
@@ -643,7 +646,7 @@ const Header = () => {
                                                 },
                                             }}
                                         >
-                                            Sign Up 🚀
+                                            Sign Up 
                                         </Button>
                                     </Box>
                                 )}
@@ -664,6 +667,7 @@ const Header = () => {
                             >
                                 ⚡ Quick Actions
                             </Typography>
+                            <hr></hr>
                             <Box
                                 sx={{
                                     px: 3,
@@ -797,7 +801,7 @@ const Header = () => {
                                             },
                                         }}
                                     >
-                                        Sign Out 👋
+                                        Sign Out 
                                     </Button>
                                 ) : (
                                     <Button
@@ -821,7 +825,7 @@ const Header = () => {
                                             },
                                         }}
                                     >
-                                        Book Your Ticket 🎫
+                                        Book Your Ticket 
                                     </Button>
                                 )}
                             </Box>
