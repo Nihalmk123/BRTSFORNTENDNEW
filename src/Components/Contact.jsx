@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import toast, { Toaster } from 'react-hot-toast';
 import contactBannerBg from '../assets/hero-bg-light.webp'
 import heroBanner from '../assets/hero-services-img.webp'
+import { Link } from 'react-router-dom';
 
 const Contact = () => {
   const recaptchaRef = useRef();
@@ -109,10 +110,11 @@ const Contact = () => {
           <div className="container text-center">
             <div className="d-flex flex-column justify-content-center align-items-center">
               <h1 data-aos="fade-up"><span>Contact Us</span></h1>
-              <p data-aos="fade-up" data-aos-delay={100}>Quickly start your project now and set the stage for success<br /></p>
+              <p data-aos="fade-up" data-aos-delay={100}>Have questions or need assistance?
+Reach out to us — we’re here to help!<br /></p>
               <div className="d-flex" data-aos="fade-up" data-aos-delay={200}>
-                <a href="#about" className="btn-get-started" style={{backgroundColor:"#113F67", color:"white"}}>Get Started</a>
-                <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" className="glightbox btn-watch-video d-flex align-items-center"><i className="bi bi-play-circle" /><span>Watch Video</span></a>
+                <Link to="/contact" className="btn-get-started" style={{backgroundColor:"#113F67", color:"white"}}>Lets Connect</Link>
+                {/* <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" className="glightbox btn-watch-video d-flex align-items-center"><i className="bi bi-play-circle" /><span>Watch Video</span></a> */}
               </div>
               <img src={heroBanner} className="img-fluid hero-img" alt data-aos="zoom-out" data-aos-delay={300} />
             </div>
@@ -230,83 +232,80 @@ const Contact = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="row g-4 mb-5">
-          {/* Contact Info */}
-          <div className="col-12 col-lg-5">
-            <div className="p-4 bg-white shadow-sm h-100 rounded-3 border">
-              <div className="mb-4">
-                <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Address</h6>
-                <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>Hubli</p>
-              </div>
-              <div className="mb-4">
-                <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Phone</h6>
-                <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>+1 123-456-7890</p>
-              </div>
-              <div className="mb-4">
-                <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Email</h6>
-                <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>IstsBrts@support.com</p>
-              </div>
-              <div>
-                <h6 className="fw-bold mb-3" style={{ color: '#333', fontSize: '1.1rem' }}>Socials</h6>
-                <div className="d-flex gap-2 flex-wrap">
-                  <a
-                    className="btn text-white btn-sm d-flex align-items-center justify-content-center"
-                    style={{ backgroundColor: '#3b5998', width: '45px', height: '45px', borderRadius: '8px' }}
-                    href="#!"
-                    role="button"
-                  >
-                    <i className="fab fa-facebook-f" style={{ fontSize: '1.2rem' }}></i>
-                  </a>
-                  <a
-                    className="btn text-white btn-sm d-flex align-items-center justify-content-center"
-                    style={{ backgroundColor: '#dd4b39', width: '45px', height: '45px', borderRadius: '8px' }}
-                    href="#!"
-                    role="button"
-                  >
-                    <i className="fab fa-google" style={{ fontSize: '1.2rem' }}></i>
-                  </a>
-                  <a
-                    className="btn text-white btn-sm d-flex align-items-center justify-content-center"
-                    style={{ backgroundColor: '#55acee', width: '45px', height: '45px', borderRadius: '8px' }}
-                    href="#!"
-                    role="button"
-                  >
-                    <i className="fab fa-twitter" style={{ fontSize: '1.2rem' }}></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Google Map */}
-          <div className="col-12 col-lg-7">
-            <div className="card border-0 rounded-3 shadow-sm overflow-hidden h-100">
-              <iframe
-                width="100%"
-                height="350"
-                className="d-block d-md-none"
-                frameBorder={0}
-                scrolling="no"
-                marginHeight={0}
-                marginWidth={0}
-                src="https://maps.google.com/maps?width=100%25&height=350&hl=en&q=KLE%20BVB%20CTIE%20HUBBALLI+(My%20Business%20Name)&t=p&z=14&ie=UTF8&iwloc=B&output=embed"
-                title="Google Map Mobile"
-              ></iframe>
-              <iframe
-                width="100%"
-                height="100%"
-                className="d-none d-md-block"
-                style={{ minHeight: '400px' }}
-                frameBorder={0}
-                scrolling="no"
-                marginHeight={0}
-                marginWidth={0}
-                src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=KLE%20BVB%20CTIE%20HUBBALLI+(My%20Business%20Name)&t=p&z=14&ie=UTF8&iwloc=B&output=embed"
-                title="Google Map Desktop"
-              ></iframe>
-            </div>
+        <div className="container-fluid px-3 overflow-hidden">
+  <div className="row g-4 mb-5">
+    {/* Contact Info */}
+    <div className="col-12 col-lg-5">
+      <div className="p-4 bg-white shadow-sm h-100 rounded-3 border">
+        <div className="mb-4">
+          <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Address</h6>
+          <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>Hubli</p>
+        </div>
+        <div className="mb-4">
+          <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Phone</h6>
+          <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>+1 123-456-7890</p>
+        </div>
+        <div className="mb-4">
+          <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Email</h6>
+          <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>IstsBrts@support.com</p>
+        </div>
+        <div>
+          <h6 className="fw-bold mb-3" style={{ color: '#333', fontSize: '1.1rem' }}>Socials</h6>
+          <div className="d-flex gap-2 flex-wrap">
+            <a className="btn text-white btn-sm d-flex align-items-center justify-content-center"
+              style={{ backgroundColor: '#3b5998', width: '45px', height: '45px', borderRadius: '8px' }}
+              href="#!" role="button">
+              <i className="fab fa-facebook-f" style={{ fontSize: '1.2rem' }}></i>
+            </a>
+            <a className="btn text-white btn-sm d-flex align-items-center justify-content-center"
+              style={{ backgroundColor: '#dd4b39', width: '45px', height: '45px', borderRadius: '8px' }}
+              href="#!" role="button">
+              <i className="fab fa-google" style={{ fontSize: '1.2rem' }}></i>
+            </a>
+            <a className="btn text-white btn-sm d-flex align-items-center justify-content-center"
+              style={{ backgroundColor: '#55acee', width: '45px', height: '45px', borderRadius: '8px' }}
+              href="#!" role="button">
+              <i className="fab fa-twitter" style={{ fontSize: '1.2rem' }}></i>
+            </a>
           </div>
         </div>
+      </div>
+    </div>
+
+    {/* Google Map */}
+    <div className="col-12 col-lg-7">
+      <div className="card border-0 rounded-3 shadow-sm overflow-hidden h-100">
+        {/* Mobile View */}
+        <iframe
+          className="d-block d-md-none"
+          width="100%"
+          height="350"
+          frameBorder="0"
+          scrolling="no"
+          marginHeight="0"
+          marginWidth="0"
+          style={{ border: 0, display: 'block' }}
+          src="https://maps.google.com/maps?width=100%25&height=350&hl=en&q=KLE%20BVB%20CTIE%20HUBBALLI+(My%20Business%20Name)&t=p&z=14&ie=UTF8&iwloc=B&output=embed"
+          title="Google Map Mobile"
+        ></iframe>
+
+        {/* Desktop View */}
+        <iframe
+          className="d-none d-md-block"
+          width="100%"
+          height="100%"
+          style={{ minHeight: '400px', border: 0, display: 'block' }}
+          frameBorder="0"
+          scrolling="no"
+          marginHeight="0"
+          marginWidth="0"
+          src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=KLE%20BVB%20CTIE%20HUBBALLI+(My%20Business%20Name)&t=p&z=14&ie=UTF8&iwloc=B&output=embed"
+          title="Google Map Desktop"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</div>
 
     </Layout>
   );

@@ -111,8 +111,8 @@ const Home = () => {
                     />
                   </div>
                   <div className="stat-content">
-                    <h4>3x Won Awards</h4>
-                    <p className="mb-0">Vestibulum ante ipsum</p>
+                    <h4>costEffective</h4>
+                    <p className="mb-0">Save more with our budget-friendly solutions</p>
                   </div>
                 </div>
               </div>
@@ -129,8 +129,8 @@ const Home = () => {
                     />
                   </div>
                   <div className="stat-content">
-                    <h4>6.5k Faucibus</h4>
-                    <p className="mb-0">Nullam quis ante</p>
+                    <h4>ecofrinedly</h4>
+                    <p className="mb-0">Built with sustainability in mind.</p>
                   </div>
                 </div>
               </div>
@@ -145,8 +145,8 @@ const Home = () => {
                     />
                   </div>
                   <div className="stat-content">
-                    <h4>80k Mauris</h4>
-                    <p className="mb-0">Etiam sit amet orci</p>
+                    <h4>reducedTime</h4>
+                    <p className="mb-0">Faster processes for quicker results.</p>
                   </div>
                 </div>
               </div>
@@ -161,8 +161,8 @@ const Home = () => {
                     />
                   </div>
                   <div className="stat-content">
-                    <h4>6x Phasellus</h4>
-                    <p className="mb-0">Vestibulum ante ipsum</p>
+                    <h4>security</h4>
+                    <p className="mb-0">Your data is safe with advanced protection.</p>
                   </div>
                 </div>
               </div>
@@ -280,59 +280,70 @@ const Home = () => {
 
         {/* Features 2 Section */}
         <section id="features-2" className="features-2 section" style={{ marginTop: '110px' }}>
-  <div className="container" data-aos="fade-up" data-aos-delay={100}>
-    <div className="row align-items-center">
-      {/* LEFT SIDE FEATURES */}
-      <div className="col-lg-4 mb-5 mb-lg-0">
-        {[
-          { img: userCentric, title: 'User-Centric Development', desc: 'We design with our users in mind — engaging directly with commuters, conductors, and operators to ensure that every feature is built to solve real problems, save time, and improve the travel experience.' },
-          { img: teamCollabration, title: 'Team Collaboration', desc: 'Behind every solution is a passionate and diverse team. Developers, designers, and transport experts work together using agile methods and shared creativity to bring meaningful innovations to life.' },
-          { img: userFriendly, title: 'User-Friendly Experience', desc: 'Digi Tickets is crafted to be simple, intuitive, and accessible for everyone. Whether you’re scanning a ticket or managing a fleet, the platform ensures a seamless and hassle-free experience.' },
-        ].map(({ img, title, desc }, i) => (
-          <div className="feature-item mb-5" data-aos="fade-right" data-aos-delay={200 + i * 100} key={i}>
-            <div className="d-flex flex-column flex-md-row align-items-center text-center text-md-end gap-4">
-              <div className="order-1 order-md-2">
-                <img src={img} alt={title} style={{ width: "50px" }} />
+          <div className="container" data-aos="fade-up" data-aos-delay={100}>
+            <div className="row align-items-center">
+              {/* LEFT SIDE FEATURES */}
+              <div className="col-lg-4 mb-5 mb-lg-0">
+                {[
+                  { img: userCentric, title: 'User-Centric Development', desc: 'We design with our users in mind — engaging directly with commuters, conductors, and operators to ensure that every feature is built to solve real problems, save time, and improve the travel experience.' },
+                  { img: teamCollabration, title: 'Team Collaboration', desc: 'Behind every solution is a passionate and diverse team. Developers, designers, and transport experts work together using agile methods and shared creativity to bring meaningful innovations to life.' },
+                  { img: userFriendly, title: 'User-Friendly Experience', desc: 'Digi Tickets is crafted to be simple, intuitive, and accessible for everyone. Whether you’re scanning a ticket or managing a fleet, the platform ensures a seamless and hassle-free experience.' },
+                ].map(({ img, title, desc }, i) => (
+                  <div className="feature-item mb-5" data-aos="fade-right" data-aos-delay={200 + i * 100} key={i}>
+                    <div className="d-flex flex-column flex-md-row align-items-center text-center text-md-end gap-4">
+                      <div className="order-1 order-md-2">
+                        <img src={img} alt={title} style={{ width: "50px" }} />
+                      </div>
+                      <div className="feature-content order-2 order-md-1">
+                        <h3 className="mb-2">{title}</h3>
+                        <p>{desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="feature-content order-2 order-md-1">
-                <h3 className="mb-2">{title}</h3>
-                <p>{desc}</p>
+
+              {/* CENTER IMAGE */}
+              <div
+                className="col-lg-4 text-center mb-5 mb-lg-0"
+                data-aos="zoom-in"
+                data-aos-delay={200}
+                style={{
+                  marginTop: '0px',
+                  marginBottom: '0px',
+                  paddingTop: '0px',
+                  paddingBottom: '100px'
+                }}
+              >
+
+                <div className="phone-mockup">
+                  <img src={phone_mocup} alt="Phone Mockup" className="img-fluid" style={{ borderRadius: '15px' }} />
+                </div>
+              </div>
+
+              {/* RIGHT SIDE FEATURES */}
+              <div className="col-lg-4">
+                {[
+                  { img: suport, title: 'Innovative Technology', desc: 'We leverage modern technologies such as QR code validation, IoT-enabled hardware, and cloud infrastructure to deliver a scalable and secure system. Our solutions are designed to ensure seamless integration, high reliability, and future readiness.' },
+                  { img: inovativeTechnology, title: 'Continuous Improvement', desc: 'We’re always learning. By actively gathering feedback and monitoring performance, we regularly improve our platform to stay ahead of evolving needs.' },
+                  { img: continousImprovement, title: 'Exceptional Customer Support', desc: 'Our users are at the center of everything we do. From setup to daily use, we provide timely and personalized support to ensure smooth operations and user satisfaction.' },
+                ].map(({ img, title, desc }, i) => (
+                  <div className="feature-item mb-5" data-aos="fade-left" data-aos-delay={200 + i * 100} key={i}>
+                    <div className="d-flex flex-column flex-md-row align-items-center text-center text-md-start gap-4">
+                      <div>
+                        <img src={img} alt={title} style={{ width: "50px" }} />
+                      </div>
+                      <div className="feature-content">
+                        <h3 className="mb-2">{title}</h3>
+                        <p>{desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* CENTER IMAGE */}
-      <div className="col-lg-4 text-center mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay={200}>
-        <div className="phone-mockup">
-          <img src={phone_mocup} alt="Phone Mockup" className="img-fluid" style={{ borderRadius: '15px' }} />
-        </div>
-      </div>
-
-      {/* RIGHT SIDE FEATURES */}
-      <div className="col-lg-4">
-        {[
-          { img: suport, title: 'Innovative Technology', desc: 'We leverage modern technologies such as QR code validation, IoT-enabled hardware, and cloud infrastructure to deliver a scalable and secure system. Our solutions are designed to ensure seamless integration, high reliability, and future readiness.' },
-          { img: inovativeTechnology, title: 'Continuous Improvement', desc: 'We’re always learning. By actively gathering feedback and monitoring performance, we regularly improve our platform to stay ahead of evolving needs.' },
-          { img: continousImprovement, title: 'Exceptional Customer Support', desc: 'Our users are at the center of everything we do. From setup to daily use, we provide timely and personalized support to ensure smooth operations and user satisfaction.' },
-        ].map(({ img, title, desc }, i) => (
-          <div className="feature-item mb-5" data-aos="fade-left" data-aos-delay={200 + i * 100} key={i}>
-            <div className="d-flex flex-column flex-md-row align-items-center text-center text-md-start gap-4">
-              <div>
-                <img src={img} alt={title} style={{ width: "50px" }} />
-              </div>
-              <div className="feature-content">
-                <h3 className="mb-2">{title}</h3>
-                <p>{desc}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
+        </section>
 
         {/* banner */}
         <div className='container p-4 p-md-5 mt-5' >
@@ -515,27 +526,27 @@ const Home = () => {
         {/* testimonials */}
 
         {/* QR------------------------------------------------------------------------------------------------------------ */}
-       <section id="call-to-action" className="call-to-action section py-5">
-  <div className="container" data-aos="fade-up" data-aos-delay={100}>
-    <div className="row justify-content-center text-center">
-      <div className="col-lg-8">
-        {/* QR Image */}
-        <div className="mb-4">
-          <img src={Qr} alt="qr_img" style={{ width: "80px", maxWidth: "20%", height: "auto" }} />
-        </div>
+        <section id="call-to-action" className="call-to-action section py-5">
+          <div className="container" data-aos="fade-up" data-aos-delay={100}>
+            <div className="row justify-content-center text-center">
+              <div className="col-lg-8">
+                {/* QR Image */}
+                <div className="mb-4">
+                  <img src={Qr} alt="qr_img" style={{ width: "80px", maxWidth: "20%", height: "auto" }} />
+                </div>
 
-        {/* Text Content */}
-        <h2 className="display-6 fw-bold mb-3">Ready to automate your Bus Ticketing System?</h2>
-        <p className="mb-4 fs-5">Start using now</p>
+                {/* Text Content */}
+                <h2 className="display-6 fw-bold mb-3">Ready to automate your Bus Ticketing System?</h2>
+                <p className="mb-4 fs-5">Start using now</p>
 
-        {/* CTA Button */}
-        <Link to="/contact" className="btn btn-cta px-4 py-2 fw-semibold" style={{backgroundColor:"#113F67", color:'white'}}>
-          Contact Us
-        </Link>
-      </div>
-    </div>
-  </div>
-</section>
+                {/* CTA Button */}
+                <Link to="/contact" className="btn btn-cta px-4 py-2 fw-semibold" style={{ backgroundColor: "#113F67", color: 'white' }}>
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
 
       </Layout >
     </>

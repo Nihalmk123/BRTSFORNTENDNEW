@@ -135,7 +135,7 @@ const About = () => {
               <h1>About us</h1>
               <p>At SIN, our vision is to redefine the future of ticketing and travel by building seamless, smart, and sustainable digital solutions. We aim to eliminate the friction of traditional systems by creating technology that is accessible, eco-friendly, and user-first.</p>
               <div className="d-flex">
-                <a href="#about" className="btn-get-started" style={{backgroundColor:"#113F67", color:"white"}}>Cooming soon</a>
+                <a href="#about" className="btn-get-started" style={{backgroundColor:"#113F67", color:"white"}}>Coming soon</a>
                 {/* <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" className="glightbox btn-watch-video d-flex align-items-center" /> */}
               </div>
             </div>

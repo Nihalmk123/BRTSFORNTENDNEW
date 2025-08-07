@@ -521,7 +521,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .hero .hero-bg::before {
   content: "";
-  background: color-mix(in srgb, #ffffff, transparent 15%);
+  background: rgba(255, 255, 255, 0.85); /* Safe fallback */
   position: absolute;
   inset: 0;
   z-index: 2;
@@ -1082,5 +1082,19 @@ input[type=number]::-webkit-outer-spin-button {
 @media (max-width: 575px) {
   .call-to-action .container {
     border-radius: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  #features-2 .phone-mockup {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  #features-2 .col-lg-4.text-center.mb-5.mb-lg-0 {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
   }
 }
