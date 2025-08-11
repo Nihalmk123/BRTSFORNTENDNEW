@@ -240,7 +240,7 @@ const Header = () => {
                                 <Typography
                                     variant="body1"
                                     sx={{
-                                        color: '#64748b',
+                                        color: '#ffffff',
                                         mb: 2,
                                         wordBreak: 'break-word',
                                         fontSize: '1.1rem',

@@ -80,7 +80,7 @@ const Home = () => {
                     Experience the future of bus travel with  <strong className='fw-bold fs-4'>SmartBus Ticketing </strong> – your all-in-one solution for effortless and efficient ticketing. Our platform is designed to streamline and automate the entire ticketing process, ensuring a smooth and hassle-free journey from start to finish.
                   </p>
                   <div className="hero-buttons">
-                    <Link to="/bookTickets" className="btn me-0 me-sm-2 mx-1" style={{ backgroundColor: "#1F63AA", color: "#ffffff" }}>Book Your ticker Now</Link>
+                    <Link to="/bookTickets" className="btn me-0 me-sm-2 mx-1" style={{ backgroundColor: "#1F63AA", color: "#ffffff" }}>Book Your ticket Now</Link>
                     {/* <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" className="btn btn-link mt-2 mt-sm-0 glightbox"> */}
                     {/* <i className="bi bi-play-circle me-1" /> */}
                     {/* Play Video */}

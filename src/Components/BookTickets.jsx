@@ -317,11 +317,11 @@ const BookTickets = () => {
 
   const handleConfirmPurchase = async () => {
     confirmsetLoading(true);
-    let isPaymentFailedHandled = false;  
-  
+    let isPaymentFailedHandled = false;
+
     try {
       const token = auth.accessToken || localStorage.getItem('token');
-  
+
       const passengers = [];
       if (senior > 0) {
         passengers.push({
@@ -341,7 +341,7 @@ const BookTickets = () => {
           numberOfTickets: SeniorCitizen,
         });
       }
-  
+
       // Call backend to create an order
       const orderResponse = await api.post(
         `/tsn/v1/payment/create-order-id`,
@@ -353,14 +353,14 @@ const BookTickets = () => {
           },
         }
       );
-  
+
       const orderId = orderResponse.data?.info?.orderId;
       const paymentReference = orderResponse.data?.info?.paymentReference;
-  
+
       if (!orderId) {
         throw new Error('Order ID not found in the backend response.');
       }
-  
+
       const options = {
         key: 'rzp_test_eOy3rwVzb63bbd',
         amount: grandTotal.toString(),
@@ -399,7 +399,7 @@ const BookTickets = () => {
                 },
               }
             );
-  
+
             if (
               paymentVerificationResponse.status === 200 &&
               paymentVerificationResponse.data?.message?.includes('Ticket purchase successful')
@@ -433,14 +433,14 @@ const BookTickets = () => {
           },
         },
       };
-  
+
       const razorpay = new window.Razorpay(options);
-  
+
       razorpay.on('payment.failed', async (response) => {
-        if (isPaymentFailedHandled) return; 
-  
-        isPaymentFailedHandled = true; 
-  
+        if (isPaymentFailedHandled) return;
+
+        isPaymentFailedHandled = true;
+
         console.error('Payment failed:', response.error);
 
         const orderId = response.error.metadata.payment_id
@@ -456,7 +456,7 @@ const BookTickets = () => {
         //   Payment ID: ${response.error.metadata.payment_id}
         //   Order ID: ${response.error.metadata.order_id}`;
         // const note = errorMessage;
-  
+
         // Sending failure details to the backend
         try {
           const failureResponse = await api.post(
@@ -468,8 +468,8 @@ const BookTickets = () => {
                 ticketDetails: passengers,
                 timeZone: timeZone,
               },
-              orderId:`${orderId}`,
-              paymentId:`${paymentId}`,
+              orderId: `${orderId}`,
+              paymentId: `${paymentId}`,
               paymentReference: `${paymentReference}`,
               note: `${description}`,
             },
@@ -480,7 +480,7 @@ const BookTickets = () => {
               },
             }
           );
-  
+
           if (failureResponse.status === 200) {
             alert('Payment Failure Details Sent Successfully');
           }
@@ -488,10 +488,10 @@ const BookTickets = () => {
           console.error('Failed to send payment failure details:', error);
           alert('Failed to send payment failure details.');
         }
-  
+
         alert(errorMessage);
       });
-  
+
       razorpay.open();
     } catch (error) {
       console.error('Payment initiation error:', error);
@@ -500,11 +500,11 @@ const BookTickets = () => {
       confirmsetLoading(false);
     }
   };
-  
-  
-  
 
- 
+
+
+
+
   return (
     <Layout>
       <Helmet>
@@ -540,8 +540,6 @@ const BookTickets = () => {
             }}
           >
             {/* Enhanced Left Section */}
-            
-
             <Card
               sx={{
                 borderRadius: { xs: '20px', sm: '24px' },
@@ -609,6 +607,7 @@ const BookTickets = () => {
                           value={from}
                           onChange={setFrom}
                           placeholder="Select departure station"
+                          menuPortalTarget={document.body} // <-- Makes dropdown render at body level
                           styles={{
                             control: (base) => ({
                               ...base,
@@ -619,29 +618,18 @@ const BookTickets = () => {
                               '&:hover': {
                                 borderColor: '#133E87'
                               }
+                            }),
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999 // <-- Keeps it above other elements
                             })
                           }}
                         />
+
                       </Box>
 
                       {/* Swap Button */}
-                      <Box sx={{ display: 'flex', justifyContent: 'center', my: -3.2 }}>
-                        <IconButton
-                          sx={{
-                            bgcolor: '#133E87',
-                            width: 36,
-                            height: 36,
-                            mt: 4,
-                            '&:hover': {
-                              bgcolor: '#0F2F66',
-                              transform: 'rotate(180deg)'
-                            },
-                            transition: 'all 0.3s ease-in-out'
-                          }}
-                        >
-                          <SwapVert sx={{ color: 'white', fontSize: '1.25rem' }} />
-                        </IconButton>
-                      </Box>
+
 
                       {/* To Station */}
                       <Box>
@@ -667,6 +655,7 @@ const BookTickets = () => {
                           value={to}
                           onChange={setTo}
                           placeholder="Select destination station"
+                          menuPortalTarget={document.body}
                           styles={{
                             control: (base) => ({
                               ...base,
@@ -677,9 +666,14 @@ const BookTickets = () => {
                               '&:hover': {
                                 borderColor: '#133E87'
                               }
+                            }),
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999
                             })
                           }}
                         />
+
                       </Box>
                     </Paper>
 
@@ -748,7 +742,7 @@ const BookTickets = () => {
                     </Paper>
 
                     {/* Verification Alert */}
-                      {/* <Alert
+                    {/* <Alert
                         severity="warning"
                         icon={<Mail sx={{ color: '#F59E0B', fontSize: '1.25rem' }} />}
                         sx={{
@@ -784,7 +778,7 @@ const BookTickets = () => {
                           Verify Now
                         </Button>
                       </Alert> */}
-                   
+
 
                     {/* Confirm Button */}
                     <Button
@@ -1183,162 +1177,6 @@ const BookTickets = () => {
             </Stack>
           </Paper>
         </Container>
-
-        {/* <DialogContent>
-            <Stack spacing={2.5}>
-              <Box sx={{
-                bgcolor: 'rgba(2, 76, 170, 0.03)',
-                p: 2,
-                borderRadius: 2,
-                border: '1px solid rgba(2, 76, 170, 0.1)'
-              }}>
-                <Stack spacing={1.5}>
-                  <Box display="flex" alignItems="center" gap={2}>
-                    <Typography
-                      sx={{
-                        color: '#024CAA',
-                        width: 60,
-                        fontWeight: 600
-                      }}
-                    >
-                      From
-                    </Typography>
-                    <Typography fontSize="1rem">
-                      {from?.label}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" alignItems="center" gap={2}>
-                    <Typography
-                      sx={{
-                        color: '#024CAA',
-                        width: 60,
-                        fontWeight: 600
-                      }}
-                    >
-                      To
-                    </Typography>
-                    <Typography fontSize="1rem">
-                      {to?.label}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Box>
-
-              <Box sx={{ py: 0 }}>
-                {ticketDetails.map((ticket) =>
-                  ticket.numberOfTickets > 0 ? (
-                    <Box
-                      key={ticket.ticketType}
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        mb: 1,
-                        p: 0.2,
-                        borderRadius: 1,
-                        '&:hover': {
-                          bgcolor: 'rgba(2, 76, 170, 0.02)'
-                        }
-                      }}
-                    >
-                      <Typography>
-                        <strong style={{ color: '#024CAA' }}>
-                          {ticket.ticketType}:
-                        </strong>
-                      </Typography>
-                      <Typography fontSize="1rem">
-                        {ticket.numberOfTickets}
-                      </Typography>
-                    </Box>
-                  ) : null
-                )}
-              </Box>
-              <hr style={{ color: "#074799" }} />
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: "#024CAA",
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Ticket Details
-                </Typography>
-                <Tooltip title="More Information">
-                  <IconButton
-                    onClick={handleOpenTableModal}
-                    size="small"
-                    sx={{
-                      color: "#133E87",
-                      '&:hover': {
-                        bgcolor: 'rgba(2, 76, 170, 0.08)'
-                      }
-                    }}
-                  >
-                    <InfoOutlinedIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-
-              <hr style={{ color: "#074799" }} />
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  p: 1.5,
-                  bgcolor: 'rgba(255, 152, 0, 0.1)',
-                  borderRadius: 1
-                }}
-              >
-                <AccessTimeFilledIcon sx={{ color: 'warning.main' }} />
-                <Typography
-                  className='fw-bold'
-                  sx={{ color: 'warning.dark' }}
-                >
-                  The ticket will be valid only for 3 hours.
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  mt: 2,
-                  p: 2,
-                  bgcolor: '#024CAA',
-                  borderRadius: 1,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 'bold',
-                    color: 'white'
-                  }}
-                >
-                  Grand Total
-                </Typography>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 'bold',
-                    color: 'white'
-                  }}
-                >
-                  ₹ {grandTotal}
-                </Typography>
-              </Box>
-            </Stack>
-          </DialogContent> */}
-        {/* confirm ticket modal */}
-
 
         <Box
           sx={{

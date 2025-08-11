@@ -26,10 +26,10 @@ const AuthProvider = ({ children }) => {
     try {
       if (accessToken) {
         decodedToken = jwtDecode(accessToken);
-        console.log(decodedToken)
+        // console.log(decodedToken)
       }
     } catch (error) {
-      console.error("Error decoding token", error);
+      // console.error("Error decoding token", error);
     }
 
     // Extract necessary fields from the decoded token
@@ -57,7 +57,7 @@ const AuthProvider = ({ children }) => {
       
       // Fetch profile if it's initial mount OR if we're getting a new token after having no token
       if (isInitialMount.current || (!prevTokenRef.current && auth.accessToken)) {
-        console.log("Fetching profile - new login or initial mount");
+        // console.log("Fetching profile - new login or initial mount");
         fetchUserProfile();
         isInitialMount.current = false;
       }
@@ -79,7 +79,7 @@ const AuthProvider = ({ children }) => {
         },
       });
 
-      console.log("Context response for fetching user details:", response);
+      // console.log("Context response for fetching user details:", response);
 
       const userInfo = response.data.info;
 
