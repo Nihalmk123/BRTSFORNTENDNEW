@@ -61,19 +61,19 @@ const Whatsapp = () => {
             <div className="topButton" onClick={GoToTopButton}>
               <ArrowUpwardIcon className="topButtonIcon" />
             </div>
-            <Link
+            {/* <Link
               to="https://wa.me/8105662234?text=Hello%2C%20I%20would%20like%20to%20chat%20about%20your%20services!"
               target="_blank"
               rel="noopener noreferrer"
               className="whatsAppButton"
-            >
-              <img
+            > */}
+              {/* <img
                 src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
                 alt="WhatsApp"
                 className="whatsAppIcon"
-              />
-            </Link>
-            <div className="chatButton" onClick={() => setChatOpen(!isChatOpen)}>
+              /> */}
+            {/* </Link> */}
+            {/* <div className="chatButton" onClick={() => setChatOpen(!isChatOpen)}>
               {isChatOpen ? (
                 <X className="w-5 h-5" />
               ) : (
@@ -81,11 +81,11 @@ const Whatsapp = () => {
                   <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
                 </svg>
               )}
-            </div>
+            </div> */}
           </>
         )}
         
-        {isChatOpen && (
+        {/* {isChatOpen && (
           <div className="chatBox">
             <div className="chatHeader">
               <h3>Chat with us</h3>
@@ -122,7 +122,7 @@ const Whatsapp = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </Wrapper>
     </div>
   );
@@ -139,7 +139,7 @@ const Wrapper = styled.section`
     width: 2.5rem;
     height: 2.5rem;
     color: #00215e;
-    background-color: #ffc55a;
+    background-color: #91C8E4;
     border-radius: 50%;
     position: fixed;
     bottom: 4rem;

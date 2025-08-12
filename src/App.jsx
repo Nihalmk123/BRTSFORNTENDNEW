@@ -29,6 +29,7 @@ import EmailVerification from './Components/EmailVerification/EmailVerification'
 import EditProfile from './Components/EditProfile';
 import ForgotPassword from './Components/Registration/ForgotPassword';
 import PaymentInfo from './Components/PaymentInfo';
+import Whatsapp from './Components/Whatsapp';
 
 function App() {
   return (
@@ -88,7 +89,7 @@ function App() {
           }
         />
       </Routes>
-      {/* <Whatsapp/> */}
+      <Whatsapp/>
     </>
   )
 }
