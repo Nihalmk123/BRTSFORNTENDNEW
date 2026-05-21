@@ -210,143 +210,143 @@ const Login = () => {
     const [captchaToken, setCaptchaToken] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-     // Function to validate email format
-     const validateEmail = (email) => {
-         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-         return re.test(String(email).toLowerCase());
-        }; 
-        
-        // Function to validate password format
+    // Function to validate email format
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    // Function to validate password format
     const validatePassword = (password) => {
         const re = /^(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%^&(),.?":{}|<>]).{8,32}$/;
         return re.test(password);
     };
 
-// Email & Password Sign-in
-const handleSignin = async (e) => {
-    e.preventDefault();
+    // Email & Password Sign-in
+    const handleSignin = async (e) => {
+        e.preventDefault();
 
-    if (!email || !password || !captchaToken) {
-        toast.error("All fields and CAPTCHA are required.", {
-            duration: 3000
-        });
-        return;
-    }
-
-    if (!validateEmail(email)) {
-        toast.error("Please enter a valid email address.", {
-            duration: 3000
-        });
-        return;
-    }
-
-    if (!validatePassword(password)) {
-        toast.error("Password must be 8 char long with First letter capital and should contain special charecters ", {
-            duration: 3000
-        });
-        return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-        const response = await api.post(
-            `/tsn/v1/user/signIn`,
-            {
-                email: email,
-                password: password,
-                token: captchaToken
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
-
-        const accessToken = response.headers['access_token'] || response.headers['authorization'];
-        const refreshToken = response.headers['refresh-token'] || response.headers['refresh-token'];
-
-        if (accessToken) {
-            // Store both access token and refresh token in local storage
-            localStorage.setItem("token", accessToken);
-            if (refreshToken) {
-                localStorage.setItem("refreshToken", refreshToken);
-            }
-            updateAuth({ accessToken, refreshToken });
-            new Snackbar(`Signin successful`, {
-                position: 'top-center',
-                timeout: 2000,
-                style: {
-                    container: [
-                        ['background-color', '#6EC207'],
-                        ['border-radius', '5px']
-                    ],
-                }
-            });
-            navigate('/');
-        } else {
-            toast.error("Login failed. Token not found.");
-        }
-    } catch (error) {
-        if (error.response) {
-            toast.error(JSON.stringify(error.response.data.message || 'Somthing Went Wrong'), {
+        if (!email || !password || !captchaToken) {
+            toast.error("All fields and CAPTCHA are required.", {
                 duration: 3000
             });
-        } else {
-            toast.error("An error occurred. Please try again.", {
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            toast.error("Please enter a valid email address.", {
                 duration: 3000
             });
+            return;
         }
-    } finally {
-        setIsSubmitting(false);
-    }
-};
 
-// Google OAuth Login
-const googleLogin = useGoogleLogin({
-    onSuccess: (codeResponse) => setUser(codeResponse),
-    onError: (error) => toast.error("Google login failed. Please try again.")
-});
-
-useEffect(() => {
-    if (user) {
-        const { access_token } = user;
-
-        api
-             .post(`/tsn/v1/user/signInWithGoogle`, {
-                "accessToken": access_token,
-            })
-            .then((res) => {
-                console.log("data--------->", res.data);
-                const accessToken = res.headers['access_token'] || res.headers['authorization'];
-                const refreshToken = res.headers['refresh-token'] || res.headers['refresh-token'];
-
-                if (accessToken) {
-                    localStorage.setItem("token", accessToken);
-                    localStorage.setItem("refresh", refreshToken );
-                    updateAuth({ accessToken, refreshToken });
-                    setProfile(res.data);
-                    new Snackbar(`Google Login successful`, {
-                        position: 'top-center',
-                        timeout: 2000,
-                        style: {
-                            container: [
-                                ['background-color', '#6EC207'],
-                                ['border-radius', '5px']
-                            ],
-                        }
-                    });
-                   navigate('/');
-                } else {
-                    toast.error("Login failed. Token not found.");
-                }
-            })
-            .catch((err) => {
-                console.error(err);
+        if (!validatePassword(password)) {
+            toast.error("Password must be 8 char long with First letter capital and should contain special charecters ", {
+                duration: 3000
             });
-    }
-}, [user]);
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const response = await api.post(
+                `/tsn/v1/user/signIn`,
+                {
+                    email: email,
+                    password: password,
+                    token: captchaToken
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            const accessToken = response.headers['access_token'] || response.headers['authorization'];
+            const refreshToken = response.headers['refresh-token'] || response.headers['refresh-token'];
+
+            if (accessToken) {
+                // Store both access token and refresh token in local storage
+                localStorage.setItem("token", accessToken);
+                if (refreshToken) {
+                    localStorage.setItem("refreshToken", refreshToken);
+                }
+                updateAuth({ accessToken, refreshToken });
+                new Snackbar(`Signin successful`, {
+                    position: 'top-center',
+                    timeout: 2000,
+                    style: {
+                        container: [
+                            ['background-color', '#6EC207'],
+                            ['border-radius', '5px']
+                        ],
+                    }
+                });
+                navigate('/');
+            } else {
+                toast.error("Login failed. Token not found.");
+            }
+        } catch (error) {
+            if (error.response) {
+                toast.error(JSON.stringify(error.response.data.message || 'Somthing Went Wrong'), {
+                    duration: 3000
+                });
+            } else {
+                toast.error("An error occurred. Please try again.", {
+                    duration: 3000
+                });
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // Google OAuth Login
+    const googleLogin = useGoogleLogin({
+        onSuccess: (codeResponse) => setUser(codeResponse),
+        onError: (error) => toast.error("Google login failed. Please try again.")
+    });
+
+    useEffect(() => {
+        if (user) {
+            const { access_token } = user;
+
+            api
+                .post(`/tsn/v1/user/signInWithGoogle`, {
+                    "accessToken": access_token,
+                })
+                .then((res) => {
+                    console.log("data--------->", res.data);
+                    const accessToken = res.headers['access_token'] || res.headers['authorization'];
+                    const refreshToken = res.headers['refresh-token'] || res.headers['refresh-token'];
+
+                    if (accessToken) {
+                        localStorage.setItem("token", accessToken);
+                        localStorage.setItem("refresh", refreshToken);
+                        updateAuth({ accessToken, refreshToken });
+                        setProfile(res.data);
+                        new Snackbar(`Google Login successful`, {
+                            position: 'top-center',
+                            timeout: 2000,
+                            style: {
+                                container: [
+                                    ['background-color', '#6EC207'],
+                                    ['border-radius', '5px']
+                                ],
+                            }
+                        });
+                        navigate('/');
+                    } else {
+                        toast.error("Login failed. Token not found.");
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+    }, [user]);
 
 
     // const logOut = () => {
@@ -406,7 +406,7 @@ useEffect(() => {
 
                                         <div className="d-flex align-items-center mt-2 mb-3 justify-content-center">
                                             <ReCAPTCHA
-                                                sitekey="6LdqHvUsAAAAALnCBjnoQ8kDXAAzjpP1-EDLxZPE"
+                                                sitekey="6LchOPUsAAAAAG3zmgOz9UIbos-ppoIVd4GeJ-Rd"
                                                 onChange={token => {
                                                     setCaptchaToken(token)
                                                     console.log(token)
@@ -431,43 +431,43 @@ useEffect(() => {
                                         <span className="text-muted divider">Or sign in with</span>
                                     </div>
 
-                                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
-    <button className="gsi-material-button" style={{width:"70%"}} onClick={() => googleLogin()}>
-        <div className="gsi-material-button-state"></div>
-        <div className="gsi-material-button-content-wrapper">
-            <div className="gsi-material-button-icon">
-                <svg
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 48 48"
-                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                    style={{ display: "block" }}
-                >
-                    <path
-                        fill="#EA4335"
-                        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-                    ></path>
-                    <path
-                        fill="#4285F4"
-                        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-                    ></path>
-                    <path
-                        fill="#FBBC05"
-                        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-                    ></path>
-                    <path
-                        fill="#34A853"
-                        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-                    ></path>
-                    <path fill="none" d="M0 0h48v48H0z"></path>
-                </svg>
-            </div>
-            
-            <span className="gsi-material-button-contents">Sign in with Google</span>
-            <span style={{ display: "none" }}>Sign up with Google</span>
-        </div>
-    </button>
-</div>
+                                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                        <button className="gsi-material-button" style={{ width: "70%" }} onClick={() => googleLogin()}>
+                                            <div className="gsi-material-button-state"></div>
+                                            <div className="gsi-material-button-content-wrapper">
+                                                <div className="gsi-material-button-icon">
+                                                    <svg
+                                                        version="1.1"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 48 48"
+                                                        xmlnsXlink="http://www.w3.org/1999/xlink"
+                                                        style={{ display: "block" }}
+                                                    >
+                                                        <path
+                                                            fill="#EA4335"
+                                                            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                                                        ></path>
+                                                        <path
+                                                            fill="#4285F4"
+                                                            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                                                        ></path>
+                                                        <path
+                                                            fill="#FBBC05"
+                                                            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                                                        ></path>
+                                                        <path
+                                                            fill="#34A853"
+                                                            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                                                        ></path>
+                                                        <path fill="none" d="M0 0h48v48H0z"></path>
+                                                    </svg>
+                                                </div>
+
+                                                <span className="gsi-material-button-contents">Sign in with Google</span>
+                                                <span style={{ display: "none" }}>Sign up with Google</span>
+                                            </div>
+                                        </button>
+                                    </div>
                                     <p className="mt-4 fw-bold text-center">
                                         Don't have an account? <Link className="text-decoration-underline" to="/signup">sign up</Link>
                                     </p>

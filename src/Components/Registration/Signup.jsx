@@ -290,7 +290,7 @@ const Signup = () => {
 
                                         <div className="d-flex align-items-center mb-3 justify-content-center">
                                             <ReCAPTCHA
-                                                sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                                                sitekey="6LchOPUsAAAAAG3zmgOz9UIbos-ppoIVd4GeJ-Rd"
                                                 onChange={(token) => {
                                                     setCaptchaToken(token);
                                                     console.log("CAPTCHA token:", token);
