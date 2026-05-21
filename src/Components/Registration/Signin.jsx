@@ -406,7 +406,7 @@ useEffect(() => {
 
                                         <div className="d-flex align-items-center mt-2 mb-3 justify-content-center">
                                             <ReCAPTCHA
-                                                sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                                                sitekey="6LdqHvUsAAAAALnCBjnoQ8kDXAAzjpP1-EDLxZPE"
                                                 onChange={token => {
                                                     setCaptchaToken(token)
                                                     console.log(token)
