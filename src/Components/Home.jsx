@@ -74,7 +74,7 @@ const Home = () => {
                   <h1 className="mb-4">
                     Book Your Bus Ticket <br />
                     Online and Ride with a <br />
-                    <span className="accent-text">QR Code!</span>
+                    <span className="accent-text" style={{color:"#1F63AA"}}>QR Code!</span>
                   </h1>
                   <p className="mb-4 mb-md-5">
                     Experience the future of bus travel with  <strong className='fw-bold fs-4'>SmartBus Ticketing </strong> – your all-in-one solution for effortless and efficient ticketing. Our platform is designed to streamline and automate the entire ticketing process, ensuring a smooth and hassle-free journey from start to finish.
@@ -168,7 +168,8 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </section>{/* /Hero Section */}
+        </section>
+        {/* /Hero Section */}
 
 
         {/* over view---------------------------------------------------------------------------------------------------------------------------------------------------------------------*/}

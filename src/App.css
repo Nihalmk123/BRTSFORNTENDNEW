@@ -1085,16 +1085,3 @@ input[type=number]::-webkit-outer-spin-button {
   }
 }
 
-@media (max-width: 767px) {
-  #features-2 .phone-mockup {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  #features-2 .col-lg-4.text-center.mb-5.mb-lg-0 {
-    margin-bottom: 0 !important;
-    margin-top: 0 !important;
-  }
-}
