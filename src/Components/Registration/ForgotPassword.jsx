@@ -249,7 +249,7 @@ const ForgotPassword = () => {
                         </Box>
                         <div className="captcha-container">
                             <ReCAPTCHA
-                                sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                                sitekey="6LehWdItAAAAAPGeXJxrrjr6-093QLKr-5frJ4Ch"
                                 onChange={token => {
                                     setCaptchaToken(token)
                                 }}
@@ -345,7 +345,7 @@ const ForgotPassword = () => {
                         </Box>
                         <div className="captcha-container">
                             <ReCAPTCHA
-                                sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                                sitekey="6LehWdItAAAAAPGeXJxrrjr6-093QLKr-5frJ4Ch"
                                 onChange={token => {
                                     setCaptchaToken(token)
                                 }}
@@ -502,7 +502,7 @@ const ForgotPassword = () => {
                         />
                         <div className="captcha-container">
                             <ReCAPTCHA
-                                sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                                sitekey="6LehWdItAAAAAPGeXJxrrjr6-093QLKr-5frJ4Ch"
                                 onChange={token => {
                                     setCaptchaToken(token)
                                 }}

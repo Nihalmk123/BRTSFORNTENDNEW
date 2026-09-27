@@ -208,7 +208,7 @@ const Contact = () => {
                     <Box sx={{ transform: { xs: 'scale(0.9)', sm: 'none' }, transformOrigin: 'left center' }}>
                       <ReCAPTCHA
                         ref={recaptchaRef}
-                        sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                        sitekey="6LehWdItAAAAAPGeXJxrrjr6-093QLKr-5frJ4Ch"
                         onChange={onCaptchaChange}
                       />
                     </Box>

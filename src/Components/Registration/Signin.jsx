@@ -138,7 +138,7 @@
 //                                         </MDBBtn>
 
 //                                         <ReCAPTCHA
-//                                             sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+//                                             sitekey="6LehWdItAAAAAPGeXJxrrjr6-093QLKr-5frJ4Ch"
 //                                             onChange={(token) => {
 //                                                 setCaptchaToken(token);
 //                                                 console.log("CAPTCHA token:", token);
@@ -403,7 +403,7 @@ useEffect(() => {
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3, transform: { xs: 'scale(0.92)', sm: 'none' } }}>
                         <ReCAPTCHA
-                            sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                            sitekey="6LehWdItAAAAAPGeXJxrrjr6-093QLKr-5frJ4Ch"
                             onChange={token => {
                                 setCaptchaToken(token)
                                 console.log(token)

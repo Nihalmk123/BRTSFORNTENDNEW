@@ -283,7 +283,7 @@ const Signup = () => {
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', my: 3, transform: { xs: 'scale(0.92)', sm: 'none' } }}>
                         <ReCAPTCHA
-                            sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                            sitekey="6LehWdItAAAAAPGeXJxrrjr6-093QLKr-5frJ4Ch"
                             onChange={(token) => {
                                 setCaptchaToken(token);
                                 console.log("CAPTCHA token:", token);
@@ -546,7 +546,7 @@ export default Signup;
 //             )}
 //                                         <div className="d-flex align-items-center mt-3 justify-content-center">
 //                                         <ReCAPTCHA
-//                                             sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+//                                             sitekey="6LehWdItAAAAAPGeXJxrrjr6-093QLKr-5frJ4Ch"
 //                                             onChange={(token) => setCaptchaToken(token)}
 //                                             className="mb-4"
 //                                         />
