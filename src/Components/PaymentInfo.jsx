@@ -59,13 +59,13 @@ const PaymentInfo = () => {
       py: 4
     }}>
       <Container maxWidth="xl">
-        <Card sx={{ 
-          mb: 3, 
+        <Card sx={{
+          mb: 3,
           p: 3,
           boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
           borderRadius: 4,
           border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
-        }}>
+        }} data-aos="fade-up">
           <Stack direction={{ xs: 'column', sm: 'row' }} 
                  justifyContent="space-between" 
                  alignItems="center"
@@ -107,7 +107,7 @@ const PaymentInfo = () => {
         </Card>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} lg={8}>
+          <Grid item xs={12} lg={8} data-aos="fade-right">
             <Card sx={{ 
               p: 3, 
               mb: 3, 
@@ -210,7 +210,7 @@ const PaymentInfo = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} lg={4}>
+          <Grid item xs={12} lg={4} data-aos="fade-left">
             <Card sx={{ 
               p: 4,
               borderRadius: 4,

@@ -845,35 +845,30 @@
 
 
 import { useEffect, useState } from 'react';
+import { CircularProgress, Container, Grid, TextField } from '@mui/material';
 import {
-  Box,
-  Card,
-  CardHeader,
-  CardContent,
-  Grid,
-  TextField,
-  Button,
-  Avatar,
-  Chip,
-  Alert,
-  Typography,
-  CircularProgress,
-  Divider,
-  Container,
-  IconButton,
-  Stack,
-} from '@mui/material';
-import { InfoIcon, Mail as MailIcon, Phone as PhoneIcon } from 'lucide-react';
+  AlertCircle,
+  BadgeCheck,
+  Bus,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  History,
+  KeyRound,
+  Mail as MailIcon,
+  PencilLine,
+  Phone as PhoneIcon,
+  Ticket,
+} from 'lucide-react';
 import { useUserProfile } from './Context/UserProfileContext';
 import Layout from "../../src/Components/Layout/Layout";
 import { useAxiosWithInterceptor } from './Api/Axios';
 import { useAuth } from './Context/Context';
-import EditIcon from '@mui/icons-material/Edit';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import UserAvatar from './UI/UserAvatar';
+import './EditProfile.css';
 
 const EditProfile = () => {
   const { userProfile, loading, getProfileDetails } = useUserProfile();
@@ -887,8 +882,6 @@ const EditProfile = () => {
   const api = useAxiosWithInterceptor()
   const { auth, updateAuth } = useAuth()
   const navigate = useNavigate()
-
-  const firstLetter = userProfile?.firstName ? userProfile.firstName.charAt(0).toUpperCase() : '';
 
   // const isPhoneVerificationPending = userProfile?.phoneNumberVerificationPending;
   // const isPhoneNotVerified = !userProfile?.phoneNumberVerified;
@@ -1172,8 +1165,11 @@ const EditProfile = () => {
         }
       );
       console.log("User response:", response);
+      Swal.fire({ title: "Verification link sent", text: `Check ${userProfile?.email} for the link.`, icon: "success" });
+      getProfileDetails();
     } catch (error) {
       console.error("Error sending verification email:", error);
+      Swal.fire({ title: "Error", text: error.response?.data?.message || "Could not send the verification link.", icon: "error" });
       if (error.response) {
         console.log("Status:", error.response.status);
         console.log("Data:", error.response.data);
@@ -1250,536 +1246,256 @@ const EditProfile = () => {
     }
   };
 
+  // Phone number changes are saved on blur, after a confirmation.
+  const handlePhoneBlur = async () => {
+    if (updatePhoneNumber === userProfile?.phoneNumber || !isEditable) return;
+    const confirmation = await Swal.fire({
+      title: "Confirm Phone Number Update",
+      text: "Are you sure you want to update your phone number?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, update",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!confirmation.isConfirmed) {
+      setUpdatePhoneNumber(userProfile?.phoneNumber || "");
+      return;
+    }
+
+    try {
+      Swal.fire({
+        title: "Processing...",
+        text: "Please wait while we update your profile.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
+      await api.put(
+        "/tsn/v1/user/update-user-profile",
+        {
+          phoneNumber: updatePhoneNumber,
+          firstName: updateFirstName,
+          lastName: updateLastName,
+          email: updateEmail,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: auth.accessToken,
+          },
+        }
+      );
+
+      Swal.close();
+      Swal.fire({
+        title: "Success",
+        text: "Your phone number has been updated successfully!",
+        icon: "success",
+      });
+      getProfileDetails();
+    } catch (error) {
+      Swal.close();
+      Swal.fire({
+        title: "Error",
+        text: error.response?.data?.message || "Failed to update your phone number.",
+        icon: "error",
+      });
+      setUpdatePhoneNumber(userProfile?.phoneNumber || "");
+    }
+  };
+
+  const cancelEdit = () => {
+    setUpdatePhoneNumber(userProfile?.phoneNumber.includes('_RANDOM') ? '**********' : userProfile?.phoneNumber);
+    setUpdateFirstName(userProfile?.firstName || '');
+    setUpdateLastName(userProfile?.lastName || '');
+    setUpdateEmail(userProfile?.email || '');
+    setIsEditable(false);
+  };
+
+  const fullName = [userProfile?.firstName, userProfile?.lastName].filter(Boolean).join(' ') || 'Your account';
+  const hiddenPhone = userProfile?.googleUser || userProfile?.isGoogleUser || userProfile?.phoneNumber?.includes('_RANDOM');
+  const phoneDisplay = hiddenPhone ? '••••••••••' : userProfile?.phoneNumber;
+  const verifiedCount = Number(Boolean(userProfile?.emailVerified)) + Number(Boolean(userProfile?.phoneNumberVerified));
+  const fullyVerified = verifiedCount === 2;
+
+  const fields = [
+    { label: 'First name', value: updateFirstName, set: setUpdateFirstName },
+    { label: 'Last name', value: updateLastName, set: setUpdateLastName },
+    { label: 'Email address', value: updateEmail, set: setUpdateEmail, type: 'email' },
+    { label: 'Phone number', value: updatePhoneNumber, set: setUpdatePhoneNumber, type: 'tel', onBlur: handlePhoneBlur, display: phoneDisplay },
+  ];
+
+  const status = (ok, pending) => {
+    if (ok) return <span className="pp-badge pp-badge--ok"><BadgeCheck size={14} /> Verified</span>;
+    if (pending) return <span className="pp-badge pp-badge--warn"><Clock size={14} /> Pending</span>;
+    return <span className="pp-badge pp-badge--bad"><AlertCircle size={14} /> Not verified</span>;
+  };
+
   return (
     <Layout>
       <Helmet>
         <title>My profile</title>
       </Helmet>
-      <Box
-        sx={{
-          bgcolor: '#f5f5f5',
-          minHeight: '100vh',
-          py: 4
-        }}
-      >
-        <Container maxWidth="lg">
-          {/* Page Header */}
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h4" sx={{ fontWeight: 600, color: '#2c3e50' }}>
-              Profile Settings
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-              Manage your account settings and verification status
-            </Typography>
-          </Box>
+      <div className="pp">
+        <div className="pp-cover" aria-hidden="true" />
+        <Container maxWidth="lg" className="pp-wrap">
+          {/* Identity header */}
+          <section className="pp-card pp-id" data-aos="fade-up">
+            <UserAvatar profile={userProfile} size={96} sx={{ border: '4px solid #fff', boxShadow: '0 12px 30px -12px rgba(15,23,42,0.45)' }} />
+            <div className="pp-id__text">
+              <h1>{fullName}</h1>
+              <p>{userProfile?.email}</p>
+              <div className="pp-id__meta">
+                {fullyVerified
+                  ? <span className="pp-badge pp-badge--ok"><BadgeCheck size={14} /> Verified account</span>
+                  : <span className="pp-badge pp-badge--warn"><AlertCircle size={14} /> Verification incomplete</span>}
+                {userProfile?.googleUser && <span className="pp-meta">Signed in with Google</span>}
+              </div>
+            </div>
+            {!isEditable && !loading && (
+              <button type="button" className="pp-btn pp-btn--ghost" onClick={handleEdit}>
+                <PencilLine size={16} /> Edit profile
+              </button>
+            )}
+          </section>
 
           <Grid container spacing={3}>
-            {/* Left Column - Profile Overview */}
-            <Grid item xs={12} md={4}>
-              <Card
-                elevation={0}
-                sx={{
-                  bgcolor: 'white',
-                  borderRadius: 3,
-                  height: '100%',
-                  border: '1px solid',
-                  borderColor: 'divider'
-                }}
-              >
-                <Box
-                  sx={{
-                    p: 3,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    borderBottom: '1px solid',
-                    borderColor: 'divider',
-                    bgcolor: (theme) => theme.palette.primary.main,
-                    borderRadius: '12px 12px 0 0',
-                    color: 'white'
-                  }}
-                >
-                  {/* <Avatar
-                    src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                    alt="User Avatar"
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      border: '4px solid white',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                      mb: 2
-                    }}
-                    hiii
-                  /> */}
-                  <Avatar
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      border: '4px solid white',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                      mb: 1,
-                      fontSize: "75px",
-                      background: "#1F509A"
-                    }}
-                  >
-                    {userProfile?.profilePicLink ? <img className="w-100" src={userProfile?.profilePicLink} alt='user_profile' /> : firstLetter}
-                  </Avatar>
-                  <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
-                    {userProfile?.firstName} {userProfile?.lastName}
-                  </Typography>
-                  <Chip
-                    label={!userProfile?.phoneNumberVerified || !userProfile?.emailVerified ? 'Unverified Account' : 'Verified Account'}
-                    color={!userProfile?.phoneNumberVerified || !userProfile?.emailVerified ? 'error' : 'success'}
-                    icon={<VerifiedUserIcon />}
-                    sx={{
-                      borderRadius: '16px',
-                      px: 1,
-                      '& .MuiChip-icon': { color: 'inherit' }
-                    }}
-                  />
-                </Box>
-
-                <Box sx={{ p: 3 }}>
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                    Verification Status
-                  </Typography>
-                  <Stack spacing={2}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <MailIcon size={20} />
-                      <Typography variant="body2" sx={{ flexGrow: 1 }}>
-                        Email Status
-                      </Typography>
-
-                      <Chip
-                        size="small"
-                        label={userProfile?.emailVerified ? 'Verified' : 'unverified'}
-                        color={userProfile?.emailVerified ? 'success' : 'error'}
-                      />
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <PhoneIcon size={20} />
-                      <Typography variant="body2" sx={{ flexGrow: 1 }}>
-                        Phone Status
-                      </Typography>
-
-
-                      <Chip
-                        size="small"
-                        label={userProfile?.phoneNumberVerified ? 'Verified' : 'unverified'}
-                        color={userProfile?.phoneNumberVerified ? 'success' : 'error'}
-                      />
-                    </Box>
-                  </Stack>
-                </Box>
-              </Card>
-            </Grid>
-
-            {/* Right Column - Edit Form */}
             <Grid item xs={12} md={8}>
               {loading ? (
-                <Card
-                  elevation={0}
-                  sx={{
-                    p: 4,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: 400,
-                    borderRadius: 3,
-                    border: '1px solid',
-                    borderColor: 'divider'
-                  }}
-                >
-                  <Box sx={{ textAlign: 'center' }}>
-                    <CircularProgress size={60} thickness={4} />
-                    <Typography variant="h6" sx={{ mt: 2, color: 'text.secondary' }}>
-                      Loading your profile...
-                    </Typography>
-                  </Box>
-                </Card>
+                <section className="pp-card pp-loading">
+                  <CircularProgress size={40} thickness={4} />
+                  <p>Loading your profile…</p>
+                </section>
               ) : (
-                <Stack spacing={3}>
-                  {/* Profile Information Card */}
-                  <Card
-                    elevation={0}
-                    sx={{
-                      borderRadius: 3,
-                      border: '1px solid',
-                      borderColor: 'divider'
-                    }}
-                  >
-                    <CardHeader
-                      title={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <AccountCircleIcon color="primary" />
-                          <Typography variant="h6">Personal Information</Typography>
-                        </Box>
-                      }
-                      action={
-                        <IconButton
-                          onClick={handleEdit}
-                          color="primary"
-                          sx={{
-                            bgcolor: 'action.selected',
-                            '&:hover': { bgcolor: 'action.hover' }
-                          }}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      }
-                    />
-                    <Divider />
-                    <CardContent sx={{ p: 3 }}>
-                      <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            label="First Name"
-                            value={updateFirstName}
-                            fullWidth
-                            InputProps={{
-                              readOnly: !isEditable,
-                              sx: { borderRadius: 2 }
-                            }}
-                            onChange={(e) => setUpdateFirstName(e.target.value)}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            label="Last Name"
-                            value={updateLastName}
-                            fullWidth
-                            InputProps={{
-                              readOnly: !isEditable,
-                              sx: { borderRadius: 2 }
-                            }}
-                            onChange={(e) => setUpdateLastName(e.target.value)}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            label="Email Address"
-                            value={updateEmail}
-                            fullWidth
-                            InputProps={{
-                              readOnly: !isEditable,
-                              sx: { borderRadius: 2 }
-                            }}
-                            onChange={(e) => setUpdateEmail(e.target.value)}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            label="Phone Number"
-                            value={updatePhoneNumber}
-                            fullWidth
-                            InputProps={{
-                              readOnly: !isEditable,
-                              sx: { borderRadius: 2 },
-                            }}
-                            onBlur={async () => {
-                              if (updatePhoneNumber !== userProfile?.phoneNumber && isEditable) {
-                                const confirmation = await Swal.fire({
-                                  title: "Confirm Phone Number Update",
-                                  text: "Are you sure you want to update your phone number?",
-                                  icon: "warning",
-                                  showCancelButton: true,
-                                  confirmButtonText: "Yes, update",
-                                  cancelButtonText: "Cancel",
-                                });
+                <>
+                  {/* Personal information */}
+                  <section className="pp-card" data-aos="fade-up">
+                    <header className="pp-card__head">
+                      <div>
+                        <h2>Personal information</h2>
+                        <p>Your name and contact details used for tickets and receipts.</p>
+                      </div>
+                    </header>
 
-                                if (confirmation.isConfirmed) {
-                                  try {
-                                    Swal.fire({
-                                      title: "Processing...",
-                                      text: "Please wait while we update your profile.",
-                                      allowOutsideClick: false,
-                                      allowEscapeKey: false,
-                                      showConfirmButton: false,
-                                      didOpen: () => {
-                                        Swal.showLoading();
-                                      },
-                                    });
-
-                                    const response = await api.put(
-                                      "/tsn/v1/user/update-user-profile",
-                                      {
-                                        phoneNumber: updatePhoneNumber,
-                                        firstName: updateFirstName,
-                                        lastName: updateLastName,
-                                        email: updateEmail,
-                                      },
-                                      {
-                                        headers: {
-                                          "Content-Type": "application/json",
-                                          Authorization: auth.accessToken,
-                                        },
-                                      }
-                                    );
-
-                                    Swal.close();
-                                    Swal.fire({
-                                      title: "Success",
-                                      text: "Your phone number has been updated successfully!",
-                                      icon: "success",
-                                    });
-
-                                    // Update the local userProfile state with the new phone number
-                                    getProfileDetails(); // Fetch the updated profile details
-                                  } catch (error) {
-                                    Swal.close();
-                                    Swal.fire({
-                                      title: "Error",
-                                      text: error.response?.data?.message || "Failed to update your phone number.",
-                                      icon: "error",
-                                    });
-
-                                    // Optionally revert to the old phone number on error
-                                    setUpdatePhoneNumber(userProfile?.phoneNumber || "");
-                                  }
-                                } else {
-                                  // If the user cancels the confirmation, reset to the original value
-                                  setUpdatePhoneNumber(userProfile?.phoneNumber || "");
-                                }
-                              }
-                            }}
-                            onChange={(e) => setUpdatePhoneNumber(e.target.value)} // Allow editing the value
-                          />
-                        </Grid>
-
-                      </Grid>
-
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                        onClick={handleUpdateProfile}
-                        disabled={!isEditable}
-                        sx={{
-                          mt: 4,
-                          borderRadius: 2,
-                          py: 1.5,
-                          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                        }}
-                      >
-                        Save Changes
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  {/* Verification Actions Card */}
-                  <Card
-                    elevation={0}
-                    sx={{
-                      borderRadius: 3,
-                      border: '1px solid',
-                      borderColor: 'divider'
-                    }}
-                  >
-                    <CardHeader
-                      title={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <VerifiedUserIcon color="primary" />
-                          <Typography variant="h6">Verification Actions</Typography>
-                        </Box>
-                      }
-                    />
-                    <Divider />
-                    <CardContent sx={{ p: 2 }}>
-                      {
-                        userProfile?.googleUser ? (
-                          !userProfile?.phoneNumberVerified ? (
-                            <Alert
-                              severity="info"
-                              sx={{ mb: 3, borderRadius: 2 }}
-                              icon={<InfoIcon />}
-                            >
-                              {`Your phone number needs verification. Please verify to access all features. replace it with valid phone number`}
-                            </Alert>
+                    <div className="pp-fields">
+                      {fields.map((f) => (
+                        <div key={f.label} className="pp-field">
+                          {isEditable ? (
+                            <TextField
+                              label={f.label}
+                              type={f.type || 'text'}
+                              value={f.value || ''}
+                              onChange={(e) => f.set(e.target.value)}
+                              onBlur={f.onBlur}
+                              fullWidth
+                              size="small"
+                            />
                           ) : (
-                            <Alert
-                              severity="success"
-                              sx={{ mb: 3, borderRadius: 2 }}
-                              icon={<InfoIcon />}
-                            >
-                              Phone number and Email verified
-                            </Alert>
-                          )
-                        ) : (
-                          !userProfile?.phoneNumberVerified || !userProfile?.emailVerified ? (
-                            <Alert
-                              severity="info"
-                              sx={{ mb: 3, borderRadius: 2 }}
-                              icon={<InfoIcon />}
-                            >
-                              Your email address and phone number need verification. Please verify to access all features.
-                            </Alert>
-                          ) : (
-                            <Alert
-                              severity="info"
-                              sx={{ mb: 3, borderRadius: 2 }}
-                              icon={<InfoIcon />}
-                            >
-                              Mobile number and email verified
-                            </Alert>
-                          )
-                        )
-                      }
-                      <Stack spacing={3}>
-                        {/* Email Verification */}
-                        {
-                          userProfile?.emailVerificationPending ? (
-                            <Alert
-                              severity="warning"
-                              icon={<MailIcon />}
-                              sx={{ borderRadius: 2 }}
-                            >
-                              Email verification pending. Please verify your email address.
-                            </Alert>
-                          ) : !userProfile?.emailVerified ? (
-                            <Button
-                              variant="outlined"
-                              onClick={sendEmailVerification}
-                              startIcon={<MailIcon />}
-                              sx={{
-                                borderRadius: 2,
-                                py: 1.5,
-                                borderColor: 'warning.main',
-                                color: 'warning.main',
-                                '&:hover': {
-                                  borderColor: 'warning.dark',
-                                  bgcolor: 'warning.light',
-                                },
-                              }}
-                            >
-                              Verify Email Address
-                            </Button>
-                          ) : (
-                            <Alert
-                              severity="success"
-                              icon={<MailIcon />}
-                              sx={{ borderRadius: 2 }}
-                            >
-                              Email verified: {userProfile.email}
-                            </Alert>
-                          )
-                        }
-                        {/* Phone Verification */}
-                        {
-                          userProfile?.phoneNumberVerificationPending ? (
-                            <Alert
-                              severity="warning"
-                              icon={<PhoneIcon />}
-                              sx={{ borderRadius: 2 }}
-                            >
-                              Phone number verification pending
-                              <span>
-                                <button
-                                  className="mx-1"
-                                  style={{
-                                    background: "none",
-                                    border: "none",
-                                    padding: 0,
-                                    textDecoration: "underline",
-                                    color: "blue",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={"handleResendOtp"}
-                                >
-                                  Resend OTP
-                                </button>
-                              </span>
-                              ({userProfile.phoneNumberVerificationResendAttemtsLeft === -1 ? '0' : userProfile.phoneNumberVerificationResendAttemtsLeft} attempts left)
-                            </Alert>
-                          ) : !userProfile?.phoneNumberVerified ? (
-                            <Button
-                              variant="outlined"
-                              onClick={sendMobileVerification}
-                              startIcon={<PhoneIcon />}
-                              sx={{
-                                borderRadius: 2,
-                                py: 1.5,
-                                borderColor: '#AE445A',
-                                color: '#AE445A',
-                                '&:hover': {
-                                  borderColor: '#933d4e',
-                                  bgcolor: '#AE445A22',
-                                },
-                              }}
-                            >
-                              Verify Phone Number
-                              {userProfile?.phoneNumberVerificationResendAttemtsLeft && (
-                                <Typography
-                                  component="span"
-                                  variant="caption"
-                                  sx={{ ml: 1 }}
-                                ></Typography>
-                              )}
-                            </Button>
-                          ) : (
-                            <Alert
-                              severity="success"
-                              icon={<PhoneIcon />}
-                              sx={{ borderRadius: 2 }}
-                            >
-                              {userProfile?.isGoogleUser ? (
-                                // If the user is a Google user, the phone is automatically verified.
-                                "Phone verified: **********"
-                              ) : userProfile?.phoneNumber.includes("_RANDOM") ? (
-                                // If the phone number includes '_RANDOM', show stars.
-                                "Phone verified: **********"
-                              ) : (
-                                // If verified and phone number does not include '_RANDOM', show the actual phone number.
-                                `Phone verified: ${userProfile?.phoneNumber}`
-                              )}
-                            </Alert>
-                          )
-                        }
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                </Stack>
+                            <>
+                              <span>{f.label}</span>
+                              <strong>{(f.display ?? f.value) || '—'}</strong>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {isEditable && (
+                      <footer className="pp-card__foot">
+                        <p>Changing your email signs you out so you can verify the new address.</p>
+                        <div>
+                          <button type="button" className="pp-btn pp-btn--ghost" onClick={cancelEdit}>Cancel</button>
+                          <button type="button" className="pp-btn pp-btn--primary" onClick={handleUpdateProfile}>Save changes</button>
+                        </div>
+                      </footer>
+                    )}
+                  </section>
+
+                  {/* Verification */}
+                  <section className="pp-card" data-aos="fade-up">
+                    <header className="pp-card__head">
+                      <div>
+                        <h2>Verification</h2>
+                        <p>Verify your contact details to unlock every feature.</p>
+                      </div>
+                    </header>
+
+                    <div className="pp-rows">
+                      <div className="pp-row">
+                        <span className="pp-row__icon"><MailIcon size={18} /></span>
+                        <div className="pp-row__text">
+                          <strong>Email address</strong>
+                          <span>{userProfile?.email || 'Not provided'}</span>
+                          {userProfile?.emailVerificationPending && <small>Check your inbox for the verification link.</small>}
+                        </div>
+                        <div className="pp-row__action">
+                          {!userProfile?.emailVerified && !userProfile?.emailVerificationPending ? (
+                            <button type="button" className="pp-btn pp-btn--primary pp-btn--sm" onClick={sendEmailVerification}>Send link</button>
+                          ) : status(userProfile?.emailVerified, userProfile?.emailVerificationPending)}
+                        </div>
+                      </div>
+
+                      <div className="pp-row">
+                        <span className="pp-row__icon"><PhoneIcon size={18} /></span>
+                        <div className="pp-row__text">
+                          <strong>Phone number</strong>
+                          <span>{phoneDisplay || 'Not provided'}</span>
+                          {userProfile?.googleUser && !userProfile?.phoneNumberVerified && (
+                            <small>Add a valid phone number in Personal information, then verify it.</small>
+                          )}
+                          {userProfile?.phoneNumberVerificationPending && (
+                            <small>
+                              OTP sent.{' '}
+                              <button type="button" className="pp-link" onClick={sendMobileVerification}>Resend OTP</button>
+                              {' '}({userProfile.phoneNumberVerificationResendAttemtsLeft === -1 ? 0 : userProfile.phoneNumberVerificationResendAttemtsLeft} attempts left)
+                            </small>
+                          )}
+                        </div>
+                        <div className="pp-row__action">
+                          {!userProfile?.phoneNumberVerified && !userProfile?.phoneNumberVerificationPending ? (
+                            <button type="button" className="pp-btn pp-btn--primary pp-btn--sm" onClick={sendMobileVerification}>Verify</button>
+                          ) : status(userProfile?.phoneNumberVerified, userProfile?.phoneNumberVerificationPending)}
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </>
               )}
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              {/* Account status */}
+              <section className="pp-card pp-side" data-aos="fade-up">
+                <h3>Account status</h3>
+                <div className="pp-progress">
+                  <div><strong>{verifiedCount} of 2</strong> verified</div>
+                  <span><i style={{ width: `${verifiedCount * 50}%` }} className={fullyVerified ? 'is-done' : ''} /></span>
+                </div>
+                <ul className="pp-checks">
+                  <li className={userProfile?.emailVerified ? 'is-done' : ''}><CheckCircle2 size={16} /> Email verified</li>
+                  <li className={userProfile?.phoneNumberVerified ? 'is-done' : ''}><CheckCircle2 size={16} /> Phone verified</li>
+                </ul>
+              </section>
+
+              {/* Shortcuts */}
+              <section className="pp-card pp-side" data-aos="fade-up">
+                <h3>Shortcuts</h3>
+                <nav className="pp-links">
+                  <Link to="/bookedTicket"><Ticket size={17} /> Recent ticket <ChevronRight size={16} /></Link>
+                  <Link to="/ticketHistory"><History size={17} /> Ticket history <ChevronRight size={16} /></Link>
+                  <Link to="/bookTickets"><Bus size={17} /> Book a ticket <ChevronRight size={16} /></Link>
+                  <Link to="/ForgotPassword"><KeyRound size={17} /> Change password <ChevronRight size={16} /></Link>
+                </nav>
+              </section>
             </Grid>
           </Grid>
         </Container>
-      </Box>
+      </div>
     </Layout>
   );
 };
 
 export default EditProfile;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

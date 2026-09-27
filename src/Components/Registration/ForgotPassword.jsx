@@ -26,6 +26,8 @@ import { useAxiosWithInterceptor } from '../Api/Axios';
 import { useAuth } from '../Context/Context';
 import toast from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+import AuthShell from '../UI/AuthShell';
 
 
 const ForgotPassword = () => {
@@ -613,15 +615,17 @@ const ForgotPassword = () => {
                 <title>Forgot password</title>
                 <meta name='description' content='Beginner friendly page for learning React Helmet.' />
             </Helmet>
-            <h1 className='text-center mt-5'>Reset Password</h1>
-            <Container component="main" maxWidth="sm" sx={{
-                minHeight: '70vh',
-                display: 'flex',
-                alignItems: 'center',
-                // py: 4
-            }}>
-                <Paper sx={{ width: '100%', overflowX: 'auto', padding:'3px' }}>
-                    <Stepper activeStep={activeStep} sx={{ mb: 4, marginTop:'20px' }}>
+            <AuthShell
+                title="Reset your password"
+                subtitle="Verify your email and phone, then choose a new password."
+                footer={
+                    <Typography variant="body2" color="text.secondary">
+                        Remembered it? <Link to="/signin" style={{ color: '#2563EB', fontWeight: 600 }}>Back to sign in</Link>
+                    </Typography>
+                }
+            >
+                <Box sx={{ overflowX: 'auto' }}>
+                    <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 3 }}>
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel>{label}</StepLabel>
@@ -629,7 +633,7 @@ const ForgotPassword = () => {
                         ))}
                     </Stepper>
                     {getStepContent(activeStep)}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
                         <Button
                             variant="outlined"
                             onClick={handleBack}
@@ -647,8 +651,8 @@ const ForgotPassword = () => {
                             </Button>
                         )}
                     </Box>
-                </Paper>
-            </Container>
+                </Box>
+            </AuthShell>
         </Layout>
 
     );

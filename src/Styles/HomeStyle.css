@@ -115,6 +115,194 @@ border-radius: 10px;
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Main hero (light)                                                   */
+/* ------------------------------------------------------------------ */
+.hero-main {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+  color: #0F172A;
+  padding: 72px 0 190px;
+}
 
+.hero-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+  background-size: 52px 52px;
+  -webkit-mask-image: radial-gradient(ellipse at 65% 40%, #000 20%, transparent 72%);
+  mask-image: radial-gradient(ellipse at 65% 40%, #000 20%, transparent 72%);
+  pointer-events: none;
+}
 
+/* Slow-drifting aurora: soft daylight moving over the city grid. */
+.hero-main::after {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  background:
+    radial-gradient(620px circle at 8% 10%, rgba(37, 99, 235, 0.14), transparent 60%),
+    radial-gradient(560px circle at 90% 70%, rgba(96, 165, 250, 0.18), transparent 60%),
+    radial-gradient(420px circle at 55% 110%, rgba(251, 191, 36, 0.10), transparent 60%);
+  animation: heroAurora 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
 
+@keyframes heroAurora {
+  from { transform: translate3d(-3%, -2%, 0) scale(1); }
+  to { transform: translate3d(3%, 2%, 0) scale(1.08); }
+}
+
+/* Grid lines light up around the cursor */
+.hero-main > .hero-spot {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.22) 1px, transparent 1px);
+  background-size: 52px 52px;
+  -webkit-mask-image: radial-gradient(240px circle at var(--mx, -500px) var(--my, -500px), #000, transparent 70%);
+  mask-image: radial-gradient(240px circle at var(--mx, -500px) var(--my, -500px), #000, transparent 70%);
+  pointer-events: none;
+}
+
+/* Rotating word: each change slides up from below */
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+}
+
+.hero-word__in {
+  display: inline-block;
+  animation: heroWord 0.55s cubic-bezier(0.2, 0.9, 0.2, 1.1) both;
+}
+
+@keyframes heroWord {
+  from { transform: translateY(100%); opacity: 0; filter: blur(4px); }
+  to { transform: none; opacity: 1; filter: none; }
+}
+
+.hero-main > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-main__copy > * {
+  animation: heroIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.hero-main__copy > *:nth-child(2) { animation-delay: 0.08s; }
+.hero-main__copy > *:nth-child(3) { animation-delay: 0.16s; }
+.hero-main__copy > *:nth-child(4) { animation-delay: 0.24s; }
+.hero-main__copy > *:nth-child(5) { animation-delay: 0.32s; }
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+.hero-main__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  margin-bottom: 28px;
+  border-radius: 999px;
+  border: 1px solid #0F172A;
+  background: #0F172A;
+  color: #E2E8F0;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 24px -12px rgba(15, 23, 42, 0.6);
+}
+
+.hero-main__pulse {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22C55E;
+}
+
+.hero-main__pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #22C55E;
+  animation: heroPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes heroPing {
+  75%, 100% { transform: scale(2.6); opacity: 0; }
+}
+
+.hero-main .hero-main__title {
+  margin: 0 0 24px;
+  color: #0F172A;
+  font-size: clamp(2.6rem, 5.6vw, 4.4rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.hero-main__title > span:last-child {
+  background: linear-gradient(90deg, #2563EB, #60A5FA 45%, #2563EB 90%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: heroShine 6s linear infinite;
+}
+
+@keyframes heroShine {
+  to { background-position: 200% center; }
+}
+
+.hero-main .hero-main__sub {
+  max-width: 540px;
+  margin-bottom: 36px;
+  color: #475569;
+  font-size: 1.12rem;
+  line-height: 1.7;
+}
+
+.hero-main__actions {
+  margin-bottom: 32px;
+}
+
+@media (max-width: 899.98px) {
+  .hero-main {
+    padding: 48px 0 170px;
+  }
+
+  .hero-main__copy {
+    text-align: center;
+  }
+
+  .hero-main .hero-main__sub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-main__actions,
+  .hero-main__checks {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-main__copy > *,
+  .hero-main::after,
+  .hero-main__pulse::after,
+  .hero-main__title span {
+    animation: none;
+  }
+}

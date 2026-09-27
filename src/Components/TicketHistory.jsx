@@ -1,94 +1,208 @@
-import { useState, useEffect } from 'react';
-import {
-  AppBar,
-  Box,
-  Button,
-  CircularProgress,
-  Paper,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  Tabs,
-  Typography,
-  Chip,
-  Tooltip,
-  IconButton,
-  Divider,
-  Stack,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Dialog,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { useState, useEffect, useMemo } from 'react';
+import { Container, Dialog, Drawer, IconButton, TablePagination } from '@mui/material';
 import moment from 'moment';
+import { ArrowRight, Check, ChevronRight, Copy, Download, QrCode, Receipt, Search, X } from 'lucide-react';
 import { useAxiosWithInterceptor } from './Api/Axios';
 import { useAuth } from '../Components/Context/Context';
 import Layout from './Layout/Layout';
-import { ArrowRightAlt, Close, Info, KeyboardArrowLeft, KeyboardArrowRight, QrCode, Receipt, Warning, ZoomIn } from '@mui/icons-material';
-import { InfoIcon, TicketIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
-  useMediaQuery,
-} from '@mui/material';
-import {
-  Payment as PaymentIcon,
-  LocationOn as LocationIcon
-} from '@mui/icons-material';
+  EmptyState,
+  QrDialog,
+  StatusBadge,
+  TicketPass,
+  TicketsHeader,
+  money,
+  typeLabel,
+  when,
+} from './Tickets/TicketParts';
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+const TABS = [
+  { label: 'All', path: 'all', title: 'No tickets yet', empty: 'You haven’t booked any tickets yet.' },
+  { label: 'Active', path: 'all/active', empty: 'No active tickets right now.' },
+  { label: 'Expired', path: 'all/expired', empty: 'No expired tickets.' },
+  { label: 'Failed', path: 'all/failed', failed: true, empty: 'No failed payments. Nice.' },
+];
 
+const FMT = 'DD-MM-YYYY HH:mm:ss';
+
+const formatDateTime = (dateTime) => {
+  const m = moment(dateTime, FMT);
+  return m.isValid() ? m.format('DD MMM YYYY, hh:mm A') : '—';
+};
+
+// "paymentId" -> "Payment id"
+const humanize = (k) => k.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+
+// Failed tickets use different field names; read both shapes through these.
+const stamp = (t, failed) => (failed ? t.paymentDetailDto?.orderCreatedAt : t.createdAt);
+const route = (t, failed) => (failed ? [t.fromStop, t.toStop] : [t.from, t.to]);
+
+const dayLabel = (s) => {
+  const m = moment(s, FMT);
+  if (!m.isValid()) return 'Unknown date';
+  if (m.isSame(moment(), 'day')) return 'Today';
+  if (m.isSame(moment().subtract(1, 'day'), 'day')) return 'Yesterday';
+  return m.format(m.isSame(moment(), 'year') ? 'dddd, DD MMM' : 'DD MMM YYYY');
+};
+
+// Consecutive rows that share a day go under one heading.
+const groupByDay = (rows, failed) =>
+  rows.reduce((groups, t) => {
+    const label = dayLabel(stamp(t, failed));
+    const last = groups[groups.length - 1];
+    if (last && last.label === label) last.items.push(t);
+    else groups.push({ label, items: [t] });
+    return groups;
+  }, []);
+
+const downloadCsv = (rows, failed, tabLabel) => {
+  const header = failed
+    ? ['Order created', 'From', 'To', 'Order ID', 'Payment ID', 'Amount', 'Payment status']
+    : ['Booked', 'From', 'To', 'Ticket type', 'Fare', 'Discount', 'Paid', 'Status'];
+  const lines = rows.map((t) =>
+    failed
+      ? [formatDateTime(stamp(t, true)), t.fromStop, t.toStop, t.paymentDetailDto?.orderId, t.paymentDetailDto?.paymentId, t.priceResponse?.grandTotal, t.paymentDetailDto?.status]
+      : [formatDateTime(t.createdAt), t.from, t.to, typeLabel(t.ticketType), t.price, t.discountedAmount, t.amountAfterDiscount, t.active ? 'Active' : 'Expired']
+  );
+  const csv = [header, ...lines]
+    .map((cols) => cols.map((c) => `"${String(c ?? '').replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `smartbus-${tabLabel.toLowerCase()}-tickets-${moment().format('YYYY-MM-DD')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+const CopyButton = ({ text }) => {
+  const [done, setDone] = useState(false);
+  const copy = (e) => {
+    e.stopPropagation();
+    navigator.clipboard?.writeText(text).then(() => {
+      setDone(true);
+      setTimeout(() => setDone(false), 1500);
+    });
+  };
+  return (
+    <button type="button" className="tk-copy" onClick={copy} aria-label="Copy order ID" title="Copy order ID">
+      {done ? <Check size={13} /> : <Copy size={13} />}
+    </button>
+  );
+};
+
+const TicketRow = ({ ticket, onOpen, onQr }) => {
+  const t = when(ticket.createdAt);
   return (
     <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
+      className="tk-row is-clickable"
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpen(ticket)}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onOpen(ticket))}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
+      <div className="tk-row__route">
+        <span className={`tk-row__dot${ticket.active ? ' is-on' : ''}`} />
+        <div>
+          <strong>{ticket.from} <ArrowRight size={14} /> {ticket.to}</strong>
+          <span>{typeLabel(ticket.ticketType)} · {t.time}</span>
+        </div>
+      </div>
+      <div className="tk-row__cell">
+        <small>Paid</small>
+        <strong>{money(ticket.amountAfterDiscount)}</strong>
+        {Number(ticket.discountedAmount) > 0 && <span className="tk-green">−{money(ticket.discountedAmount)} off</span>}
+      </div>
+      <div className="tk-row__cell">
+        <small>Status</small>
+        <span title={!ticket.active ? ticket.expiredMessage || 'Ticket has expired' : undefined}>
+          <StatusBadge active={ticket.active} />
+        </span>
+      </div>
+      <div className="tk-row__action">
+        <button
+          type="button"
+          className="tk-btn tk-btn--ghost tk-btn--sm"
+          onClick={(e) => { e.stopPropagation(); onQr(ticket); }}
+        >
+          <QrCode size={15} /> QR
+        </button>
+        <ChevronRight size={18} className="tk-row__chev" />
+      </div>
     </div>
   );
-}
+};
 
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`,
-  };
-}
+const FailedRow = ({ ticket, onDetails }) => {
+  const discount = ticket.priceResponse?.ticketDetails?.reduce((sum, d) => sum + d.totalDiscountAmount, 0) || 0;
+  const orderId = ticket.paymentDetailDto?.orderId;
+  return (
+    <div className="tk-row">
+      <div className="tk-row__route">
+        <span className="tk-row__dot is-bad" />
+        <div>
+          <strong>{ticket.fromStop} <ArrowRight size={14} /> {ticket.toStop}</strong>
+          <span>
+            {ticket.priceResponse?.ticketDetails?.map((d) => `${d.numberOfTickets} × ${typeLabel(d.ticketType)}`).join(', ')}
+          </span>
+        </div>
+      </div>
+      <div className="tk-row__cell">
+        <small>Amount</small>
+        <strong>{money(ticket.priceResponse?.grandTotal)}</strong>
+        {discount > 0 && <span className="tk-green">−{money(discount)} off</span>}
+      </div>
+      <div className="tk-row__cell">
+        <small>Order</small>
+        <span className="tk-order">
+          <span className="tk-mono" title={orderId}>{orderId || '—'}</span>
+          {orderId && <CopyButton text={orderId} />}
+        </span>
+        <span title={ticket.paymentDetailDto?.note || undefined}>
+          <StatusBadge label={ticket.paymentDetailDto?.status || 'Failed'} />
+        </span>
+      </div>
+      <div className="tk-row__action">
+        <button type="button" className="tk-btn tk-btn--ghost tk-btn--sm" onClick={() => onDetails(ticket)} disabled={!ticket.paymentDetailDto?.paymentId}>
+          <Receipt size={15} /> Details
+        </button>
+      </div>
+    </div>
+  );
+};
 
-export default function FullWidthTabs() {
-  const theme = useTheme();
+const SkeletonRows = () => (
+  <div className="tk-rows" aria-busy="true" aria-label="Loading tickets">
+    {Array.from({ length: 5 }, (_, i) => (
+      <div key={i} className="tk-row tk-row--skeleton">
+        <div className="tk-row__route"><i className="tk-sk tk-sk--dot" /><div><i className="tk-sk tk-sk--lg" /><i className="tk-sk tk-sk--sm" /></div></div>
+        <div className="tk-row__cell"><i className="tk-sk tk-sk--sm" /><i className="tk-sk tk-sk--md" /></div>
+        <div className="tk-row__cell"><i className="tk-sk tk-sk--sm" /><i className="tk-sk tk-sk--md" /></div>
+        <div className="tk-row__action"><i className="tk-sk tk-sk--btn" /></div>
+      </div>
+    ))}
+  </div>
+);
+
+export default function TicketHistory() {
   const { auth } = useAuth();
+  const api = useAxiosWithInterceptor();
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const [value, setValue] = useState(0);
-  const [tickets, setTickets] = useState([]);
-  const [Activetickets, setActiveTickets] = useState([]);
-  const [Expiredtickets, setExpiredTickets] = useState([]);
-  const [failedTickets, setFailedTickets] = useState([]);
+  const [tab, setTab] = useState(0);
+  const [rows, setRows] = useState([]);
+  const [counts, setCounts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const api = useAxiosWithInterceptor();
-  const [open, setOpen] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [query, setQuery] = useState('');
+  const [detail, setDetail] = useState(null);
+  const [qrTicket, setQrTicket] = useState(null);
   const [paymentDetails, setPaymentDetails] = useState(null);
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const failed = Boolean(TABS[tab].failed);
 
   const handleMoreDetails = async (ticket) => {
     const token = auth.accessToken;
@@ -98,1322 +212,208 @@ export default function FullWidthTabs() {
         { paymentId: ticket.paymentDetailDto.paymentId },
         { headers: { Authorization: token } }
       );
-      setPaymentDetails(response.data); // Save the API response
-      setOpen(true); // Open the dialog after data is set
+      setPaymentDetails(response.data);
     } catch (error) {
       console.error('Error fetching payment details:', error);
       alert('Failed to fetch payment details. Please try again later.');
     }
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setPaymentDetails(null);
-  };
-  const handleOpen = () => {
-    setOpen(true);
-    setPaymentDetails(null);
-  };
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const changeTab = (i) => {
+    setTab(i);
     setPage(0);
-  };
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  const formatDateTime = (dateTime) => {
-    return moment(dateTime, "DD-MM-YYYY HH:mm:ss").format("DD/MM/YYYY HH:mm:ss");
+    setQuery('');
   };
 
-  // Fetch tickets based on the selected tab
+  // Tab counts: one tiny request per tab.
   useEffect(() => {
-    const fetchTickets = async () => {
-      setLoading(true);
-      try {
-        const token = auth.accessToken;
-        if (!token) {
-          console.error('No token found. Redirecting to login...');
-          return;
-        }
+    const token = auth.accessToken;
+    if (!token) return undefined;
+    let alive = true;
+    Promise.all(
+      TABS.map((t) =>
+        api
+          .get(`/tsn/v1/ticket/${t.path}?timeZone=${timeZone}&pageNumber=0&pageSize=1`, { headers: { Authorization: token } })
+          .then((res) => res.data?.totalElements ?? null)
+          .catch(() => null)
+      )
+    ).then((c) => alive && setCounts(c));
+    return () => { alive = false; };
+  }, [api, auth.accessToken, timeZone]);
 
-        const response = await api.get(`/tsn/v1/ticket/all?timeZone=${timeZone}&pageNumber=${page}&pageSize=${rowsPerPage}`, {
-          headers: { Authorization: token },
-        });
-
-        const { tickets, totalPages, totalElements } = response.data;
-        setTickets(tickets);
-        setTotalPages(totalPages);
-        setTotalElements(totalElements);
-
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          console.error('Unauthorized access. Redirecting to login...');
-        } else {
-          console.error('Error fetching ticket data:', error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (value === 0) {
-      fetchTickets();
-    }
-  }, [api, page, rowsPerPage, value]);
-
-  // active tickets
+  // Rows for the current tab + page; the failed tab returns a different list key.
   useEffect(() => {
-    const fetchActiveTickets = async () => {
-      setLoading(true);
-      try {
-        const token = auth.accessToken;
-        if (!token) {
-          console.error('No token found. Redirecting to login...');
-          return;
-        }
+    const token = auth.accessToken;
+    if (!token) return undefined;
+    let alive = true;
+    setLoading(true);
+    setRows([]);
+    api
+      .get(`/tsn/v1/ticket/${TABS[tab].path}?timeZone=${timeZone}&pageNumber=${page}&pageSize=${rowsPerPage}`, {
+        headers: { Authorization: token },
+      })
+      .then((res) => {
+        if (!alive) return;
+        const list = TABS[tab].failed ? res.data.failedTickets : res.data.tickets;
+        setRows(list || []);
+        setTotalElements(res.data.totalElements || 0);
+      })
+      .catch((error) => console.error('Error fetching ticket data:', error))
+      .finally(() => alive && setLoading(false));
+    return () => { alive = false; };
+  }, [api, auth.accessToken, tab, page, rowsPerPage, timeZone]);
 
-        const response = await api.get(`/tsn/v1/ticket/all/active?timeZone=${timeZone}&pageNumber=${page}&pageSize=${rowsPerPage}`, {
-          headers: { Authorization: token },
-        });
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((t) => route(t, failed).some((s) => s?.toLowerCase().includes(q)));
+  }, [rows, query, failed]);
 
-        const { tickets, totalPages, totalElements } = response.data;
-        setActiveTickets(tickets);
-        setTotalPages(totalPages);
-        setTotalElements(totalElements);
+  const groups = useMemo(() => groupByDay(visible, failed), [visible, failed]);
 
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          console.error('Unauthorized access. Redirecting to login...');
-        } else {
-          console.error('Error fetching Active ticket data:', error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+  const paymentEntries = paymentDetails && typeof paymentDetails === 'object'
+    ? Object.entries(paymentDetails).filter(([, v]) => v !== null && typeof v !== 'object')
+    : [];
 
-    if (value === 1) {
-      fetchActiveTickets();
-    }
-  }, [api, page, rowsPerPage, value]);
-
-  // expired tickets
-  useEffect(() => {
-    const fetchExpiredTickets = async () => {
-      setLoading(true);
-      try {
-        const token = auth.accessToken;
-        if (!token) {
-          console.error('No token found. Redirecting to login...');
-          return;
-        }
-
-        const response = await api.get(`/tsn/v1/ticket/all/expired?timeZone=${timeZone}&pageNumber=${page}&pageSize=${rowsPerPage}`, {
-          headers: { Authorization: token },
-        });
-
-        const { tickets, totalPages, totalElements } = response.data;
-        setExpiredTickets(tickets);
-        setTotalPages(totalPages);
-        setTotalElements(totalElements);
-
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          console.error('Unauthorized access. Redirecting to login...');
-        } else {
-          console.error('Error fetching ticket data:', error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (value === 2) {
-      fetchExpiredTickets();
-    }
-  }, [api, page, rowsPerPage, value]);
-
-  // failed tickets
-  useEffect(() => {
-    const fetchFailedTickets = async () => {
-      setLoading(true);
-      try {
-        const token = auth.accessToken;
-        if (!token) {
-          console.error('No token found. Redirecting to login...');
-          return;
-        }
-
-        const response = await api.get(`/tsn/v1/ticket/all/failed?timeZone=${timeZone}&pageNumber=${page}&pageSize=${rowsPerPage}`, {
-          headers: { Authorization: token },
-        });
-
-        console.log(response)
-
-        const { tickets, totalPages, totalElements } = response.data;
-        setFailedTickets(response.data.failedTickets)
-        setTotalPages(totalPages);
-        setTotalElements(totalElements);
-
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          console.error('Unauthorized access. Redirecting to login...');
-        } else {
-          console.error('Error fetching ticket data:', error);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (value === 3) {
-      fetchFailedTickets();
-    }
-  }, [api, page, rowsPerPage, value]);
+  const detailWhen = detail ? formatDateTime(detail.createdAt) : '';
 
   return (
     <Layout>
       <Helmet>
-        <title>ticket History</title>
+        <title>Ticket History</title>
       </Helmet>
-      <Box sx={{ bgcolor: '#F2F9FF', width: "100%" }}>
-        <AppBar position="static">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="secondary"
-            textColor="inherit"
-            variant="fullWidth"
-            aria-label="full width tabs example"
-            background="red"
-          >
-            <Tab label="ALL TICKETS" {...a11yProps(0)} />
-            <Tab label="ACTIVE TICKETS" {...a11yProps(1)} />
-            <Tab label="EXPIRED TICKETS" {...a11yProps(2)} />
-            <Tab label="FAILED TICKETS" {...a11yProps(3)} />
-          </Tabs>
-        </AppBar>
+      <div className="tk-page">
+        <TicketsHeader
+          eyebrow="My tickets"
+          title="Ticket history"
+          sub="Every trip and payment in one place."
+        />
 
-        {/* All Tickets Tab */}
-        <TabPanel value={value} index={0} dir={theme.direction}>
-          {loading ? (
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              sx={{
-                height: '500px',
-                bgcolor: 'background.paper',
-                borderRadius: 4,
-                border: '1px solid',
-                borderColor: 'divider',
-              }}
-            >
-              <CircularProgress size={64} thickness={4} sx={{ mb: 3 }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
-                Loading Your Tickets
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                Please wait while we fetch your journey details
-              </Typography>
-            </Box>
-          ) : (
-            <Paper elevation={0} sx={{ borderRadius: 4, overflow: 'hidden' }}>
-              <Box sx={{ p: 1, bgcolor: 'background.paper' }}>
-                {/* <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
-        Your Tickets
-      </Typography> */}
+        <Container maxWidth="lg" className="tk-body">
+          <div className="tk-panel">
+            <div className="tk-tabs" role="tablist" aria-label="Filter tickets">
+              {TABS.map((t, i) => (
+                <button
+                  key={t.label}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === i}
+                  className={tab === i ? 'is-on' : ''}
+                  onClick={() => changeTab(i)}
+                >
+                  {t.label}
+                  {counts[i] != null && <em className={t.failed && counts[i] > 0 ? 'is-bad' : ''}>{counts[i]}</em>}
+                </button>
+              ))}
+            </div>
 
-                <TableContainer sx={{ maxHeight: 650 }}>
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem',
-                            py: 2.5
-                          }}
-                        >
-                          Journey Details
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Ticket Info
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Pricing Details
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          QR Code
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Actions
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tickets.map((ticket) => (
-                        <TableRow
-                          key={ticket.id}
-                          sx={{
-                            '&:hover': {
-                              bgcolor: 'grey.50',
-                              transition: 'all 0.3s ease'
-                            }
-                          }}
-                        >
-                          <TableCell sx={{ minWidth: 250 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                <Typography variant="body1" fontWeight={600}>
-                                  {ticket.from}
-                                </Typography>
-                                <ArrowRightAlt sx={{ color: 'primary.main' }} />
-                                <Typography variant="body1" fontWeight={600}>
-                                  {ticket.to}
-                                </Typography>
-                              </Box>
-                              <Chip
-                                label={ticket.active ? 'Active' : 'Expired'}
-                                color={ticket.active ? 'success' : 'error'}
-                                size="small"
-                                sx={{
-                                  alignSelf: 'flex-start',
-                                  fontWeight: 600,
-                                  '& .MuiChip-label': { px: 1.5 }
-                                }}
-                              />
-                            </Box>
-                          </TableCell>
-
-                          <TableCell sx={{ minWidth: 200 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                              <Chip
-                                label={
-                                  ticket.ticketType === "SENIOR_CITIZEN"
-                                    ? ticket.ticketType
-                                      .split('_') // Split into words
-                                      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
-                                      .join(' ') // Join words with spaces
-                                    : ticket.ticketType
-                                }
-                                size="small"
-                                sx={{
-                                  alignSelf: 'flex-start',
-                                  bgcolor: 'primary.lighter',
-                                  color: 'primary.main',
-                                  fontWeight: 600,
-                                  '& .MuiChip-label': { px: 1.5 }
-                                }}
-                              />
-
-                              <Typography variant="body2" fontWeight={500}>
-                                {moment(ticket.createdAt, "DD-MM-YYYY HH:mm:ss").format('DD MMM YYYY')}
-                              </Typography>
-                              <Typography variant="caption" color="text.secondary">
-                                {moment(ticket.createdAt, "DD-MM-YYYY HH:mm:ss").format('HH:mm:ss')}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-
-                          <TableCell>
-                            <Paper
-                              elevation={0}
-                              sx={{
-                                p: 2,
-                                bgcolor: 'grey.50',
-                                borderRadius: 2,
-                                minWidth: 180
-                              }}
-                            >
-                              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" color="text.secondary">Base Price</Typography>
-                                  <Typography variant="body1" fontWeight={500}>₹{ticket.price.toFixed(2)}</Typography>
-                                </Box>
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" color="text.secondary">Discount</Typography>
-                                  <Typography variant="body1" color="success.main" fontWeight={500}>
-                                    -₹{ticket.discountedAmount}
-                                  </Typography>
-                                </Box>
-                                <Divider />
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" fontWeight={600}>Total</Typography>
-                                  <Typography variant="body1" fontWeight={600} color="primary.main">
-                                    ₹{ticket.amountAfterDiscount}
-                                  </Typography>
-                                </Box>
-                              </Box>
-                            </Paper>
-                          </TableCell>
-
-                          <TableCell align="center">
-                            {/* QR Code Container */}
-                            <Box
-                              onClick={handleOpen}
-                              sx={{
-                                position: 'relative',
-                                display: 'inline-flex',
-                                p: 2,
-                                bgcolor: 'grey.50',
-                                borderRadius: 3,
-                                '&:hover .zoom-icon': {
-                                  opacity: 1,
-                                },
-                                cursor: 'pointer',
-                              }}
-                            >
-                              {/* QR Code Image */}
-                              <img
-                                src={ticket.qrCodeLink}
-                                alt="QR Code"
-                                style={{
-                                  width: '100px',
-                                  height: '100px',
-                                  borderRadius: '12px',
-                                }}
-                              />
-                              {/* Zoom Icon Overlay */}
-                              <Box
-                                className="zoom-icon"
-                                sx={{
-                                  position: 'absolute',
-                                  top: 0,
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 0,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  bgcolor: 'rgba(0, 0, 0, 0.5)',
-                                  borderRadius: 3,
-                                  opacity: 0,
-                                  transition: 'opacity 0.2s',
-                                }}
-                              >
-                                <ZoomIn sx={{ color: 'white' }} />
-                              </Box>
-                            </Box>
-
-                            {/* Dialog for QR Code */}
-
-
-
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <Stack spacing={1.5}>
-                              {/* <Link to={'/paymentInfo'} style={{ textDecoration: 'none' }}>
-                                <Button
-                                  fullWidth
-                                  variant="contained"
-                                  size="medium"
-                                  startIcon={<Receipt />}
-                                  sx={{
-                                    borderRadius: 2,
-                                    textTransform: 'none',
-                                    fontWeight: 600,
-                                    boxShadow: 'none'
-                                  }}
-                                >
-                                  View Details
-                                </Button>
-                              </Link> */}
-                              {!ticket.active && (
-                                <Tooltip title={ticket.expiredMessage || 'Ticket has expired'} arrow>
-                                  <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    color="error"
-                                    size="medium"
-                                    startIcon={<Warning />}
-                                    sx={{
-                                      borderRadius: 2,
-                                      textTransform: 'none',
-                                      fontWeight: 600
-                                    }}
-                                  >
-                                    Expired
-                                  </Button>
-                                </Tooltip>
-                              )}
-                            </Stack>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
-                  component="div"
-                  count={totalElements}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  sx={{
-                    borderTop: '1px solid rgba(0,0,0,0.1)',
-                    '& .MuiTablePagination-select': {
-                      borderRadius: 1,
-                      mr: 1,
-                    },
-                  }}
+            <div className="tk-tools">
+              <label className="tk-search">
+                <Search size={16} />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search stops on this page"
+                  aria-label="Search stops on this page"
                 />
-              </Box>
-            </Paper>
-          )}
-        </TabPanel>
+              </label>
+              <button
+                type="button"
+                className="tk-btn tk-btn--ghost tk-btn--sm"
+                onClick={() => downloadCsv(visible, failed, TABS[tab].label)}
+                disabled={!visible.length}
+              >
+                <Download size={15} /> Export CSV
+              </button>
+            </div>
 
-
-        {/* Active Tickets Tab */}
-        <TabPanel value={value} index={1} dir={theme.direction}>
-          {loading ? (
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              sx={{
-                height: '500px',
-                bgcolor: 'background.paper',
-                borderRadius: 4,
-                border: '1px solid',
-                borderColor: 'divider',
-              }}
-            >
-              <CircularProgress size={64} thickness={4} sx={{ mb: 3 }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
-                Loading Your Tickets
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                Please wait while we fetch your journey details
-              </Typography>
-            </Box>
-          ) : (
-            <Paper elevation={0} sx={{ borderRadius: 4, overflow: 'hidden' }}>
-              <Box sx={{ p: 1, bgcolor: 'background.paper' }}>
-                {/* <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
-        Your Tickets
-      </Typography> */}
-
-                <TableContainer sx={{ maxHeight: 650 }}>
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem',
-                            py: 2.5
-                          }}
-                        >
-                          Journey Details
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Ticket Info
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Pricing Details
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          QR Code
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Actions
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {Activetickets.map((ticket) => (
-                        <TableRow
-                          key={ticket.id}
-                          sx={{
-                            '&:hover': {
-                              bgcolor: 'grey.50',
-                              transition: 'all 0.3s ease'
-                            }
-                          }}
-                        >
-                          <TableCell sx={{ minWidth: 250 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                <Typography variant="body1" fontWeight={600}>
-                                  {ticket.from}
-                                </Typography>
-                                <ArrowRightAlt sx={{ color: 'primary.main' }} />
-                                <Typography variant="body1" fontWeight={600}>
-                                  {ticket.to}
-                                </Typography>
-                              </Box>
-                              <Chip
-                                label={
-                                  ticket.ticketType === "SENIOR_CITIZEN"
-                                    ? ticket.ticketType
-                                      .split('_') // Split into words
-                                      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
-                                      .join(' ') // Join words with spaces
-                                    : ticket.ticketType
-                                }
-                                size="small"
-                                sx={{
-                                  alignSelf: 'flex-start',
-                                  bgcolor: 'primary.lighter',
-                                  color: 'primary.main',
-                                  fontWeight: 600,
-                                  '& .MuiChip-label': { px: 1.5 }
-                                }}
-                              />
-                            </Box>
-                          </TableCell>
-
-                          <TableCell sx={{ minWidth: 200 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                              <Chip
-                                label={ticket.ticketType}
-                                size="small"
-                                sx={{
-                                  alignSelf: 'flex-start',
-                                  bgcolor: 'primary.lighter',
-                                  color: 'primary.main',
-                                  fontWeight: 600,
-                                  '& .MuiChip-label': { px: 1.5 }
-                                }}
-                              />
-                              <Typography variant="body2" fontWeight={500}>
-                                {moment(ticket.createdAt, "DD-MM-YYYY HH:mm:ss").format('DD MMM YYYY')}
-                              </Typography>
-                              <Typography variant="caption" color="text.secondary">
-                                {moment(ticket.createdAt, "DD-MM-YYYY HH:mm:ss").format('HH:mm:ss')}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-
-                          <TableCell>
-                            <Paper
-                              elevation={0}
-                              sx={{
-                                p: 2,
-                                bgcolor: 'grey.50',
-                                borderRadius: 2,
-                                minWidth: 180
-                              }}
-                            >
-                              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" color="text.secondary">Base Price</Typography>
-                                  <Typography variant="body1" fontWeight={500}>₹{ticket.price.toFixed(2)}</Typography>
-                                </Box>
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" color="text.secondary">Discount</Typography>
-                                  <Typography variant="body1" color="success.main" fontWeight={500}>
-                                    -₹{ticket.discountedAmount}
-                                  </Typography>
-                                </Box>
-                                <Divider />
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" fontWeight={600}>Total</Typography>
-                                  <Typography variant="body1" fontWeight={600} color="primary.main">
-                                    ₹{ticket.amountAfterDiscount}
-                                  </Typography>
-                                </Box>
-                              </Box>
-                            </Paper>
-                          </TableCell>
-
-                          <TableCell align="center">
-                            <Box
-                              sx={{
-                                position: 'relative',
-                                display: 'inline-flex',
-                                p: 2,
-                                bgcolor: 'grey.50',
-                                borderRadius: 3,
-                                '&:hover': {
-                                  '& .zoom-icon': {
-                                    opacity: 1
-                                  }
-                                }
-                              }}
-                            >
-                              <img
-                                src={ticket.qrCodeLink}
-                                alt="QR Code"
-                                style={{
-                                  width: '100px',
-                                  height: '100px',
-                                  borderRadius: '12px'
-                                }}
-                              />
-                              <Box
-                                className="zoom-icon"
-                                sx={{
-                                  position: 'absolute',
-                                  top: 0,
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 0,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  bgcolor: 'rgba(0, 0, 0, 0.5)',
-                                  borderRadius: 3,
-                                  opacity: 0,
-                                  transition: 'opacity 0.2s',
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                <ZoomIn sx={{ color: 'white' }} />
-                              </Box>
-                            </Box>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <Stack spacing={1.5}>
-                              {/* <Button
-                                fullWidth
-                                variant="contained"
-                                size="medium"
-                                // startIcon={<Receipt />}
-                                onClick={() => handleMoreDetails(ticket)}
-                                sx={{
-                                  borderRadius: 2,
-                                  textTransform: 'none',
-                                  fontWeight: 600,
-                                  boxShadow: 'none'
-                                }}
-                              >
-                                View More
-                              </Button> */}
-                              {!ticket.active && (
-                                <Tooltip title={ticket.expiredMessage || 'Ticket has expired'} arrow>
-                                  <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    color="error"
-                                    size="medium"
-                                    startIcon={<Warning />}
-                                    sx={{
-                                      borderRadius: 2,
-                                      textTransform: 'none',
-                                      fontWeight: 600
-                                    }}
-                                  >
-                                    Expired
-                                  </Button>
-                                </Tooltip>
-                              )}
-                            </Stack>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
-                  component="div"
-                  count={totalElements}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  sx={{
-                    borderTop: '1px solid rgba(0,0,0,0.1)',
-                    '& .MuiTablePagination-select': {
-                      borderRadius: 1,
-                      mr: 1,
-                    },
-                  }}
-                />
-              </Box>
-            </Paper>
-          )}
-        </TabPanel>
-
-        {/* Expired Tickets Tab */}
-        <TabPanel value={value} index={2} dir={theme.direction}>
-          {loading ? (
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-              sx={{
-                height: '500px',
-                bgcolor: 'background.paper',
-                borderRadius: 4,
-                border: '1px solid',
-                borderColor: 'divider',
-              }}
-            >
-              <CircularProgress size={64} thickness={4} sx={{ mb: 3 }} />
-              <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
-                Loading Your Tickets
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                Please wait while we fetch your journey details
-              </Typography>
-            </Box>
-          ) : (
-            <Paper elevation={0} sx={{ borderRadius: 4, overflow: 'hidden' }}>
-              <Box sx={{ p: 1, bgcolor: 'background.paper' }}>
-                {/* <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
-        Your Tickets
-      </Typography> */}
-
-                <TableContainer sx={{ maxHeight: 650 }}>
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem',
-                            py: 2.5
-                          }}
-                        >
-                          Journey Details
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Ticket Info
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Pricing Details
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          QR Code
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            bgcolor: 'grey.50',
-                            fontWeight: 600,
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          Actions
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {Expiredtickets.map((ticket) => (
-                        <TableRow
-                          key={ticket.id}
-                          sx={{
-                            '&:hover': {
-                              bgcolor: 'grey.50',
-                              transition: 'all 0.3s ease'
-                            }
-                          }}
-                        >
-                          <TableCell sx={{ minWidth: 250 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                                <Typography variant="body1" fontWeight={600}>
-                                  {ticket.from}
-                                </Typography>
-                                <ArrowRightAlt sx={{ color: 'primary.main' }} />
-                                <Typography variant="body1" fontWeight={600}>
-                                  {ticket.to}
-                                </Typography>
-                              </Box>
-                              <Chip
-                                label={ticket.active ? 'Active' : 'Expired'}
-                                color={ticket.active ? 'success' : 'error'}
-                                size="small"
-                                sx={{
-                                  alignSelf: 'flex-start',
-                                  fontWeight: 600,
-                                  '& .MuiChip-label': { px: 1.5 }
-                                }}
-                              />
-                            </Box>
-                          </TableCell>
-
-                          <TableCell sx={{ minWidth: 200 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                              <Chip
-                                label={
-                                  ticket.ticketType === "SENIOR_CITIZEN"
-                                    ? ticket.ticketType
-                                      .split('_')
-                                      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
-                                      .join(' ')
-                                    : ticket.ticketType
-                                }
-                                size="small"
-                                sx={{
-                                  alignSelf: 'flex-start',
-                                  bgcolor: 'primary.lighter',
-                                  color: 'primary.main',
-                                  fontWeight: 600,
-                                  '& .MuiChip-label': { px: 1.5 }
-                                }}
-                              />
-                              <Typography variant="body2" fontWeight={500}>
-                                {moment(ticket.createdAt, "DD-MM-YYYY HH:mm:ss").format('DD MMM YYYY')}
-                              </Typography>
-                              <Typography variant="caption" color="text.secondary">
-                                {moment(ticket.createdAt, "DD-MM-YYYY HH:mm:ss").format('HH:mm:ss')}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-
-                          <TableCell>
-                            <Paper
-                              elevation={0}
-                              sx={{
-                                p: 2,
-                                bgcolor: 'grey.50',
-                                borderRadius: 2,
-                                minWidth: 180
-                              }}
-                            >
-                              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" color="text.secondary">Base Price</Typography>
-                                  <Typography variant="body1" fontWeight={500}>₹{ticket.price.toFixed(2)}</Typography>
-                                </Box>
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" color="text.secondary">Discount</Typography>
-                                  <Typography variant="body1" color="success.main" fontWeight={500}>
-                                    -₹{ticket.discountedAmount}
-                                  </Typography>
-                                </Box>
-                                <Divider />
-                                <Box display="flex" justifyContent="space-between">
-                                  <Typography variant="body2" fontWeight={600}>Total</Typography>
-                                  <Typography variant="body1" fontWeight={600} color="primary.main">
-                                    ₹{ticket.amountAfterDiscount}
-                                  </Typography>
-                                </Box>
-                              </Box>
-                            </Paper>
-                          </TableCell>
-
-                          <TableCell align="center">
-                            <Box
-                              sx={{
-                                position: 'relative',
-                                display: 'inline-flex',
-                                p: 2,
-                                bgcolor: 'grey.50',
-                                borderRadius: 3,
-                                '&:hover': {
-                                  '& .zoom-icon': {
-                                    opacity: 1
-                                  }
-                                }
-                              }}
-                            >
-                              <img
-                                src={ticket.qrCodeLink}
-                                alt="QR Code"
-                                style={{
-                                  width: '100px',
-                                  height: '100px',
-                                  borderRadius: '12px'
-                                }}
-                              />
-                              <Box
-                                className="zoom-icon"
-                                sx={{
-                                  position: 'absolute',
-                                  top: 0,
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 0,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  bgcolor: 'rgba(0, 0, 0, 0.5)',
-                                  borderRadius: 3,
-                                  opacity: 0,
-                                  transition: 'opacity 0.2s',
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                <ZoomIn sx={{ color: 'white' }} />
-                              </Box>
-                            </Box>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <Stack spacing={1.5}>
-                              {/* <Button
-                                fullWidth
-                                variant="contained"
-                                size="medium"
-                                startIcon={<Receipt />}
-                                onClick={() => handleMoreDetails(ticket)}
-                                sx={{
-                                  borderRadius: 2,
-                                  textTransform: 'none',
-                                  fontWeight: 600,
-                                  boxShadow: 'none'
-                                }}
-                              >
-                                View More
-                              </Button> */}
-                              {!ticket.active && (
-                                <Tooltip title={ticket.expiredMessage || 'Ticket has expired'} arrow>
-                                  <Button
-                                    fullWidth
-                                    variant="outlined"
-                                    color="error"
-                                    size="medium"
-                                    startIcon={<Warning />}
-                                    sx={{
-                                      borderRadius: 2,
-                                      textTransform: 'none',
-                                      fontWeight: 600
-                                    }}
-                                  >
-                                    Expired
-                                  </Button>
-                                </Tooltip>
-                              )}
-                            </Stack>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
-                  component="div"
-                  count={totalElements}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  sx={{
-                    borderTop: '1px solid rgba(0,0,0,0.1)',
-                    '& .MuiTablePagination-select': {
-                      borderRadius: 1,
-                      mr: 1,
-                    },
-                  }}
-                />
-              </Box>
-            </Paper>
-          )}
-        </TabPanel>
-
-        {/* failed tickets */}
-        <TabPanel value={value} index={3} dir={theme.direction}>
-          {loading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '200px' }}>
-              <CircularProgress size={50} sx={{ mr: 2 }} />
-              <Typography variant="h6" color="text.secondary">
-                Loading Your Tickets...
-              </Typography>
-            </Box>
-          ) : (
-            <Paper elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-              <TableContainer sx={{ maxHeight: 650 }}>
-                <Table stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        sx={{
-                          // backgroundColor: 'primary.main',
-                          color: 'black',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        #
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          // backgroundColor: 'primary.main',
-                          color: 'black',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Journey Details
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          // backgroundColor: 'primary.main',
-                          color: 'black',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Ticket Details
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          // backgroundColor: 'primary.main',
-                          color: 'black',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Pricing
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          // backgroundColor: 'primary.main',
-                          color: 'black',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Order Details
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          // backgroundColor: 'primary.main',
-                          color: 'black',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Payment Information
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          // backgroundColor: 'primary.main',
-                          color: 'black',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Status
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          // backgroundColor: 'primary.main',
-                          color: 'black',
-                          fontWeight: 'bold'
-                        }}
-                      >
-                        Details
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {failedTickets.length > 0 ? (
-                      failedTickets.map((ticket, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{
-                            '&:hover': { backgroundColor: 'action.hover' },
-                            transition: 'background-color 0.2s'
-                          }}
-                        >
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>
-                            <Stack spacing={1}>
-                              <Typography variant="subtitle2" color="primary.main">
-                                From: {ticket.fromStop}
-                              </Typography>
-                              <Typography variant="subtitle2" color="text.secondary">
-                                To: {ticket.toStop}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Stack spacing={1}>
-                              {ticket.priceResponse.ticketDetails.map((detail, i) => (
-                                <Chip
-                                  key={i}
-                                  label={`${detail.ticketType} (${detail.numberOfTickets})`}
-                                  color={detail.ticketType === 'ADULT' ? 'primary' : 'secondary'}
-                                  size="small"
-                                  variant="filled"
-                                  sx={{
-                                    fontSize: '0.8rem', // Reduce font size
-                                    height: '30px', // Optional: Adjust height
-                                    width: "150px"
-                                  }}
-                                />
-                              ))}
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Stack spacing={0.5}>
-                              <Typography variant="body2">
-                                Base Price: ₹{ticket.price.toFixed(2)}
-                              </Typography>
-                              <Typography variant="body2" color="success.main">
-                                Discount: ₹{ticket.priceResponse.ticketDetails
-                                  .reduce((total, detail) => total + detail.totalDiscountAmount, 0)
-                                  .toFixed(2)}
-                              </Typography>
-                              <Typography variant="subtitle2" color="primary.main">
-                                Total: ₹{ticket.priceResponse.grandTotal.toFixed(2)}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Stack spacing={0.5}>
-                              <Tooltip title="Order ID" arrow>
-                                <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
-                                  {ticket.paymentDetailDto.orderId}
-                                </Typography>
-                              </Tooltip>
-                              <Typography variant="caption" color="text.secondary">
-                                Created: {formatDateTime(ticket.paymentDetailDto.orderCreatedAt)}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Stack spacing={0.5}>
-                              <Typography variant="body2">
-                                ID: {ticket.paymentDetailDto.paymentId || "N/A"}
-                              </Typography>
-                              <Typography variant="caption" color="text.secondary">
-                                Created: {formatDateTime(ticket.paymentDetailDto.paymentCreatedAt)}
-                              </Typography>
-                              <Tooltip title={ticket.paymentDetailDto.note || "N/A"}>
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                  sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: 200 }}
-                                >
-                                  Note: {ticket.paymentDetailDto.note ?
-                                    `${ticket.paymentDetailDto.note.slice(0, 50)}${ticket.paymentDetailDto.note.length > 50 ? '...' : ''}`
-                                    : "N/A"}
-                                </Typography>
-                              </Tooltip>
-                            </Stack>
-                          </TableCell>
-                          <TableCell>
-                            <Chip
-                              label={ticket.paymentDetailDto.status}
-                              color="error"
-                              size="small"
-                              sx={{
-                                fontWeight: 'medium',
-                                minWidth: '80px'
-                              }}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Button onClick={() => handleMoreDetails(ticket)}>More Details</Button>
-                          </TableCell>
-
-
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={7} align="center" sx={{ py: 8 }}>
-                          <Typography variant="h6" color="text.secondary">
-                            No Failed Tickets Found
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
+            {loading ? (
+              <SkeletonRows />
+            ) : rows.length === 0 ? (
+              <EmptyState title={TABS[tab].title || `No ${TABS[tab].label.toLowerCase()} tickets`} text={TABS[tab].empty} />
+            ) : visible.length === 0 ? (
+              <div className="tk-nomatch">
+                No stops match “{query}” on this page. <button type="button" className="tk-link" onClick={() => setQuery('')}>Clear search</button>
+              </div>
+            ) : (
+              <div className="tk-rows">
+                {groups.map((g) => (
+                  <section key={g.label} className="tk-group">
+                    <h3 className="tk-group__label">{g.label}<span>{g.items.length}</span></h3>
+                    {g.items.map((ticket, i) =>
+                      failed
+                        ? <FailedRow key={ticket.paymentDetailDto?.orderId || i} ticket={ticket} onDetails={handleMoreDetails} />
+                        : <TicketRow key={ticket.id} ticket={ticket} onOpen={setDetail} onQr={setQrTicket} />
                     )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                  </section>
+                ))}
+              </div>
+            )}
+
+            {totalElements > 0 && (
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
                 component="div"
+                className="tk-pagination"
+                rowsPerPageOptions={[5, 10, 25]}
                 count={totalElements}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                sx={{
-                  borderTop: '1px solid rgba(0,0,0,0.1)',
-                  '& .MuiTablePagination-select': {
-                    borderRadius: 1,
-                    mr: 1,
-                  },
-                }}
+                onPageChange={(e, p) => setPage(p)}
+                onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }}
               />
-            </Paper>
+            )}
+          </div>
+        </Container>
+
+        {/* Ticket details side panel */}
+        <Drawer anchor="right" open={Boolean(detail)} onClose={() => setDetail(null)} PaperProps={{ className: 'tk-drawer' }}>
+          {detail && (
+            <div className="tk-drawer__body">
+              <div className="tk-drawer__head">
+                <div>
+                  <span className="tk-head__eyebrow tk-head__eyebrow--dark">Ticket details</span>
+                  <h2>{detail.from} <ArrowRight size={18} /> {detail.to}</h2>
+                </div>
+                <IconButton onClick={() => setDetail(null)} aria-label="Close"><X size={18} /></IconButton>
+              </div>
+
+              <TicketPass ticket={detail} onOpen={setQrTicket} animate={false} />
+
+              <dl className="tk-facts">
+                {detail.id != null && <div><dt>Ticket ID</dt><dd className="tk-mono">{detail.id}</dd></div>}
+                <div><dt>Booked on</dt><dd>{detailWhen}</dd></div>
+                <div><dt>Passenger type</dt><dd>{typeLabel(detail.ticketType)}</dd></div>
+                <div><dt>Status</dt><dd><StatusBadge active={detail.active} /></dd></div>
+                {!detail.active && detail.expiredMessage && <div><dt>Reason</dt><dd>{detail.expiredMessage}</dd></div>}
+              </dl>
+
+              <button type="button" className="tk-btn tk-btn--primary tk-drawer__cta" onClick={() => setQrTicket(detail)}>
+                <QrCode size={16} /> Show QR at the gate
+              </button>
+            </div>
           )}
-        </TabPanel>
-      </Box>
+        </Drawer>
+
+        <QrDialog ticket={qrTicket} onClose={() => setQrTicket(null)} />
+
+        <Dialog open={Boolean(paymentDetails)} onClose={() => setPaymentDetails(null)} maxWidth="xs" fullWidth PaperProps={{ className: 'tk-dialog' }}>
+          <div className="tk-details">
+            <IconButton onClick={() => setPaymentDetails(null)} className="tk-dialog__close" aria-label="Close"><X size={18} /></IconButton>
+            <span className="tk-head__eyebrow tk-head__eyebrow--dark">Payment</span>
+            <h2>Payment details</h2>
+            {paymentEntries.length ? (
+              <dl>
+                {paymentEntries.map(([k, v]) => (
+                  <div key={k}><dt>{humanize(k)}</dt><dd>{String(v)}</dd></div>
+                ))}
+              </dl>
+            ) : (
+              <p className="tk-muted">No details returned for this payment.</p>
+            )}
+          </div>
+        </Dialog>
+      </div>
     </Layout>
   );
 }

@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Drawer, IconButton, Button, Box, Typography, Menu, MenuItem, List, ListItem, ListItemText, Alert, Badge, Divider, Tooltip, Avatar, Chip, Paper } from '@mui/material';
+import { Drawer, IconButton, Button, Box, Typography, List, ListItem, ListItemText, Divider, Tooltip, Avatar, Chip, Paper } from '@mui/material';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Components/Context/Context';
 import MenuIcon from '@mui/icons-material/Menu';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'mdb-ui-kit/css/mdb.min.css';
 // import EditIcon from '@mui/icons-material/Edit';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useAxiosWithInterceptor } from '../Api/Axios';
 // import toast from 'react-hot-toast';
-import { Dashboard, History, PasswordOutlined, Settings } from '@mui/icons-material';
+import { History, Settings } from '@mui/icons-material';
 import { MailIcon, PhoneIcon } from 'lucide-react';
 import LogoutIcon from '@mui/icons-material/Logout';
 // import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
@@ -22,6 +21,7 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import CloseIcon from '@mui/icons-material/Close';
 import { useUserProfile } from '../Context/UserProfileContext';
+import AccountMenu from './AccountMenu';
 import { CheckCircle, Error } from '@mui/icons-material';
 
 
@@ -35,10 +35,23 @@ const Header = () => {
     // userInfocontext Custom hook
     const { userProfile, error } = useUserProfile();
 
-    const [anchorEl, setAnchorEl] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const open = Boolean(anchorEl);
     const [activeLink, setActiveLink] = useState('home'); // Default active link
+    const [scrolled, setScrolled] = useState(false);
+    const [progress, setProgress] = useState(0);
+
+    const navLinkClass = ({ isActive }) => `nav-link site-nav__link${isActive ? ' is-active' : ''}`;
+
+    useEffect(() => {
+        const onScroll = () => {
+            setScrolled(window.scrollY > 12);
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            setProgress(max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0);
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
 
     // account verify states
     const [isEmailVerified, setIsEmailVerified] = useState(false)
@@ -91,14 +104,6 @@ const Header = () => {
     //     }
     // };
 
-    const handleMenuClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
     const toggleDrawer = (open) => () => {
         setDrawerOpen(open);
     };
@@ -115,7 +120,8 @@ const Header = () => {
     return (
         <>
             {/* Navbar */}
-            <nav className="navbar navbar-expand-lg navbar-light bg-body-tertiary sticky-top">
+            <nav className={`site-nav navbar navbar-expand-lg sticky-top${scrolled ? ' navbar-scrolled' : ''}`}>
+                <span className="site-nav__progress" style={{ transform: `scaleX(${progress / 100})` }} aria-hidden="true" />
 
                 <div className="container">
 
@@ -128,7 +134,7 @@ const Header = () => {
                         onClick={toggleDrawer(true)}
                         className='mx-2'
                     >
-                        <MenuIcon style={{ fontSize: "30px", color: "#0a4275" }} />
+                        <MenuIcon style={{ fontSize: "30px", color: "#0F172A" }} />
                     </IconButton>
 
                     <Drawer
@@ -139,7 +145,7 @@ const Header = () => {
                             sx: {
                                 width: "100%",
                                 maxWidth: "380px",
-                                background: "linear-gradient(145deg, #f8faff 0%, #f0f4ff 50%, #e8f2ff 100%)",
+                                background: "#FFFFFF",
                                 boxShadow: "0 20px 60px rgba(59, 130, 246, 0.15), 0 8px 25px rgba(59, 130, 246, 0.08)",
                                 borderTopLeftRadius: 24,
                                 borderBottomLeftRadius: 24,
@@ -192,7 +198,7 @@ const Header = () => {
                                 sx={{
                                     padding: 4,
                                     textAlign: 'center',
-                                    background: '#34699A',
+                                    background: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)',
                                     borderBottom: '1px solid rgba(59, 130, 246, 0.1)',
                                     boxShadow: '0 4px 20px rgba(59, 130, 246, 0.1)',
                                     borderTopLeftRadius: 24,
@@ -412,7 +418,7 @@ const Header = () => {
                                         fontSize: '0.75rem'
                                     }}
                                 >
-                                    🏠 General
+                                    General
                                 </Typography>
                                 <hr></hr>
 
@@ -491,7 +497,7 @@ const Header = () => {
                                         fontSize: '0.75rem'
                                     }}
                                 >
-                                    ⚙️ Account
+                                    Account
                                 </Typography>
                                 <hr></hr>
 
@@ -530,7 +536,7 @@ const Header = () => {
                                         fontSize: '0.75rem'
                                     }}
                                 >
-                                    🎫 Tickets
+                                    Tickets
                                 </Typography>
                                 <hr></hr>
 
@@ -665,7 +671,7 @@ const Header = () => {
                                     fontSize: '0.75rem'
                                 }}
                             >
-                                ⚡ Quick Actions
+                                Quick Actions
                             </Typography>
                             <hr></hr>
                             <Box
@@ -841,60 +847,40 @@ const Header = () => {
                         aria-expanded="false"
                         aria-label="Toggle navigation"
                     >
-                        <Link className="nav-link" to="/"><i className="fas fa-bus me-3 fw-bold" style={{ color: "#0a4275", fontSize: "25px" }} /></Link>
+                        <Link to="/" className="site-nav__brand">
+                            <span className="site-nav__brand-mark"><i className="fas fa-bus" /></span>
+                            <span className="site-nav__brand-text">SmartBus</span>
+                        </Link>
                     </button>
 
                     <div className="collapse navbar-collapse" id="navbarButtonsExample">
                         {/* Left links */}
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <NavLink
-                                    className="nav-link"
-                                    to="/"
-                                    style={({ isActive }) => ({
-                                        fontWeight: isActive ? "bold" : "normal",
-                                        color: isActive ? "#0a4275" : "inherit",
-                                        padding: "5px 10px",
-                                    })}
-                                >
-                                    <i className="fas fa-bus me-3 fw-bold" style={{ fontSize: "30px" }} />
-                                </NavLink>
+                            <li className="nav-item me-lg-4">
+                                <Link to="/" className="site-nav__brand">
+                                    <span className="site-nav__brand-mark"><i className="fas fa-bus" /></span>
+                                    <span className="site-nav__brand-text">SmartBus</span>
+                                </Link>
                             </li>
                             <li className="nav-item">
                                 <NavLink
-                                    className="nav-link"
+                                    className={navLinkClass}
                                     to="/"
-                                    style={({ isActive }) => ({
-                                        fontWeight: isActive ? "bold" : "normal",
-                                        color: isActive ? "#fff" : "inherit",
-                                        backgroundColor: isActive ? "#0a4275" : "transparent",
-                                        textDecoration: isActive ? "none" : "none",
-                                        borderRadius: "5px",
-                                        padding: "5px 10px",
-                                    })}
                                 >
                                     Home
                                 </NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink
-                                    className="nav-link"
+                                    className={navLinkClass}
                                     to="/about"
-                                    style={({ isActive }) => ({
-                                        fontWeight: isActive ? "bold" : "normal",
-                                        color: isActive ? "#fff" : "inherit",
-                                        backgroundColor: isActive ? "#0a4275" : "transparent",
-                                        textDecoration: isActive ? "none" : "none",
-                                        borderRadius: "5px",
-                                        padding: "5px 10px",
-                                    })}
                                 >
                                     About Us
                                 </NavLink>
                             </li>
                             {/* <li className="nav-item">
                                 <NavLink
-                                    className="nav-link"
+                                    className={navLinkClass}
                                     to="/product"
                                     style={({ isActive }) => ({
                                         fontWeight: isActive ? "bold" : "normal",
@@ -910,23 +896,15 @@ const Header = () => {
                             </li> */}
                             <li className="nav-item">
                                 <NavLink
-                                    className="nav-link"
+                                    className={navLinkClass}
                                     to="/contact"
-                                    style={({ isActive }) => ({
-                                        fontWeight: isActive ? "bold" : "normal",
-                                        color: isActive ? "#fff" : "inherit",
-                                        backgroundColor: isActive ? "#0a4275" : "transparent",
-                                        textDecoration: isActive ? "none" : "none",
-                                        borderRadius: "5px",
-                                        padding: "5px 10px",
-                                    })}
                                 >
                                     Contact Us
                                 </NavLink>
                             </li>
                             {/* <li className="nav-item">
                                 <NavLink
-                                    className="nav-link"
+                                    className={navLinkClass}
                                     to="/support"
                                     style={({ isActive }) => ({
                                         fontWeight: isActive ? "bold" : "normal",
@@ -942,16 +920,8 @@ const Header = () => {
                             </li> */}
                             <li className="nav-item">
                                 <NavLink
-                                    className="nav-link"
+                                    className={navLinkClass}
                                     to="/bookTickets"
-                                    style={({ isActive }) => ({
-                                        fontWeight: isActive ? "bold" : "normal",
-                                        color: isActive ? "#fff" : "inherit",
-                                        backgroundColor: isActive ? "#0a4275" : "transparent",
-                                        textDecoration: isActive ? "none" : "none",
-                                        borderRadius: "5px",
-                                        padding: "5px 10px",
-                                    })}
                                 >
                                     Purchase Ticket
                                 </NavLink>
@@ -960,32 +930,16 @@ const Header = () => {
                                 <>
                                     <li className="nav-item">
                                         <NavLink
-                                            className="nav-link"
+                                            className={navLinkClass}
                                             to="/bookedTicket"
-                                            style={({ isActive }) => ({
-                                                fontWeight: isActive ? "bold" : "normal",
-                                                color: isActive ? "#fff" : "inherit",
-                                                backgroundColor: isActive ? "#0a4275" : "transparent",
-                                                textDecoration: isActive ? "none" : "none",
-                                                borderRadius: "5px",
-                                                padding: "5px 10px",
-                                            })}
                                         >
                                             Recent Ticket
                                         </NavLink>
                                     </li>
                                     <li className="nav-item">
                                         <NavLink
-                                            className="nav-link"
+                                            className={navLinkClass}
                                             to="/ticketHistory"
-                                            style={({ isActive }) => ({
-                                                fontWeight: isActive ? "bold" : "normal",
-                                                color: isActive ? "#fff" : "inherit",
-                                                backgroundColor: isActive ? "#0a4275" : "transparent",
-                                                textDecoration: isActive ? "none" : "none",
-                                                borderRadius: "5px",
-                                                padding: "5px 10px",
-                                            })}
                                         >
                                             Ticket History
                                         </NavLink>
@@ -998,247 +952,17 @@ const Header = () => {
                         <div className="d-flex align-items-center">
                             {!auth.accessToken ? (
                                 <>
-                                    <NavLink
-                                        to="/signin"
-                                        className="mr-2"
-                                        style={({ isActive }) => ({
-                                            textDecoration: "none",
-                                            background: isActive ? "#0a4275" : "#10375c",
-                                            color: isActive ? "white" : "#fff",
-                                            fontWeight: isActive ? "bold" : "normal",
-                                            borderRadius: "5px",
-                                            padding: "4px 10px",
-                                            display: "inline-block",
-                                            marginRight: '13px'
-                                        })}
-                                    >
+                                    <NavLink to="/signin" className="site-nav__btn site-nav__btn--ghost">
                                         Sign In
                                     </NavLink>
 
-                                    <NavLink
-                                        to="/signup"
-                                        className="mr-2"
-                                        style={({ isActive }) => ({
-                                            textDecoration: "none",
-                                            border: isActive ? "none" : "1px solid #10375c",
-                                            background: isActive ? "#0a4275" : "transparent",
-                                            color: isActive ? "white" : "#10375c",
-                                            fontWeight: isActive ? "bold" : "normal",
-                                            borderRadius: "5px",
-                                            padding: "3px 8px",
-                                            display: "inline-block",
-                                        })}
-                                    >
-                                        Sign Up
+                                    <NavLink to="/signup" className="site-nav__btn site-nav__btn--primary">
+                                        Get Started <i className="fas fa-arrow-right ms-1" style={{ fontSize: 12 }} />
                                     </NavLink>
                                 </>
 
                             ) : (
-                                <>
-                                    {/* Dropdown for Account */}
-                                    <IconButton
-                                        onClick={handleMenuClick}
-                                        color="inherit"
-                                    >
-                                        <Avatar
-                                            sx={{
-                                                width: 34,
-                                                height: 34,
-                                                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                                                bgcolor: '#1F509A',
-                                                fontSize: '1.2rem',
-                                                // mb: 1,
-                                            }}
-                                        >
-                                            {userProfile?.profilePicLink ? <img className="w-100" src={userProfile?.profilePicLink} alt='user_profile' /> : firstLetter}
-                                        </Avatar>
-                                    </IconButton>
-
-                                    <Menu
-                                        anchorEl={anchorEl}
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleClose}
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'right',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'right',
-                                        }}
-                                        sx={{
-                                            '& .MuiPaper-root': {
-                                                minWidth: '350px',
-                                                borderRadius: '12px',
-                                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                                                padding: '18px',
-                                                marginLeft: "80px"
-                                            },
-                                        }}
-                                    >
-                                        {/* User Avatar and Name */}
-                                        <Box display="flex" alignItems="center" flexDirection="column" mb={2}>
-                                            <Avatar
-                                                sx={{
-                                                    width: 64,
-                                                    height: 64,
-                                                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                                                    bgcolor: '#1F509A',
-                                                    fontSize: '2rem',
-                                                    mb: 1,
-                                                }}
-                                            >
-                                                {userProfile?.profilePicLink ? <img className="w-100" src={userProfile?.profilePicLink} alt='user_profile' /> : firstLetter}
-                                            </Avatar>
-                                            <Typography variant="body5" fontWeight="600">
-                                                Welcome !
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {userProfile?.email || 'Guest'}
-                                            </Typography>
-                                        </Box>
-
-
-                                        {/* Account Verification Tag */}
-                                        <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
-                                            {!userProfile?.emailVerified || !userProfile?.phoneNumberVerified ? (
-                                                <Typography
-                                                    variant="body2"
-                                                    color="error"
-                                                    sx={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        backgroundColor: 'rgba(255,0,0,0.05)',
-                                                        px: 1,
-                                                        py: 0.5,
-                                                        borderRadius: '20px'
-                                                    }}
-                                                >
-                                                    <Error sx={{ fontSize: '1rem', mr: 0.5 }} />
-                                                    Unverified Account
-                                                </Typography>
-                                            ) : (
-                                                <Typography variant="body2" color="success.main" fontWeight="500" sx={{ display: 'flex', alignItems: 'center' }}>
-                                                    <CheckCircle sx={{ fontSize: '1.25rem', mr: 0.5 }} />
-                                                    Verified Account
-                                                </Typography>
-                                            )}
-                                        </Box>
-                                        <hr style={{ border: 'none', height: '1px', backgroundColor: '#000' }} />
-
-                                        {/* Account Management */}
-                                        <MenuItem>
-                                            <Box display="flex" alignItems="center" width="100%">
-                                                <Avatar
-                                                    sx={{
-                                                        width: 38,
-                                                        height: 38,
-                                                        bgcolor: '#1F509A',
-                                                        fontSize: '1rem',
-                                                        mr: 1,
-                                                    }}
-                                                >
-                                                    <PhoneIcon />
-                                                </Avatar>
-                                                <Box flex="1">
-                                                    <Typography variant="body2" fontWeight="500">
-                                                        Phone Number
-                                                    </Typography>
-                                                    <Typography variant="caption" color="text.secondary">
-                                                        {userProfile?.googleUser ? "**********" : userProfile?.phoneNumber}
-                                                        <Typography variant="caption" color="error">
-                                                            {
-                                                                <Tooltip title="Please verify your account by confirming your mobile number.">
-                                                                    {!userProfile?.phoneNumberVerified ? <Error sx={{ fontSize: '1.25rem', mb: 0.4, mx: 0.5 }} /> : ""}
-                                                                </Tooltip>
-                                                            }
-                                                        </Typography>
-                                                    </Typography>
-                                                </Box>
-                                                {!userProfile?.phoneNumber && <Error sx={{ color: 'red' }} />}
-                                            </Box>
-                                        </MenuItem>
-
-                                        <MenuItem>
-                                            <Box display="flex" alignItems="center" width="100%">
-                                                <Avatar
-                                                    sx={{
-                                                        width: 38,
-                                                        height: 38,
-                                                        bgcolor: '#1F509A',
-                                                        fontSize: '1rem',
-                                                        mr: 1,
-                                                    }}
-                                                >
-                                                    <MailIcon />
-                                                </Avatar>
-                                                <hr />
-                                                <Box flex="1">
-                                                    <Typography variant="body2" fontWeight="500">
-                                                        Email Addres
-                                                    </Typography>
-                                                    <Typography variant="caption" color="text.secondary">
-                                                        {userProfile?.email || 'Not available'}
-                                                        <Typography variant="caption" color="error">
-                                                            {
-                                                                <Tooltip title="Please verify your account by confirming your Email Adress">
-                                                                    {!userProfile?.emailVerified ? <Error sx={{ fontSize: '1.25rem', mb: 0.4, mx: 0.5 }} /> : ''}
-                                                                </Tooltip>
-                                                            }
-                                                        </Typography>
-                                                    </Typography>
-                                                </Box>
-                                                {!userProfile?.email && <Error sx={{ color: 'red' }} />}
-                                            </Box>
-                                        </MenuItem>
-
-                                        <hr style={{ border: 'none', height: '1px', backgroundColor: '#000' }} />
-
-
-                                        {/* Options Section */}
-                                        <MenuItem>
-                                            <Link to={'/editProfile'}>
-                                                <Typography variant="body2" fontWeight="500">
-                                                    <ManageAccountsIcon sx={{ mx: 1 }} /> Settings
-                                                </Typography>
-                                            </Link>
-                                        </MenuItem>
-                                        {auth?.authorities?.includes("ROLE_ADMIN") ? (<MenuItem>
-                                            <Link to={'/admin'}>
-                                                <Typography variant="body2" fontWeight="500">
-                                                    <Dashboard sx={{ mx: 1 }} /> Admin Dashboard
-                                                </Typography>
-                                            </Link>
-                                        </MenuItem>) : ""}
-
-                                        <MenuItem>
-                                            <Link to={'/ForgotPassword'}>
-                                                <Typography variant="body2" fontWeight="500">
-                                                    <PasswordOutlined sx={{ mx: 1 }} /> Change Password
-                                                </Typography>
-                                            </Link>
-                                        </MenuItem>
-
-                                        <hr style={{ border: 'none', height: '1px', backgroundColor: '#000' }} />
-
-
-                                        {/* Logout Button */}
-                                        <MenuItem onClick={() => handleLogout()}>
-                                            <Button
-                                                startIcon={<LogoutIcon />}
-                                                fullWidth
-                                                sx={{
-                                                    color: '#536493',
-                                                    fontSize: '1rem',
-                                                    fontWeight: 600,
-                                                    // py: 1,
-                                                }}
-                                            >
-                                                Sign out
-                                            </Button>
-                                        </MenuItem>
-                                    </Menu>
-                                </>
+                                <AccountMenu />
                             )}
                         </div>
                     </div>

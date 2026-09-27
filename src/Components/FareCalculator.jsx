@@ -1,143 +1,75 @@
 import React from 'react';
-import { Calculator } from 'lucide-react';
-import {Box} from '@mui/material';
-
-import { 
-  Card, 
-  CardHeader, 
-  CardContent, 
-  CardActions, 
-  Typography, 
-  TextField, 
-  MenuItem, 
-  Button 
-} from '@mui/material';
+import { Calculator, ArrowDownUp } from 'lucide-react';
+import { Box, Card, Container, Divider, Grid, Stack, Typography, TextField, MenuItem, Button } from '@mui/material';
 import Layout from './Layout/Layout';
 
 const FareCalculator = () => {
   return (
     <Layout>
-    <Card className="w-25 mt-5 mb-5 max-w-md mx-auto">
-      <CardHeader 
-        title={
-          <Typography variant="h5" component="div" className="flex items-center gap-2 text-blue-800">
-            Get Your Fare
-          </Typography>
-        }
-        style={{ background: 'linear-gradient(to right, #e3f2fd, #bbdefb)' }} // MUI gradient style
-      />
-      
-      <CardContent>
-        {/* Distance Input */}
-        <div className="space-y-2">
-          <TextField 
-            select
-            label="Select From"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          >
-            <MenuItem value="Mini">Mini</MenuItem>
-            <MenuItem value="Sedan">Sedan</MenuItem>
-            <MenuItem value="SUV">SUV</MenuItem>
-          </TextField>
-        </div>
-        
-        {/* Vehicle Type */}
-        <div className="space-y-2 mb-2">
-          <TextField 
-            select
-            label="Select To"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          >
-            <MenuItem value="Mini">Mini</MenuItem>
-            <MenuItem value="Sedan">Sedan</MenuItem>
-            <MenuItem value="SUV">SUV</MenuItem>
-          </TextField>
+      <Box className="hero-grid" sx={{ py: { xs: 6, md: 10 }, bgcolor: '#F8FAFC' }}>
+        <Container maxWidth="sm">
+          <Box sx={{ textAlign: 'center', mb: 5 }} data-aos="fade-up">
+            <Box className="icon-tile" sx={{ mb: 2 }}><Calculator size={24} /></Box>
+            <Typography variant="h3" sx={{ fontSize: { xs: '1.9rem', md: '2.4rem' }, mb: 1 }}>Get your fare</Typography>
+            <Typography color="text.secondary">Know exactly what you'll pay before you ride.</Typography>
+          </Box>
 
-          <Box sx={{
-                    display: 'flex',
-                    flexDirection: { xs: '', sm: 'row' },
-                    gap: 2,
-                    margintoP: '80px',
-                    marginBottom: "0px"
-                  }}>
-                    <TextField
-                      type="number"
-                      label="Adult"
-                      variant="outlined"
-                    //   value={senior}
-                    //   onChange={handleSeniorChange}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        inputProps: { min: 0 },
-                      }}
-                    //   error={isError}
-                    //   helperText={"isError" ? "limit of 6 exceed" : ""}
-                    />
-                    <TextField
-                      label="Child"
-                      type="number"
-                    //   value={Child}
-                    //   onChange={handleChildChange}
-                    //   disabled={isChildDisabled()}
-                      variant="outlined"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        inputProps: { min: 0 },
-                      }}
-                    //   error={isError}
-                    //   helperText={"isError" ? "limit of 6 exceed" : ""}
-                    />
-                    <TextField
-                      type="number"
-                      label="Senior Citizen"
-                      variant="outlined"
-                    //   value={SeniorCitizen}
-                    //   onChange={handleSeniorCitizenChange}
-                      // disabled={isDisabled}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      InputProps={{
-                        inputProps: { min: 0 },
-                      }}
-                    //   error={isError}
-                    //   helperText={"isError" ? "limit of 6 exceed" : ""}
-                    />
-                  </Box>
-        </div>
+          <Card sx={{ p: { xs: 3, sm: 4 } }} data-aos="fade-up" data-aos-delay={100}>
+            <Stack spacing={1} sx={{ position: 'relative' }}>
+              <TextField select label="Select From" fullWidth defaultValue="">
+                <MenuItem value="Mini">Mini</MenuItem>
+                <MenuItem value="Sedan">Sedan</MenuItem>
+                <MenuItem value="SUV">SUV</MenuItem>
+              </TextField>
+              <Box sx={{ display: 'flex', justifyContent: 'center', my: -0.5, zIndex: 1 }}>
+                <Box sx={{ width: 32, height: 32, borderRadius: '50%', bgcolor: '#fff', border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'primary.main' }}>
+                  <ArrowDownUp size={16} />
+                </Box>
+              </Box>
+              <TextField select label="Select To" fullWidth defaultValue="">
+                <MenuItem value="Mini">Mini</MenuItem>
+                <MenuItem value="Sedan">Sedan</MenuItem>
+                <MenuItem value="SUV">SUV</MenuItem>
+              </TextField>
+            </Stack>
 
-        {/* Price Display Box */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg" style={{background:"#CBDCEB"}}>
-          <div className="flex justify-between items-center">
-            <Typography color="textSecondary">Base Fare:</Typography>
-            <Typography fontWeight="bold">₹50</Typography>
-          </div>
-          <div className="flex justify-between items-center mt-2">
-            <Typography color="textSecondary">Distance Fare:</Typography>
-            <Typography fontWeight="bold">₹100</Typography>
-          </div>
-          <div className="h-px bg-blue-200 my-3"></div>
-          <div className="flex justify-between items-center text-lg font-bold text-blue-800">
-            <Typography>Total Fare:</Typography>
-            <Typography>₹150</Typography>
-          </div>
-        </div>
-      </CardContent>
+            <Typography variant="subtitle2" color="text.secondary" sx={{ mt: 4, mb: 1.5 }}>Passengers</Typography>
+            <Grid container spacing={2}>
+              {['Adult', 'Child', 'Senior Citizen'].map((label) => (
+                <Grid item xs={12} sm={4} key={label}>
+                  <TextField
+                    type="number"
+                    label={label}
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                    InputProps={{ inputProps: { min: 0 } }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
 
-      <CardActions>
-        <Button variant="contained" color="primary" fullWidth>
-          Calculate Price
-        </Button>
-      </CardActions>
-    </Card>
+            <Box className="fare-receipt" sx={{ mt: 4 }}>
+              <Stack direction="row" justifyContent="space-between" sx={{ mb: 1.5 }}>
+                <Typography color="text.secondary">Base Fare</Typography>
+                <Typography fontWeight={700}>₹50</Typography>
+              </Stack>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography color="text.secondary">Distance Fare</Typography>
+                <Typography fontWeight={700}>₹100</Typography>
+              </Stack>
+              <Divider sx={{ my: 2, borderStyle: 'dashed' }} />
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Typography fontWeight={700}>Total Fare</Typography>
+                <Typography variant="h5" fontWeight={800} color="primary.main">₹150</Typography>
+              </Stack>
+            </Box>
+
+            <Button variant="contained" size="large" fullWidth sx={{ mt: 3, py: 1.5 }}>
+              Calculate Price
+            </Button>
+          </Card>
+        </Container>
+      </Box>
     </Layout>
   );
 };

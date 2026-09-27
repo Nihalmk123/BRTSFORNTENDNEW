@@ -1,0 +1,102 @@
+/* ------------------------------------------------------------------ */
+/* Hero stage: transit diagram behind a phone that tilts to the pointer */
+/* ------------------------------------------------------------------ */
+.hstage {
+  position: relative;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* Map drifts opposite to the pointer; edges fade into the page */
+.hstage-map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: visible;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.hstage-route--blue { --c: #2563EB; }
+.hstage-route--amber { --c: #F59E0B; }
+.hstage-route--teal { --c: #14B8A6; }
+
+.hstage-line {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.3;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: hstageDraw 1.8s cubic-bezier(0.6, 0, 0.2, 1) 0.3s forwards;
+}
+
+@keyframes hstageDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* a short bright segment travelling the line = a bus in service */
+.hstage-pulse {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 8 92;
+  opacity: 0.9;
+  animation: hstagePulse 8s linear 2s infinite backwards;
+}
+
+@keyframes hstagePulse {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
+.hstage-station {
+  opacity: 0;
+  animation: hstagePop 0.5s ease 1.6s forwards;
+}
+
+.hstage-station circle {
+  fill: #FFFFFF;
+  stroke: var(--c);
+  stroke-width: 2.5;
+}
+
+.hstage-station text {
+  fill: #94A3B8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+@keyframes hstagePop {
+  to { opacity: 1; }
+}
+
+.hstage-tilt {
+  position: relative;
+}
+
+/* The hero backdrop already has a road, so drop the showcase's own. */
+.hstage .hs-road { display: none; }
+
+/* labels get too small to read when the stage shrinks */
+@media (max-width: 600px) {
+  .hstage-station text { display: none; }
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .hstage-tilt,
+  .hstage-map { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hstage-line { animation: none; stroke-dashoffset: 0; }
+  .hstage-station { animation: none; opacity: 1; }
+  .hstage-pulse { display: none; }
+}

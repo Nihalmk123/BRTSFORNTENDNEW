@@ -101,18 +101,18 @@
 //   }, [fromDate, toDate]);
 
 //   const cardColors = {
-//     primary: '#1976d2',
+//     primary: '#2563EB',
 //     secondary: '#0288d1',
 //     info: '#0097a7',
 //     success: '#0288d1',
-//     warning: '#1565c0',
+//     warning: '#1D4ED8',
 //     purple: '#5c6bc0',
 //     teal: '#00796b',
-//     deepBlue: '#1a237e',
+//     deepBlue: '#0F172A',
 //     royalBlue: '#283593',
-//     navyBlue: '#0d47a1',
+//     navyBlue: '#1E3A8A',
 //     skyBlue: '#0277bd',
-//     steelBlue: '#1565c0',
+//     steelBlue: '#1D4ED8',
 //     azure: '#006064'
 //   };
 
@@ -313,7 +313,7 @@
 //             overflow: "hidden",
 //             position: "relative",
 //             height: "250px",
-//             background: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)'
+//             background: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)'
 //           }}
 //         >
 //           <Box
@@ -542,8 +542,8 @@
 
 //   const cardColors = {
 //     primary: {
-//       main: '#2196f3',
-//       gradient: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)',
+//       main: '#3B82F6',
+//       gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
 //     },
 //     secondary: {
 //       main: '#3f51b5',
@@ -570,8 +570,8 @@
 //       gradient: 'linear-gradient(135deg, #009688 0%, #00796b 100%)',
 //     },
 //     deepBlue: {
-//       main: '#1a237e',
-//       gradient: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
+//       main: '#0F172A',
+//       gradient: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)',
 //     }
 //   };
 
@@ -687,12 +687,12 @@
 //   const drawer = (
 //     <Box sx={{ 
 //       height: '100%', 
-//       background: 'linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%)',
+//       background: 'linear-gradient(135deg, #F8FAFC 0%, #ffffff 100%)',
 //     }}>
 //       <Box sx={{ 
 //         p: 3, 
 //         borderBottom: `1px solid ${theme.palette.divider}`,
-//         background: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)',
+//         background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
 //       }}>
 //         <Typography variant="h6" sx={{ 
 //           fontWeight: 600, 
@@ -721,13 +721,13 @@
 //             onClick={() => setActiveItem(item.text)}
 //             sx={{
 //               background: activeItem === item.text 
-//                 ? 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)'
+//                 ? 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)'
 //                 : 'transparent',
 //               color: activeItem === item.text ? 'white' : theme.palette.text.primary,
 //               transition: 'all 0.3s ease',
 //               '&:hover': {
 //                 background: activeItem === item.text 
-//                   ? 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)'
+//                   ? 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)'
 //                   : 'linear-gradient(135deg, rgba(33, 150, 243, 0.08) 0%, rgba(25, 118, 210, 0.08) 100%)',
 //               },
 //             }}
@@ -750,14 +750,14 @@
 //   );
 
 //   return (
-//     <Box sx={{ display: 'flex', bgcolor: '#f8f9ff', minHeight: '100vh' }}>
+//     <Box sx={{ display: 'flex', bgcolor: '#F8FAFC', minHeight: '100vh' }}>
 //       <AppBar
 //         position="fixed"
 //         elevation={0}
 //         sx={{
 //           width: { md: `calc(100% - ${drawerWidth}px)` },
 //           ml: { md: `${drawerWidth}px` },
-//           background: 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)',
+//           background: 'linear-gradient(135deg, #ffffff 0%, #F8FAFC 100%)',
 //           borderBottom: `1px solid ${theme.palette.divider}`,
 //           backdropFilter: 'blur(20px)',
 //         }}
@@ -802,7 +802,7 @@
 //             '& .MuiDrawer-paper': {
 //               width: drawerWidth,
 //               boxSizing: 'border-box',
-//               background: 'linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%)',
+//               background: 'linear-gradient(135deg, #F8FAFC 0%, #ffffff 100%)',
 //               boxShadow: theme.shadows[8]
 //             },
 //           }}
@@ -817,7 +817,7 @@
 //               width: drawerWidth,
 //               boxSizing: 'border-box',
 //               border: 'none',
-//               background: 'linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%)',
+//               background: 'linear-gradient(135deg, #F8FAFC 0%, #ffffff 100%)',
 //               boxShadow: '4px 0 24px rgba(0, 0, 0, 0.05)'
 //             },
 //           }}
@@ -842,7 +842,7 @@
 //             mb: 4,
 //             borderRadius: 4,
 //             overflow: "hidden",
-//             background: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
+//             background: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)',
 //             position: 'relative'
 //           }}
 //         >
@@ -1121,11 +1121,11 @@ const handleRecharge = () => {
   // Enhanced color scheme
   const appColors = {
     header: {
-      background: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
+      background: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)',
       text: '#ffffff'
     },
     sidebar: {
-      background: 'linear-gradient(90deg, #0d47a1 0%, #1565c0 100%)',
+      background: 'linear-gradient(90deg, #1E3A8A 0%, #1D4ED8 100%)',
       itemHover: 'rgba(255, 255, 255, 0.1)',
       itemActive: 'rgba(255, 255, 255, 0.2)',
       text: '#ffffff'
@@ -1168,8 +1168,8 @@ const handleRecharge = () => {
 
   const cardColors = {
     primary: {
-      main: '#2196f3',
-      gradient: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)',
+      main: '#3B82F6',
+      gradient: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
     },
     secondary: {
       main: '#3f51b5',
@@ -1196,8 +1196,8 @@ const handleRecharge = () => {
       gradient: 'linear-gradient(135deg, #009688 0%, #00796b 100%)',
     },
     deepBlue: {
-      main: '#1a237e',
-      gradient: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
+      main: '#0F172A',
+      gradient: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)',
     }
   };
 
@@ -1376,7 +1376,7 @@ const handleRecharge = () => {
   );
 
   return (
-    <Box sx={{ display: 'flex', bgcolor: '#f8f9ff', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', bgcolor: '#F8FAFC', minHeight: '100vh' }}>
       <AppBar
         position="fixed"
         elevation={0}
@@ -1439,7 +1439,7 @@ const handleRecharge = () => {
   PaperProps={{
     sx: {
       borderRadius: 6,
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: 'linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)',
       boxShadow: '0 40px 80px rgba(0,0,0,0.25)',
       overflow: 'hidden',
       border: 'none',
@@ -1475,16 +1475,16 @@ const handleRecharge = () => {
     <Box>
       <Typography variant="h4" sx={{ 
         fontWeight: 800, 
-        color: '#1a1a1a', 
+        color: '#0F172A', 
         mb: 1,
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text'
       }}>
         RFID Hub
       </Typography>
-      <Typography variant="body1" sx={{ color: '#666', fontSize: '1rem', fontWeight: 500 }}>
+      <Typography variant="body1" sx={{ color: '#475569', fontSize: '1rem', fontWeight: 500 }}>
         Next-gen card management system
       </Typography>
     </Box>
@@ -1535,7 +1535,7 @@ const handleRecharge = () => {
               transition: 'all 0.3s ease',
               '&.Mui-selected': {
                 bgcolor: 'rgba(255, 255, 255, 0.9)',
-                color: '#667eea',
+                color: '#2563EB',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
                 transform: 'translateY(-2px)'
               },
@@ -1552,7 +1552,7 @@ const handleRecharge = () => {
                 width: 24, 
                 height: 24, 
                 borderRadius: '50%',
-                bgcolor: activeTab === 0 ? '#667eea' : 'rgba(255,255,255,0.3)',
+                bgcolor: activeTab === 0 ? '#2563EB' : 'rgba(255,255,255,0.3)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1571,7 +1571,7 @@ const handleRecharge = () => {
                 width: 24, 
                 height: 24, 
                 borderRadius: '50%',
-                bgcolor: activeTab === 1 ? '#667eea' : 'rgba(255,255,255,0.3)',
+                bgcolor: activeTab === 1 ? '#2563EB' : 'rgba(255,255,255,0.3)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -1610,7 +1610,7 @@ const handleRecharge = () => {
                   width: 60,
                   height: 60,
                   borderRadius: 3,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  background: 'linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -1622,10 +1622,10 @@ const handleRecharge = () => {
                   💳
                 </Box>
                 <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 0.5 }}>
+                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#0F172A', mb: 0.5 }}>
                     Card Setup
                   </Typography>
-                  <Typography variant="body1" sx={{ color: '#666', fontWeight: 500 }}>
+                  <Typography variant="body1" sx={{ color: '#475569', fontWeight: 500 }}>
                     Configure your RFID card details
                   </Typography>
                 </Box>
@@ -1634,7 +1634,7 @@ const handleRecharge = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {/* RFID Input */}
                 <Box>
-                  <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#333' }}>
+                  <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#0F172A' }}>
                     RFID Number
                   </Typography>
                   <OutlinedInput
@@ -1645,7 +1645,7 @@ const handleRecharge = () => {
                     startAdornment={
                       <InputAdornment position="start">
                         <Box sx={{
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          background: 'linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)',
                           borderRadius: 2,
                           px: 2,
                           py: 1,
@@ -1663,13 +1663,13 @@ const handleRecharge = () => {
                       bgcolor: 'rgba(255, 255, 255, 0.8)',
                       '& .MuiOutlinedInput-notchedOutline': {
                         border: '2px solid transparent',
-                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #2563EB, #1E3A8A) border-box'
                       },
                       '&:hover .MuiOutlinedInput-notchedOutline': {
-                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #2563EB, #1E3A8A) border-box'
                       },
                       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                        background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #2563EB, #1E3A8A) border-box'
                       },
                       '& input': {
                         fontSize: '1.1rem',
@@ -1682,7 +1682,7 @@ const handleRecharge = () => {
 
                 {/* Amount Input */}
                 <Box>
-                  <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#333' }}>
+                  <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#0F172A' }}>
                     Amount
                   </Typography>
                   <OutlinedInput
@@ -1742,7 +1742,7 @@ const handleRecharge = () => {
                 boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#0F172A', mb: 3 }}>
                 Quick Info
               </Typography>
               
@@ -1752,7 +1752,7 @@ const handleRecharge = () => {
                     width: 40,
                     height: 40,
                     borderRadius: 2,
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    background: 'linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -1762,10 +1762,10 @@ const handleRecharge = () => {
                     ℹ️
                   </Box>
                   <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#333' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#0F172A' }}>
                       RFID Format
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#666' }}>
+                    <Typography variant="body2" sx={{ color: '#475569' }}>
                       16-digit number
                     </Typography>
                   </Box>
@@ -1786,10 +1786,10 @@ const handleRecharge = () => {
                     🔒
                   </Box>
                   <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#333' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: '#0F172A' }}>
                       Secure Process
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#666' }}>
+                    <Typography variant="body2" sx={{ color: '#475569' }}>
                       End-to-end encrypted
                     </Typography>
                   </Box>
@@ -1831,7 +1831,7 @@ const handleRecharge = () => {
               borderRadius: 3,
               px: 6,
               py: 1.5,
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)',
               fontWeight: 600,
               fontSize: '1rem',
               boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)',
@@ -1883,17 +1883,17 @@ const handleRecharge = () => {
                   🔍
                 </Box>
                 <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 0.5 }}>
+                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#0F172A', mb: 0.5 }}>
                     Balance Check
                   </Typography>
-                  <Typography variant="body1" sx={{ color: '#666', fontWeight: 500 }}>
+                  <Typography variant="body1" sx={{ color: '#475569', fontWeight: 500 }}>
                     Instant balance verification
                   </Typography>
                 </Box>
               </Box>
 
               <Box sx={{ mb: 4 }}>
-                <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#333' }}>
+                <Typography variant="body1" sx={{ mb: 2, fontWeight: 600, color: '#0F172A' }}>
                   RFID Number
                 </Typography>
                 <OutlinedInput
@@ -1904,7 +1904,7 @@ const handleRecharge = () => {
                   startAdornment={
                     <InputAdornment position="start">
                       <Box sx={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        background: 'linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)',
                         borderRadius: 2,
                         px: 2,
                         py: 1,
@@ -1922,7 +1922,7 @@ const handleRecharge = () => {
                       <IconButton 
                         onClick={checkBalance} 
                         sx={{ 
-                          color: '#667eea',
+                          color: '#2563EB',
                           background: 'rgba(102, 126, 234, 0.1)',
                           '&:hover': {
                             background: 'rgba(102, 126, 234, 0.2)'
@@ -1938,13 +1938,13 @@ const handleRecharge = () => {
                     bgcolor: 'rgba(255, 255, 255, 0.8)',
                     '& .MuiOutlinedInput-notchedOutline': {
                       border: '2px solid transparent',
-                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #2563EB, #1E3A8A) border-box'
                     },
                     '&:hover .MuiOutlinedInput-notchedOutline': {
-                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #2563EB, #1E3A8A) border-box'
                     },
                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea, #764ba2) border-box'
+                      background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #2563EB, #1E3A8A) border-box'
                     },
                     '& input': {
                       fontSize: '1.1rem',
@@ -2066,7 +2066,7 @@ const handleRecharge = () => {
                 }}>
                   ❓
                 </Box>
-                <Typography variant="h6" sx={{ color: '#666', mb: 1, fontWeight: 600 }}>
+                <Typography variant="h6" sx={{ color: '#475569', mb: 1, fontWeight: 600 }}>
                   No Balance Data
                 </Typography>
                 <Typography variant="body2" sx={{ color: '#999', fontWeight: 500 }}>
@@ -2104,10 +2104,10 @@ const handleRecharge = () => {
     justifyContent: 'space-between'
   }}>
     <Box>
-      <Typography variant="h5" sx={{ fontWeight: 700, color: '#1a1a1a', mb: 0.5 }}>
+      <Typography variant="h5" sx={{ fontWeight: 700, color: '#0F172A', mb: 0.5 }}>
         RFID Management
       </Typography>
-      <Typography variant="body2" sx={{ color: '#666', fontSize: '0.875rem' }}>
+      <Typography variant="body2" sx={{ color: '#475569', fontSize: '0.875rem' }}>
         Create cards, recharge balance, and check account status
       </Typography>
     </Box>
@@ -2141,10 +2141,10 @@ const handleRecharge = () => {
             borderRadius: '12px !important',
             mx: 0.5,
             '&.Mui-selected': {
-              bgcolor: '#1976d2',
+              bgcolor: '#2563EB',
               color: 'white',
               '&:hover': {
-                bgcolor: '#1565c0'
+                bgcolor: '#1D4ED8'
               }
             },
             '&:hover': {
@@ -2184,14 +2184,14 @@ const handleRecharge = () => {
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                <Avatar sx={{ bgcolor: '#1976d2', width: 40, height: 40 }}>
+                <Avatar sx={{ bgcolor: '#2563EB', width: 40, height: 40 }}>
                   <CreditCardIcon />
                 </Avatar>
                 <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#1a1a1a' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#0F172A' }}>
                     Card Information
                   </Typography>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
+                  <Typography variant="body2" sx={{ color: '#475569' }}>
                     Enter the RFID details and amount
                   </Typography>
                 </Box>
@@ -2199,7 +2199,7 @@ const handleRecharge = () => {
 
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <FormControl fullWidth>
-                  {/* <InputLabel sx={{ color: '#666' }}>RFID Number</InputLabel> */}
+                  {/* <InputLabel sx={{ color: '#475569' }}>RFID Number</InputLabel> */}
                   <OutlinedInput
                     value={rfidNumber}
                     onChange={(e) => setRfidNumber(e.target.value)}
@@ -2209,8 +2209,8 @@ const handleRecharge = () => {
                           label="RFID" 
                           size="small" 
                           sx={{ 
-                            bgcolor: '#e3f2fd', 
-                            color: '#1976d2',
+                            bgcolor: '#EFF6FF', 
+                            color: '#2563EB',
                             fontWeight: 500,
                             fontSize: '0.75rem'
                           }} 
@@ -2220,17 +2220,17 @@ const handleRecharge = () => {
                     sx={{
                       borderRadius: 2,
                       '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#1976d2'
+                        borderColor: '#2563EB'
                       },
                       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#1976d2'
+                        borderColor: '#2563EB'
                       }
                     }}
                   />
                 </FormControl>
 
                 <FormControl fullWidth>
-                  {/* <InputLabel sx={{ color: '#666' }}>Amount</InputLabel> */}
+                  {/* <InputLabel sx={{ color: '#475569' }}>Amount</InputLabel> */}
                   <OutlinedInput
                     value={cardHolderName}
                     onChange={(e) => setCardHolderName(e.target.value)}
@@ -2251,10 +2251,10 @@ const handleRecharge = () => {
                     sx={{
                       borderRadius: 2,
                       '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#1976d2'
+                        borderColor: '#2563EB'
                       },
                       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#1976d2'
+                        borderColor: '#2563EB'
                       }
                     }}
                   />
@@ -2275,14 +2275,14 @@ const handleRecharge = () => {
                 height: 'fit-content'
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 600, color: '#1a1a1a', mb: 2 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, color: '#0F172A', mb: 2 }}>
                 Quick Info
               </Typography>
               
               <List dense>
                 <ListItem sx={{ px: 0 }}>
                   <ListItemIcon sx={{ minWidth: 32 }}>
-                    <InfoIcon sx={{ color: '#1976d2', fontSize: 20 }} />
+                    <InfoIcon sx={{ color: '#2563EB', fontSize: 20 }} />
                   </ListItemIcon>
                   <ListItemText 
                     primary="RFID Format" 
@@ -2316,7 +2316,7 @@ const handleRecharge = () => {
               borderRadius: 2,
               px: 3,
               py: 1,
-              color: '#666',
+              color: '#475569',
               fontWeight: 500,
               '&:hover': {
                 backgroundColor: '#f5f5f5'
@@ -2333,11 +2333,11 @@ const handleRecharge = () => {
               borderRadius: 2,
               px: 4,
               py: 1,
-              bgcolor: '#1976d2',
+              bgcolor: '#2563EB',
               fontWeight: 500,
               boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
               '&:hover': {
-                bgcolor: '#1565c0',
+                bgcolor: '#1D4ED8',
                 boxShadow: '0 6px 16px rgba(25, 118, 210, 0.4)'
               }
             }}
@@ -2369,17 +2369,17 @@ const handleRecharge = () => {
                   <SearchIcon />
                 </Avatar>
                 <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#1a1a1a' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#0F172A' }}>
                     Balance Inquiry
                   </Typography>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
+                  <Typography variant="body2" sx={{ color: '#475569' }}>
                     Enter your RFID number to check balance
                   </Typography>
                 </Box>
               </Box>
 
               <FormControl fullWidth sx={{ mb: 3 }}>
-                {/* <InputLabel sx={{ color: '#666' }}>RFID Number</InputLabel> */}
+                {/* <InputLabel sx={{ color: '#475569' }}>RFID Number</InputLabel> */}
                 <OutlinedInput
                   value={checkRfid}
                   onChange={(e) => setCheckRfid(e.target.value)}
@@ -2389,8 +2389,8 @@ const handleRecharge = () => {
                         label="RFID" 
                         size="small" 
                         sx={{ 
-                          bgcolor: '#e3f2fd', 
-                          color: '#1976d2',
+                          bgcolor: '#EFF6FF', 
+                          color: '#2563EB',
                           fontWeight: 500,
                           fontSize: '0.75rem'
                         }} 
@@ -2399,7 +2399,7 @@ const handleRecharge = () => {
                   }
                   endAdornment={
                     <InputAdornment position="end">
-                      <IconButton onClick={checkBalance} sx={{ color: '#1976d2' }}>
+                      <IconButton onClick={checkBalance} sx={{ color: '#2563EB' }}>
                         <SearchIcon />
                       </IconButton>
                     </InputAdornment>
@@ -2407,10 +2407,10 @@ const handleRecharge = () => {
                   sx={{
                     borderRadius: 2,
                     '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976d2'
+                      borderColor: '#2563EB'
                     },
                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976d2'
+                      borderColor: '#2563EB'
                     }
                   }}
                 />
@@ -2424,11 +2424,11 @@ const handleRecharge = () => {
                   textTransform: 'none',
                   borderRadius: 2,
                   py: 1.5,
-                  borderColor: '#1976d2',
-                  color: '#1976d2',
+                  borderColor: '#2563EB',
+                  color: '#2563EB',
                   fontWeight: 500,
                   '&:hover': {
-                    borderColor: '#1565c0',
+                    borderColor: '#1D4ED8',
                     backgroundColor: 'rgba(25, 118, 210, 0.04)'
                   }
                 }}
@@ -2455,7 +2455,7 @@ const handleRecharge = () => {
                 <Avatar sx={{ bgcolor: '#2e7d32', width: 60, height: 60, mx: 'auto', mb: 2 }}>
                   {/* <AccountBalanceWalletIcon sx={{ fontSize: 30 }} /> */}
                 </Avatar>
-                <Typography variant="body2" sx={{ color: '#666', mb: 1 }}>
+                <Typography variant="body2" sx={{ color: '#475569', mb: 1 }}>
                   Available Balance
                 </Typography>
                 <Typography variant="h3" sx={{ fontWeight: 700, color: '#2e7d32', mb: 1 }}>
@@ -2485,7 +2485,7 @@ const handleRecharge = () => {
                 <Avatar sx={{ bgcolor: '#9e9e9e', width: 60, height: 60, mx: 'auto', mb: 2 }}>
                   {/* <HelpOutlineIcon sx={{ fontSize: 30 }} /> */}
                 </Avatar>
-                <Typography variant="body1" sx={{ color: '#666', mb: 1 }}>
+                <Typography variant="body1" sx={{ color: '#475569', mb: 1 }}>
                   No Balance Data
                 </Typography>
                 <Typography variant="body2" sx={{ color: '#999' }}>
@@ -2554,6 +2554,7 @@ const handleRecharge = () => {
           width: { md: `calc(100% - ${drawerWidth}px)` },
           mt: { xs: 8, md: 9 }
         }}
+        data-aos="fade-up"
       >
         <Paper
           elevation={0}
@@ -2561,7 +2562,7 @@ const handleRecharge = () => {
             mb: 4,
             borderRadius: 4,
             overflow: "hidden",
-            background: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
+            background: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)',
             position: 'relative'
           }}
         >

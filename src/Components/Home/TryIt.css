@@ -1,0 +1,387 @@
+/* ------------------------------------------------------------------ */
+/* Try it: pick stops on the line, flip the ticket to its QR pass       */
+/* ------------------------------------------------------------------ */
+.ti {
+  background:
+    radial-gradient(#E2E8F0 1px, transparent 1px) 0 0 / 22px 22px,
+    #FFFFFF;
+}
+
+/* ---------- Line map ---------- */
+.ti-map {
+  height: 100%;
+  padding: 22px 22px 18px;
+  border-radius: 22px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 30px 60px -40px rgba(15, 23, 42, 0.35);
+}
+
+.ti-map__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.ti-map__head span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0F172A;
+  font-weight: 700;
+}
+
+.ti-map__head span svg { color: #2563EB; }
+
+.ti-map__head em {
+  color: #64748B;
+  font-style: normal;
+  font-size: 12.5px;
+}
+
+.ti-line {
+  --dot: 14px;
+  max-height: 420px;
+  margin: 0;
+  padding: 4px 4px 4px 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-width: thin;
+}
+
+.ti-line li {
+  position: relative;
+}
+
+/* connector down to the next stop */
+.ti-line li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: calc(50% + var(--dot) / 2);
+  left: calc(16px + var(--dot) / 2 - 2px);
+  width: 4px;
+  height: calc(100% - var(--dot));
+  border-radius: 2px;
+  background: #E2E8F0;
+  transition: background 0.35s ease;
+}
+
+.ti-line li.on-route:not(.route-end)::after {
+  background: linear-gradient(180deg, #16A34A, #2563EB);
+}
+
+.ti-stop {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #334155;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.ti-stop:hover { background: #F1F5F9; }
+
+.ti-stop i {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 3px solid #CBD5E1;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.on-route .ti-stop i { border-color: #60A5FA; }
+
+.ti-stop span { flex: 1; min-width: 0; }
+
+.ti-stop b {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ti-stop.is-from,
+.ti-stop.is-to { color: #0F172A; }
+
+.ti-stop.is-from i {
+  border-color: #16A34A;
+  box-shadow: 0 0 0 5px rgba(22, 163, 74, 0.15);
+  transform: scale(1.15);
+}
+
+.ti-stop.is-from b { background: rgba(22, 163, 74, 0.12); color: #15803D; }
+
+.ti-stop.is-to i {
+  border-color: #2563EB;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.15);
+  transform: scale(1.15);
+}
+
+.ti-stop.is-to b { background: #EFF6FF; color: #1D4ED8; }
+
+.ti-note {
+  margin: 12px 0 0;
+  color: #64748B;
+  font-size: 12.5px;
+}
+
+/* ---------- Ticket card ---------- */
+.ti-side {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  perspective: 1400px;
+}
+
+.ti-card {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ti-card:disabled { cursor: default; }
+.ti-card.is-flipped { transform: rotateY(180deg); }
+
+.ti-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 24px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.ti-face--front {
+  padding: 22px 24px;
+  color: #E2E8F0;
+  background:
+    radial-gradient(420px circle at 100% 0%, rgba(96, 165, 250, 0.35), transparent 55%),
+    linear-gradient(160deg, #111A2E, #0B1220);
+  box-shadow: 0 40px 80px -40px rgba(37, 99, 235, 0.7);
+}
+
+.ti-card__top,
+.ti-card__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ti-card__top small {
+  color: #93C5FD;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ti-card__top em {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #CBD5E1;
+  font-size: 11.5px;
+  font-style: normal;
+}
+
+.ti-route {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 26px 0 22px;
+  color: #60A5FA;
+}
+
+.ti-route > span:last-child { text-align: right; }
+
+.ti-route small,
+.ti-card__bottom small {
+  display: block;
+  margin-bottom: 4px;
+  color: #64748B;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ti-route strong {
+  display: block;
+  overflow: hidden;
+  color: #F8FAFC;
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* perforation with notches */
+.ti-card__rip {
+  position: relative;
+  margin: auto -24px 18px;
+  border-top: 2px dashed rgba(148, 163, 184, 0.25);
+}
+
+.ti-card__rip::before,
+.ti-card__rip::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #FFFFFF;
+}
+
+.ti-card__rip::before { left: -11px; }
+.ti-card__rip::after { right: -11px; }
+
+.ti-card__bottom strong {
+  color: #F8FAFC;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.ti-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #94A3B8;
+  font-size: 12.5px;
+}
+
+.ti-card:not(:disabled):not(.is-flipped) .ti-face--front .ti-hint {
+  color: #93C5FD;
+  animation: dbBlink 1.8s ease-in-out infinite;
+}
+
+/* back: the QR pass */
+.ti-face--back {
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 22px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 40px 80px -40px rgba(15, 23, 42, 0.45);
+  transform: rotateY(180deg);
+}
+
+.ti-qr {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 3px;
+  width: 170px;
+  height: 170px;
+  padding: 10px;
+  border-radius: 14px;
+  background: #F8FAFC;
+  overflow: hidden;
+}
+
+.ti-qr i {
+  border-radius: 2px;
+  background: #0F172A;
+}
+
+.ti-qr i.off { background: transparent; }
+
+.ti-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: #22C55E;
+  box-shadow: 0 0 16px 4px rgba(34, 197, 94, 0.55);
+  opacity: 0;
+}
+
+.is-flipped:not(.is-boarded) .ti-beam {
+  animation: tiBeam 0.9s ease-in-out 0.5s 2 alternate both;
+}
+
+@keyframes tiBeam {
+  0% { top: 0; opacity: 1; }
+  100% { top: calc(100% - 3px); opacity: 1; }
+}
+
+.ti-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #16A34A;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+.is-boarded .ti-stamp {
+  opacity: 1;
+  transform: none;
+}
+
+.ti-book {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: #2563EB;
+  color: #FFFFFF;
+  font: inherit;
+  font-weight: 700;
+  box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.6);
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+
+.ti-book:hover:not(:disabled) { background: #1D4ED8; transform: translateY(-1px); }
+.ti-book:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 899.98px) {
+  .ti-line { max-height: 340px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ti-card { transition: none; }
+}

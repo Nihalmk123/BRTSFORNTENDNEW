@@ -6,8 +6,8 @@ import { Toaster } from 'react-hot-toast';
 
 const Layout = ({children}) => {
   return (
-    <div className=''>
-      <HelmetProvider>    
+    <div className='page-transition'>
+      <HelmetProvider>
         <Header/>
         {children}
         <Footer/>

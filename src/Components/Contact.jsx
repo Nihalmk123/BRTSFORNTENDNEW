@@ -4,9 +4,17 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import api from './Api/Axios';
 import { Helmet } from 'react-helmet-async';
 import toast, { Toaster } from 'react-hot-toast';
-import contactBannerBg from '../assets/hero-bg-light.webp'
 import heroBanner from '../assets/hero-services-img.webp'
-import { Link } from 'react-router-dom';
+import { Box, Button, Card, Grid, Stack, TextField, Typography, IconButton } from '@mui/material';
+import { Mail, MapPin, Phone, Send, Facebook, Twitter, Globe } from 'lucide-react';
+import PageHero from './UI/PageHero';
+import Section from './UI/Section';
+
+const CONTACT_ITEMS = [
+  { icon: <MapPin size={20} />, label: 'Address', value: 'Hubli, Karnataka' },
+  { icon: <Phone size={20} />, label: 'Phone', value: '+1 123-456-7890' },
+  { icon: <Mail size={20} />, label: 'Email', value: 'IstsBrts@support.com' },
+];
 
 const Contact = () => {
   const recaptchaRef = useRef();
@@ -101,212 +109,141 @@ const Contact = () => {
     <Layout>
       <Helmet>
         <title>Contact us</title>
-        <meta name='description' content='Beginner friendly page for learning React Helmet.' />
+        <meta name='description' content='Get in touch with the SmartBus ticketing team.' />
       </Helmet>
-        <section id="hero" className="hero ">
-          <div className="hero-bg">
-            <img src={contactBannerBg} alt />
-          </div>
-          <div className="container text-center">
-            <div className="d-flex flex-column justify-content-center align-items-center">
-              <h1 data-aos="fade-up"><span>Contact Us</span></h1>
-              <p data-aos="fade-up" data-aos-delay={100}>Have questions or need assistance?
-Reach out to us — we’re here to help!<br /></p>
-              <div className="d-flex" data-aos="fade-up" data-aos-delay={200}>
-                <Link to="/contact" className="btn-get-started" style={{backgroundColor:"#113F67", color:"white"}}>Lets Connect</Link>
-                {/* <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" className="glightbox btn-watch-video d-flex align-items-center"><i className="bi bi-play-circle" /><span>Watch Video</span></a> */}
-              </div>
-              <img src={heroBanner} className="img-fluid hero-img" alt data-aos="zoom-out" data-aos-delay={300} />
-            </div>
-          </div>
-        </section>{/* /Hero Section */}
 
+      <PageHero
+        eyebrow="Contact"
+        title="Let's talk about your next journey"
+        subtitle="Have questions or need assistance? Reach out — we're here to help."
+        image={heroBanner}
+        imageAlt="Contact illustration"
+        actions={
+          <Button component="a" href="#contact-form" variant="contained" size="large" endIcon={<Send size={18} />}>
+            Let's Connect
+          </Button>
+        }
+      />
 
-        {/* Blue Background Strip with Form */}
-        <div className="position-relative mb-5"  >
-          <div className="text-white text-center py-4 py-md-5 rounded-3" style={{ minHeight: '300px', backgroundColor: '#113F67' }}>
-            <h4 className="mb-4 fw-bold text-warning px-3" style={{ fontSize: 'clamp(1.1rem, 3vw, 1.5rem)' }}>Feel free to connect with us!</h4>
+      <Section id="contact-form" tone="muted">
+        <Grid container spacing={4}>
+          {/* Info column */}
+          <Grid item xs={12} md={5} data-aos="fade-right">
+            <Stack spacing={2.5} sx={{ height: '100%' }}>
+              {CONTACT_ITEMS.map((c) => (
+                <Card key={c.label} className="lift-card" sx={{ p: 3 }}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Box className="icon-tile">{c.icon}</Box>
+                    <Box>
+                      <Typography variant="body2" color="text.secondary">{c.label}</Typography>
+                      <Typography fontWeight={700}>{c.value}</Typography>
+                    </Box>
+                  </Stack>
+                </Card>
+              ))}
+              <Card sx={{ p: 3 }}>
+                <Typography fontWeight={700} sx={{ mb: 2 }}>Follow us</Typography>
+                <Stack direction="row" spacing={1}>
+                  {[
+                    { Icon: Facebook, label: 'Facebook' },
+                    { Icon: Globe, label: 'Google' },
+                    { Icon: Twitter, label: 'Twitter' },
+                  ].map(({ Icon, label }) => (
+                    <IconButton
+                      key={label}
+                      href="#!"
+                      aria-label={label}
+                      sx={{
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        borderRadius: 2.5,
+                        color: 'text.secondary',
+                        transition: 'all .25s ease',
+                        '&:hover': { bgcolor: 'primary.main', color: '#fff', borderColor: 'primary.main', transform: 'translateY(-3px)' },
+                      }}
+                    >
+                      <Icon size={18} />
+                    </IconButton>
+                  ))}
+                </Stack>
+              </Card>
+            </Stack>
+          </Grid>
 
-            {/* Contact Form */}
-            <div className="container">
-              <div className="row justify-content-center">
-                <div className="col-12 col-md-10 col-lg-8 col-xl-7">
-                  <div className="p-3 p-md-4 rounded-3 shadow-lg" style={{ backgroundColor: 'rgba(255,255,255,0.95)', color: '#333' }}>
-                    <h5 className="fw-semibold mb-3 mb-md-4 text-center text-dark">Send us a message</h5>
-                    <form onSubmit={handleSubmit}>
-                      <div className="row g-3">
-                        <div className="col-12 col-md-6">
-                          <input
-                            className="form-control form-control-lg"
-                            name="firstName"
-                            placeholder="First name"
-                            type="text"
-                            value={formData.firstName}
-                            onChange={handleInputChange}
-                            required
-                            style={{ fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div className="col-12 col-md-6">
-                          <input
-                            className="form-control form-control-lg"
-                            name="lastName"
-                            placeholder="Last name"
-                            type="text"
-                            value={formData.lastName}
-                            onChange={handleInputChange}
-                            required
-                            style={{ fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div className="col-12">
-                          <input
-                            className="form-control form-control-lg"
-                            name="email"
-                            placeholder="Email address"
-                            type="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            required
-                            style={{ fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div className="col-12">
-                          <input
-                            className="form-control form-control-lg"
-                            name="phoneNumber"
-                            placeholder="Phone number"
-                            type="tel"
-                            value={formData.phoneNumber}
-                            onChange={handleInputChange}
-                            required
-                            style={{ fontSize: '0.95rem' }}
-                          />
-                        </div>
-                        <div className="col-12">
-                          <textarea
-                            className="form-control form-control-lg"
-                            name="message"
-                            placeholder="Your message"
-                            rows={4}
-                            value={formData.message}
-                            onChange={handleInputChange}
-                            required
-                            style={{ resize: 'vertical', fontSize: '0.95rem' }}
-                          />
-                          <div className="mt-2 small text-primary text-start fw-semibold">
-                            {wordCount} words used. {wordsLeft} words left.
-                          </div>
-                        </div>
-                        <div className="col-12 d-flex justify-content-center mb-3">
-                          <div style={{ transform: 'scale(0.9)', transformOrigin: 'center' }}>
-                            <ReCAPTCHA
-                              ref={recaptchaRef}
-                              sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
-                              onChange={onCaptchaChange}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-12">
-                          <button
-                            className="btn btn-primary w-100 fw-bold py-3 text-uppercase"
-                            type="submit"
-                            disabled={!captchaVerified}
-                            style={{
-                              fontSize: '1rem',
-                              letterSpacing: '0.5px',
-                              backgroundColor: captchaVerified ? '#0d6efd' : '#6c757d',
-                              borderColor: captchaVerified ? '#0d6efd' : '#6c757d'
-                            }}
-                          >
-                            Send Message
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          {/* Form column */}
+          <Grid item xs={12} md={7} data-aos="fade-left">
+            <Card sx={{ p: { xs: 3, md: 5 } }}>
+              <Typography variant="h5" fontWeight={700} gutterBottom>Send us a message</Typography>
+              <Typography color="text.secondary" sx={{ mb: 4 }}>
+                We usually reply within one business day.
+              </Typography>
+              <Box component="form" onSubmit={handleSubmit}>
+                <Grid container spacing={2.5}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField fullWidth label="First name" name="firstName" value={formData.firstName} onChange={handleInputChange} required />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField fullWidth label="Last name" name="lastName" value={formData.lastName} onChange={handleInputChange} required />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField fullWidth type="email" label="Email address" name="email" value={formData.email} onChange={handleInputChange} required />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField fullWidth type="tel" label="Phone number" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} required />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      multiline
+                      minRows={4}
+                      label="Your message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      required
+                      helperText={`${wordCount} words used · ${wordsLeft} words left`}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+                    <Box sx={{ transform: { xs: 'scale(0.9)', sm: 'none' }, transformOrigin: 'left center' }}>
+                      <ReCAPTCHA
+                        ref={recaptchaRef}
+                        sitekey="6LfaPVMqAAAAAEiOoyL5MvKt0FpvHYHF9ZzeO8f5"
+                        onChange={onCaptchaChange}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      fullWidth
+                      disabled={!captchaVerified}
+                      endIcon={<Send size={18} />}
+                      sx={{ py: 1.5 }}
+                    >
+                      Send Message
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Card>
+          </Grid>
+        </Grid>
+      </Section>
 
-        {/* Contact Info */}
-        <div className="container-fluid px-3 overflow-hidden">
-  <div className="row g-4 mb-5">
-    {/* Contact Info */}
-    <div className="col-12 col-lg-5">
-      <div className="p-4 bg-white shadow-sm h-100 rounded-3 border">
-        <div className="mb-4">
-          <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Address</h6>
-          <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>Hubli</p>
-        </div>
-        <div className="mb-4">
-          <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Phone</h6>
-          <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>+1 123-456-7890</p>
-        </div>
-        <div className="mb-4">
-          <h6 className="fw-bold mb-2" style={{ color: '#333', fontSize: '1.1rem' }}>Email</h6>
-          <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>IstsBrts@support.com</p>
-        </div>
-        <div>
-          <h6 className="fw-bold mb-3" style={{ color: '#333', fontSize: '1.1rem' }}>Socials</h6>
-          <div className="d-flex gap-2 flex-wrap">
-            <a className="btn text-white btn-sm d-flex align-items-center justify-content-center"
-              style={{ backgroundColor: '#3b5998', width: '45px', height: '45px', borderRadius: '8px' }}
-              href="#!" role="button">
-              <i className="fab fa-facebook-f" style={{ fontSize: '1.2rem' }}></i>
-            </a>
-            <a className="btn text-white btn-sm d-flex align-items-center justify-content-center"
-              style={{ backgroundColor: '#dd4b39', width: '45px', height: '45px', borderRadius: '8px' }}
-              href="#!" role="button">
-              <i className="fab fa-google" style={{ fontSize: '1.2rem' }}></i>
-            </a>
-            <a className="btn text-white btn-sm d-flex align-items-center justify-content-center"
-              style={{ backgroundColor: '#55acee', width: '45px', height: '45px', borderRadius: '8px' }}
-              href="#!" role="button">
-              <i className="fab fa-twitter" style={{ fontSize: '1.2rem' }}></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Google Map */}
-    <div className="col-12 col-lg-7">
-      <div className="card border-0 rounded-3 shadow-sm overflow-hidden h-100">
-        {/* Mobile View */}
-        <iframe
-          className="d-block d-md-none"
-          width="100%"
-          height="350"
-          frameBorder="0"
-          scrolling="no"
-          marginHeight="0"
-          marginWidth="0"
-          style={{ border: 0, display: 'block' }}
-          src="https://maps.google.com/maps?width=100%25&height=350&hl=en&q=KLE%20BVB%20CTIE%20HUBBALLI+(My%20Business%20Name)&t=p&z=14&ie=UTF8&iwloc=B&output=embed"
-          title="Google Map Mobile"
-        ></iframe>
-
-        {/* Desktop View */}
-        <iframe
-          className="d-none d-md-block"
-          width="100%"
-          height="100%"
-          style={{ minHeight: '400px', border: 0, display: 'block' }}
-          frameBorder="0"
-          scrolling="no"
-          marginHeight="0"
-          marginWidth="0"
-          src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=KLE%20BVB%20CTIE%20HUBBALLI+(My%20Business%20Name)&t=p&z=14&ie=UTF8&iwloc=B&output=embed"
-          title="Google Map Desktop"
-        ></iframe>
-      </div>
-    </div>
-  </div>
-</div>
-
+      <Section tone="light" sx={{ pt: 0 }}>
+        <Card sx={{ overflow: 'hidden', p: 0 }} data-aos="fade-up">
+          <Box
+            component="iframe"
+            title="Google Map"
+            src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=KLE%20BVB%20CTIE%20HUBBALLI+(My%20Business%20Name)&t=p&z=14&ie=UTF8&iwloc=B&output=embed"
+            sx={{ display: 'block', width: '100%', height: { xs: 320, md: 440 }, border: 0 }}
+            loading="lazy"
+          />
+        </Card>
+      </Section>
     </Layout>
   );
 };

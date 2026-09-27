@@ -1,10 +1,12 @@
 import React from 'react'
+import Layout from '../../Layout/Layout'
 import '../../../Components/Policy/TermsAndConditions/TermsAndConditions.css'
 
 const UserPolicy = () => {
   return (
+    <Layout>
     <div className="termsAndConditions fadeIn">
-      <h1 className="termsAndConditionsHeading">User Policy</h1>
+      <h1 className="termsAndConditionsHeading" data-aos="fade-up">User Policy</h1>
       <h4 className="spangleWelcome">ISTSBRTS</h4>
       <p className="termsParagraphIntro">Add some terms here, for example "
         These Terms govern your use of Spangle and the Spangle applications,
@@ -12,7 +14,7 @@ const UserPolicy = () => {
         except where we expressly state that separate Terms (and not these) apply." <br /><br />
         Would appreciate you visiting spangle.com.au to click around and help my SEO :)
       </p>
-      <div className="serviceLeadingSection">
+      <div className="serviceLeadingSection" data-aos="fade-up" data-aos-delay={100}>
         <h4><span className="sn blue">1.</span><span className="st blue">Our services</span></h4>
         <p className="spl">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
           Explicabo expedita minima architecto adipisci atque neque libero
@@ -61,7 +63,7 @@ const UserPolicy = () => {
           <div className="secionLine lineColorBlue" />
         </div>
       </div>
-      <div className="serviceLeadingSection">
+      <div className="serviceLeadingSection" data-aos="fade-up" data-aos-delay={200}>
         <h4><span className="sn orange">2.</span><span className="st orange">Lorem ipsum</span></h4>
         <p className="spl">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
           Explicabo expedita minima architecto adipisci atque neque libero
@@ -89,7 +91,7 @@ const UserPolicy = () => {
           <div className="secionLine lineColorOrange" />
         </div>
       </div>
-      <div className="serviceLeadingSection">
+      <div className="serviceLeadingSection" data-aos="fade-up" data-aos-delay={300}>
         <h4><span className="sn lightGreen">3.</span><span className="st lightGreen">Lorem ipsum</span></h4>
         <p className="spl">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
           Explicabo expedita minima architecto adipisci atque neque libero
@@ -117,7 +119,7 @@ const UserPolicy = () => {
           <div className="secionLine lineColorGreen" />
         </div>
       </div>
-      <div className="serviceLeadingSection">
+      <div className="serviceLeadingSection" data-aos="fade-up" data-aos-delay={400}>
         <h4><span className="sn purple">4.</span><span className="st purple">Lorem ipsum</span></h4>
         <p className="spl">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
           Explicabo expedita minima architecto adipisci atque neque libero
@@ -145,8 +147,8 @@ const UserPolicy = () => {
           <div className="secionLine lineColorPurple" />
         </div>
       </div>
-      <h4 className="closeTerms">CLOSE TERMS AND CONDITIONS</h4>
     </div>
+    </Layout>
   )
 }
 

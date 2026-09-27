@@ -1,29 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBInput, MDBBtn, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBTable, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
-import { useAuth } from '../Components/Context/Context';
+import { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
-import { useAxiosWithInterceptor } from './Api/Axios';
-import { Link, useNavigate } from 'react-router-dom';
-import Layout from '../../src/Components/Layout/Layout';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import toast, { Toaster } from 'react-hot-toast';
-import { Alert, Card, Chip, CircularProgress, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Box, chipClasses } from '@mui/material';
-import { AccessTime, AccessTimeFilledRounded, AccessTimeOutlined, ArrowForward, ArrowForwardRounded, ClassSharp, ConfirmationNumberRounded, Error, Info, InfoOutlined, LocalOffer, LocationOn, LocationOnRounded, Mail, PaymentRounded, PaymentsOutlined, PersonOutline, Security, ShoppingBag, SwapVert, Warning } from '@mui/icons-material';
-import { useUserProfile } from './Context/UserProfileContext';
-import { InfoIcon, MailIcon } from 'lucide-react';
+import { CircularProgress, Container, Dialog, IconButton, useMediaQuery } from '@mui/material';
 import {
-  Divider,
-  Stack,
-  useTheme
-} from '@mui/material';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+  ArrowDownUp,
+  ArrowRight,
+  Baby,
+  Check,
+  Lock,
+  MapPin,
+  Minus,
+  Navigation,
+  Plus,
+  QrCode,
+  ShieldCheck,
+  User,
+  UserRound,
+  X,
+  Zap,
+} from 'lucide-react';
+import { useAuth } from '../Components/Context/Context';
+import { useAxiosWithInterceptor } from './Api/Axios';
+import Layout from '../../src/Components/Layout/Layout';
+import { useUserProfile } from './Context/UserProfileContext';
+import './BookTickets.css';
+
+const MAX_PASSENGERS = 6;
+
+const TYPE_LABEL = { ADULT: 'Adult', CHILD: 'Child', SENIOR_CITIZEN: 'Senior citizen' };
+
+const inr = (n) => `₹${Number(n || 0).toFixed(2)}`;
+
+// react-select, dressed to sit inside our own field frame.
+const selectStyles = {
+  control: (base) => ({
+    ...base,
+    minHeight: 30,
+    border: 0,
+    boxShadow: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+  }),
+  valueContainer: (base) => ({ ...base, padding: 0 }),
+  singleValue: (base) => ({ ...base, color: '#0F172A', fontWeight: 700, fontSize: '1.05rem' }),
+  placeholder: (base) => ({ ...base, color: '#94A3B8', fontWeight: 500 }),
+  input: (base) => ({ ...base, margin: 0, padding: 0, fontWeight: 600 }),
+  indicatorSeparator: () => ({ display: 'none' }),
+  dropdownIndicator: (base) => ({ ...base, padding: 4, color: '#94A3B8' }),
+  menu: (base) => ({
+    ...base,
+    marginTop: 14,
+    borderRadius: 14,
+    overflow: 'hidden',
+    border: '1px solid #E2E8F0',
+    boxShadow: '0 24px 48px -16px rgba(15,23,42,0.3)',
+  }),
+  menuList: (base) => ({ ...base, padding: 6 }),
+  option: (base, state) => ({
+    ...base,
+    borderRadius: 10,
+    padding: '10px 12px',
+    cursor: 'pointer',
+    fontWeight: state.isSelected ? 700 : 500,
+    color: state.isSelected ? '#FFFFFF' : '#0F172A',
+    background: state.isSelected ? '#2563EB' : state.isFocused ? '#EFF6FF' : 'transparent',
+  }),
+  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+};
 
 const BookTickets = () => {
   const [ticketType, setTicketType] = useState('Select Ticket Type');
-  const [from, setFrom] = useState(null);
-  const [to, setTo] = useState(null);
+  const prefill = useLocation().state || {}; // stations picked on the home page
+  const [from, setFrom] = useState(prefill.from || null);
+  const [to, setTo] = useState(prefill.to || null);
   const [price, setPrice] = useState('');
   const [numPeople, setNumPeople] = useState(1); // New state for number of people
   const { auth } = useAuth();
@@ -44,16 +95,8 @@ const BookTickets = () => {
   const [isError, setIsError] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
   const [ticketDetails, setTicketDetails] = useState([]);
-  const [openTableModal, setOpenTableModal] = useState(false);
   const [confirmloading, confirmsetLoading] = useState(false);
 
-  const handleOpenTableModal = () => {
-    setOpenTableModal(true);
-  };
-
-  const handleCloseTableModal = () => {
-    setOpenTableModal(false);
-  };
 
 
   // validation fro adult
@@ -235,7 +278,6 @@ const BookTickets = () => {
       setGrandTotal(response.data.grandTotal);
 
       setOpenModal(true); // Open modal after fare is successfully calculated
-      toast.success('Fare fetched successfully', { duration: 3000 });
     } catch (error) {
       toast.error('Error fetching fare', { duration: 3000 });
     }
@@ -362,7 +404,7 @@ const BookTickets = () => {
       }
 
       const options = {
-        key: 'rzp_test_eOy3rwVzb63bbd',
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TUOCZ9ARTqvY0P',
         amount: grandTotal.toString(),
         currency: 'INR',
         name: 'ISTSBRTS',
@@ -489,7 +531,7 @@ const BookTickets = () => {
           alert('Failed to send payment failure details.');
         }
 
-        alert(errorMessage);
+        alert(`Payment failed: ${description}`);
       });
 
       razorpay.open();
@@ -505,874 +547,320 @@ const BookTickets = () => {
 
 
 
+  // Same passenger list the fare and payment calls build.
+  const passengerList = () => [
+    { ticketType: 'ADULT', numberOfTickets: senior },
+    { ticketType: 'CHILD', numberOfTickets: Child },
+    { ticketType: 'SENIOR_CITIZEN', numberOfTickets: SeniorCitizen },
+  ].filter((p) => p.numberOfTickets > 0);
+
+  const passengerCount = senior + Child + SeniorCitizen;
+  const breakdown = ticketDetails.filter((t) => t.numberOfTickets > 0);
+  const breakdownTickets = breakdown.reduce((n, t) => n + Number(t.numberOfTickets || 0), 0);
+  const breakdownDiscount = breakdown.reduce((n, t) => n + Number(t.totalDiscountAmount || 0), 0);
+  const routeReady = Boolean(from && to);
+  const isPhone = useMediaQuery('(max-width:599.98px)');
+  const canReview = routeReady && passengerCount > 0;
+
+  // Live fare as the rider edits; the review step fetches it again before paying.
+  const [preview, setPreview] = useState({ total: null, loading: false });
+  useEffect(() => {
+    if (!canReview) {
+      setPreview({ total: null, loading: false });
+      return undefined;
+    }
+    let alive = true;
+    setPreview((p) => ({ ...p, loading: true }));
+    const id = setTimeout(() => {
+      api
+        .post(
+          '/tsn/v1/fare/calculateFare',
+          { from: from.label, to: to.label, ticketDetails: passengerList() },
+          { headers: { Authorization: auth.accessToken } }
+        )
+        .then((res) => alive && setPreview({ total: res.data?.grandTotal ?? null, loading: false }))
+        .catch(() => alive && setPreview({ total: null, loading: false }));
+    }, 350);
+    return () => { alive = false; clearTimeout(id); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, auth.accessToken, from, to, senior, Child, SeniorCitizen]);
+
+  const swapStops = () => {
+    setFrom(to);
+    setTo(from);
+  };
+
+  // The existing change handlers read event.target.value.
+  const step = (handler, value) => handler({ target: { value } });
+
+  const PASSENGERS = [
+    { key: 'adult', icon: User, label: 'Adult', hint: 'Standard fare', value: senior, onChange: handleSeniorChange },
+    { key: 'child', icon: Baby, label: 'Child', hint: 'Travels with an adult or senior', value: Child, onChange: handleChildChange, disabled: isChildDisabled() },
+    { key: 'senior', icon: UserRound, label: 'Senior citizen', hint: 'Concession fare', value: SeniorCitizen, onChange: handleSeniorCitizenChange },
+  ];
+
+  const summaryPassengers = PASSENGERS.filter((p) => p.value > 0);
+
+  const reviewButton = (className = '') => (
+    <button type="submit" form="bk-form" className={`bk-cta ${className}`} disabled={!canReview}>
+      Review &amp; pay <ArrowRight size={18} />
+    </button>
+  );
+
+  const previewText = () => {
+    if (!canReview) return '—';
+    if (preview.loading) return 'Calculating…';
+    return preview.total != null ? inr(preview.total) : 'Shown at review';
+  };
+
   return (
     <Layout>
       <Helmet>
-        <title>Purchase-ticket</title>
+        <title>Book a ticket</title>
       </Helmet>
-      <Box
-        sx={{
-          minHeight: '100vh',
-          background: 'linear-gradient(135deg, #0A1B48 0%, #1A237E 100%)',
-          position: 'relative',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'url("/path-to-pattern.svg")', // Add subtle pattern
-            opacity: 0.05,
-            pointerEvents: 'none'
-          },
-          pt: { xs: 4, md: 6 },
-          pb: { xs: 4, md: 6 }
-        }}
-      >
-        <Container maxWidth="lg">
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column', lg: 'row' },
-              gap: 6,
-              alignItems: { xs: 'stretch', lg: 'flex-start' }
-            }}
-          >
-            {/* Enhanced Left Section */}
-            <Card
-              sx={{
-                borderRadius: { xs: '20px', sm: '24px' },
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(20px)',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                overflow: 'visible',
-                maxWidth: '100%'
-              }}
+      <Toaster position="top-center" />
+
+      <div className="bk">
+        {/* Header band */}
+        <header className="bk-head">
+          <Container maxWidth="lg">
+            <span className="bk-eyebrow"><Zap size={14} /> QR ticket in under a minute</span>
+            <h1>Where are you headed?</h1>
+            <p>Pick your stops and passengers. You’ll review the fare before paying.</p>
+            <ol className="bk-steps" aria-label="Booking steps">
+              <li className={routeReady ? 'is-done' : 'is-on'}><span>{routeReady ? <Check size={13} /> : 1}</span> Route</li>
+              <li className={passengerCount > 0 ? 'is-done' : routeReady ? 'is-on' : ''}><span>{passengerCount > 0 ? <Check size={13} /> : 2}</span> Passengers</li>
+              <li className={canReview ? 'is-on' : ''}><span>3</span> Review &amp; pay</li>
+            </ol>
+          </Container>
+        </header>
+
+        <Container maxWidth="lg" className="bk-body">
+          <div className="bk-grid">
+            {/* Form */}
+            <form
+              id="bk-form"
+              className="bk-card"
+              onSubmit={(e) => { e.preventDefault(); handleOpenModal(); }}
             >
-              <Box sx={{ p: { xs: 2, sm: 3 } }}>
-                {/* Header - Only visible on tablet and up */}
-                <Box
-                  sx={{
-                    display: { xs: 'none', sm: 'block' },
-                    mb: 3
-                  }}
-                >
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 800,
-                      fontSize: '2rem',
-                      color: '#133E87',
-                      textAlign: 'center'
-                    }}
-                  >
-                    Book Your Ticket
-                  </Typography>
-                </Box>
+              <section className="bk-section">
+                <div className="bk-section__head">
+                  <span className="bk-num">1</span>
+                  <div>
+                    <h2>Route</h2>
+                    <p>Search or pick your boarding and destination stops.</p>
+                  </div>
+                </div>
 
-                <form onSubmit={handleConfirmPurchase}>
-                  <Stack spacing={2}>
-                    {/* Location Selection */}
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        p: { xs: 2, sm: 3 },
-                        bgcolor: 'rgba(248, 250, 252, 0.8)',
-                        borderRadius: '16px',
-                        border: '1px solid rgba(19, 62, 135, 0.1)'
-                      }}
-                    >
-                      {/* From Station */}
-                      <Box sx={{ mb: 1 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                          <Box
-                            sx={{
-                              bgcolor: '#133E87',
-                              borderRadius: '10px',
-                              p: 0.75,
-                              mr: 1.5
-                            }}
-                          >
-                            <LocationOn sx={{ color: 'white', fontSize: '1.25rem' }} />
-                          </Box>
-                          <Typography variant="subtitle1" fontWeight={700} color="#1A2027">
-                            From
-                          </Typography>
-                        </Box>
-                        <AsyncSelect
-                          cacheOptions
-                          loadOptions={loadFromOptions}
-                          defaultOptions={stations.filter(station => station.value !== (to?.value))}
-                          value={from}
-                          onChange={setFrom}
-                          placeholder="Select departure station"
-                          menuPortalTarget={document.body} // <-- Makes dropdown render at body level
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              borderRadius: '12px',
-                              border: '1px solid rgba(19, 62, 135, 0.1)',
-                              minHeight: '48px',
-                              boxShadow: 'none',
-                              '&:hover': {
-                                borderColor: '#133E87'
-                              }
-                            }),
-                            menuPortal: (base) => ({
-                              ...base,
-                              zIndex: 9999 // <-- Keeps it above other elements
-                            })
-                          }}
-                        />
+                <div className="bk-route">
+                  <label className="bk-stop">
+                    <span className="bk-stop__icon bk-stop__icon--from"><MapPin size={16} /></span>
+                    <span className="bk-stop__body">
+                      <small>From</small>
+                      <AsyncSelect
+                        inputId="bk-from"
+                        cacheOptions
+                        loadOptions={loadFromOptions}
+                        defaultOptions={stations.filter((station) => station.value !== to?.value)}
+                        value={from}
+                        onChange={setFrom}
+                        placeholder="Boarding stop"
+                        noOptionsMessage={() => 'No matching stop'}
+                        menuPortalTarget={document.body}
+                        styles={selectStyles}
+                      />
+                    </span>
+                  </label>
 
-                      </Box>
+                  <button type="button" className="bk-swap" onClick={swapStops} disabled={!from && !to} aria-label="Swap stops" title="Swap stops">
+                    <ArrowDownUp size={16} />
+                  </button>
 
-                      {/* Swap Button */}
+                  <label className="bk-stop">
+                    <span className="bk-stop__icon bk-stop__icon--to"><Navigation size={16} /></span>
+                    <span className="bk-stop__body">
+                      <small>To</small>
+                      <AsyncSelect
+                        inputId="bk-to"
+                        cacheOptions
+                        loadOptions={loadToOptions}
+                        defaultOptions={stations.filter((station) => station.value !== from?.value)}
+                        value={to}
+                        onChange={setTo}
+                        placeholder="Destination stop"
+                        noOptionsMessage={() => 'No matching stop'}
+                        menuPortalTarget={document.body}
+                        styles={selectStyles}
+                      />
+                    </span>
+                  </label>
+                </div>
+              </section>
 
+              <section className="bk-section">
+                <div className="bk-section__head">
+                  <span className="bk-num">2</span>
+                  <div>
+                    <h2>Passengers</h2>
+                    <p>Up to {MAX_PASSENGERS} passengers per booking.</p>
+                  </div>
+                  <span className={`bk-count${passengerCount >= MAX_PASSENGERS ? ' is-full' : ''}`}>
+                    {passengerCount}/{MAX_PASSENGERS}
+                  </span>
+                </div>
 
-                      {/* To Station */}
-                      <Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                          <Box
-                            sx={{
-                              bgcolor: '#133E87',
-                              borderRadius: '10px',
-                              p: 0.75,
-                              mr: 1.5
-                            }}
-                          >
-                            <LocationOn sx={{ color: 'white', fontSize: '1.25rem' }} />
-                          </Box>
-                          <Typography variant="subtitle1" fontWeight={700} color="#1A2027">
-                            To
-                          </Typography>
-                        </Box>
-                        <AsyncSelect
-                          cacheOptions
-                          loadOptions={loadToOptions}
-                          defaultOptions={stations.filter(station => station.value !== (from?.value))}
-                          value={to}
-                          onChange={setTo}
-                          placeholder="Select destination station"
-                          menuPortalTarget={document.body}
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              borderRadius: '12px',
-                              border: '1px solid rgba(19, 62, 135, 0.1)',
-                              minHeight: '48px',
-                              boxShadow: 'none',
-                              '&:hover': {
-                                borderColor: '#133E87'
-                              }
-                            }),
-                            menuPortal: (base) => ({
-                              ...base,
-                              zIndex: 9999
-                            })
-                          }}
-                        />
+                <div className="bk-pax">
+                  {PASSENGERS.map(({ key, icon: Icon, label, hint, value, onChange, disabled }) => (
+                    <div key={key} className={`bk-pax__row${disabled ? ' is-disabled' : ''}${value > 0 ? ' is-active' : ''}`}>
+                      <span className="bk-pax__icon"><Icon size={18} /></span>
+                      <div className="bk-pax__text">
+                        <strong>{label}</strong>
+                        <small>{hint}</small>
+                      </div>
+                      <div className="bk-stepper" role="group" aria-label={`${label} passengers`}>
+                        <button type="button" onClick={() => step(onChange, value - 1)} disabled={disabled || value === 0} aria-label={`Remove ${label}`}>
+                          <Minus size={16} />
+                        </button>
+                        <output aria-live="polite">{value}</output>
+                        <button type="button" onClick={() => step(onChange, value + 1)} disabled={disabled || passengerCount >= MAX_PASSENGERS} aria-label={`Add ${label}`}>
+                          <Plus size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
 
-                      </Box>
-                    </Paper>
+              <div className="bk-form-foot">
+                <p><Lock size={14} /> Payments are processed securely by Razorpay.</p>
+                {reviewButton('bk-cta--inline')}
+              </div>
+            </form>
 
-                    {/* Passengers Section */}
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        p: { xs: 2, sm: 3 },
-                        bgcolor: 'rgba(248, 250, 252, 0.8)',
-                        borderRadius: '16px',
-                        border: '1px solid rgba(19, 62, 135, 0.1)'
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                        <Box
-                          sx={{
-                            bgcolor: '#133E87',
-                            borderRadius: '10px',
-                            p: 0.75,
-                            mr: 1.5
-                          }}
-                        >
-                          <PersonOutline sx={{ color: 'white', fontSize: '1.25rem' }} />
-                        </Box>
-                        <Typography variant="subtitle1" fontWeight={700} color="#1A2027">
-                          Passengers
-                        </Typography>
-                      </Box>
-
-                      <Stack
-                        direction={{ xs: 'column', sm: 'row' }}
-                        spacing={2}
-                        sx={{ '& .MuiTextField-root': { flex: 1 } }}
-                      >
-                        {[
-                          { label: 'Adult', value: senior, onChange: handleSeniorChange },
-                          { label: 'Child', value: Child, onChange: handleChildChange, disabled: isChildDisabled() },
-                          { label: 'Senior', value: SeniorCitizen, onChange: handleSeniorCitizenChange }
-                        ].map((field, index) => (
-                          <TextField
-                            key={index}
-                            type="number"
-                            label={field.label}
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                            disabled={field.disabled}
-                            InputProps={{
-                              inputProps: { min: 0 },
-                              sx: {
-                                borderRadius: '12px',
-                                height: '48px',
-                                '& .MuiOutlinedInput-notchedOutline': {
-                                  borderColor: 'rgba(19, 62, 135, 0.1)',
-                                },
-                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                  borderColor: '#133E87',
-                                }
-                              }
-                            }}
-                            error={isError}
-                            helperText={isError ? "Maximum limit of 6 exceeded" : ""}
-                          />
-                        ))}
-                      </Stack>
-                    </Paper>
-
-                    {/* Verification Alert */}
-                    {/* <Alert
-                        severity="warning"
-                        icon={<Mail sx={{ color: '#F59E0B', fontSize: '1.25rem' }} />}
-                        sx={{
-                          borderRadius: '12px',
-                          bgcolor: 'rgba(245, 158, 11, 0.05)',
-                          border: '1px solid #F59E0B',
-                          py: 1,
-                          '& .MuiAlert-message': {
-                            width: '100%',
-                            display: 'flex',
-                            flexDirection: { xs: 'column', sm: 'row' },
-                            alignItems: { xs: 'flex-start', sm: 'center' },
-                            justifyContent: 'space-between',
-                            gap: 1
-                          }
-                        }}
-                      >
-                        <Typography fontWeight={600} fontSize="0.9rem">
-                          Phone number verification required
-                        </Typography>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          // onClick={handleResendOtp}
-                          sx={{
-                            borderRadius: '8px',
-                            borderColor: '#F59E0B',
-                            color: '#F59E0B',
-                            padding: '4px 12px',
-                            fontSize: '0.8rem'
-                          }}
-                        >
-                          Verify Now
-                        </Button>
-                      </Alert> */}
-
-
-                    {/* Confirm Button */}
-                    <Button
-                      variant="contained"
-                      fullWidth
-                      onClick={handleOpenModal}
-                      // disabled={!userProfile?.emailVerified || !userProfile?.phoneNumberVerified}
-                      sx={{
-                        borderRadius: '12px',
-                        py: 1.5,
-                        fontSize: '1rem',
-                        fontWeight: 700,
-                        background: 'linear-gradient(135deg, #133E87 0%, #0F2F66 100%)',
-                        boxShadow: '0 4px 16px rgba(19, 62, 135, 0.25)',
-                        '&:hover': {
-                          background: 'linear-gradient(135deg, #0F2F66 0%, #0A1F40 100%)',
-                          transform: 'translateY(-1px)'
-                        }
-                      }}
-                      endIcon={<ArrowForward />}
-                    >
-                      Confirm Purchase
-                    </Button>
-                  </Stack>
-                </form>
-              </Box>
-            </Card>
-            {/* Enhanced Right Section */}
-            <Box
-              sx={{
-                flex: '0 0 450px',
-                color: 'white',
-                pt: { xs: 2, lg: 8 }
-              }}
-            >
-              <Typography
-                variant="h2"
-                sx={{
-                  fontWeight: 900,
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
-                  mb: 3,
-                  background: 'linear-gradient(90deg, #FFFFFF 0%, #E8EAF6 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  color: 'transparent',
-                  letterSpacing: '-0.02em'
-                }}
-              >
-                Smart Travel Simplified-BRTS
-              </Typography>
-
-              <Typography
-                variant="h6"
-                sx={{
-                  opacity: 0.9,
-                  mb: 4,
-                  lineHeight: 1.6,
-                  fontWeight: 400
-                }}
-              >
-                Book your journey with confidence. Experience seamless travel booking with real-time updates and exclusive benefits.
-              </Typography>
-
-              <Stack spacing={3} sx={{ mb: 6 }}>
-                <Stack direction="row" spacing={2}>
-                  <Chip
-                    icon={<AccessTime sx={{ color: '#1A237E' }} />}
-                    label="Instant Booking"
-                    sx={{
-                      bgcolor: 'white',
-                      fontWeight: 600,
-                      '& .MuiChip-label': { color: '#1A237E' }
-                    }}
-                  />
-                  <Chip
-                    icon={<Security sx={{ color: '#1A237E' }} />}
-                    label="Secure Payment"
-                    sx={{
-                      bgcolor: 'white',
-                      fontWeight: 600,
-                      '& .MuiChip-label': { color: '#1A237E' }
-                    }}
-                  />
-                </Stack>
-
-                <Paper
-                  elevation={0}
-                  sx={{
-                    p: 3,
-                    bgcolor: 'rgba(255, 255, 255, 0.1)',
-                    borderRadius: '16px',
-                    backdropFilter: 'blur(10px)'
-                  }}
-                >
-                  <Stack spacing={2}>
-                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 700 }}>
-                      Today's Special Offers
-                    </Typography>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <LocalOffer sx={{ color: '#FFC107' }} />
-                      <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
-                        20% off on weekend bookings
-                      </Typography>
-                    </Stack>
-                    <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      <LocalOffer sx={{ color: '#FFC107' }} />
-                      <Typography variant="body2" sx={{ color: 'white', opacity: 0.9 }}>
-                        Free cancellation within 24 hours
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                </Paper>
-              </Stack>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
-
-      {/* Confirmation Dialog */}
-      <Dialog
-        open={openModal}
-        onClose={handleCloseModal}
-        sx={{
-          "& .MuiDialog-paper": {
-            width: "380px",
-            maxWidth: "90%",
-            borderRadius: 3
-          }
-        }}
-      >
-        {/* confirm ticket modal */}
-        <Container
-          sx={{
-            maxHeight: '100vh', // Ensure the container height is restricted
-            overflowY: 'auto', // Enable vertical scrolling
-            mt: 2,
-            mb: 2,
-          }}
-          className="container-scroll">
-          <Paper
-            className="container-content"
-            elevation={0}
-            sx={{
-              p: { xs: 2, sm: 2 },
-              bgcolor: 'background.paper',
-              borderRadius: 3,
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
-          >
-
-            <Stack spacing={2}>
-              {/* Header */}
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontWeight: 700,
-                    background: 'linear-gradient(45deg, #024CAA 30%, #0077CC 90%)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    color: 'transparent',
-                  }}
-                >
-                  Confirm Purchase
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Review your booking details below
-                </Typography>
-              </Box>
-
-              {/* From and To Section */}
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  bgcolor: 'rgba(2, 76, 170, 0.03)',
-                  borderRadius: 2,
-                }}
-              >
-                <Stack spacing={1}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box
-                      sx={{
-                        bgcolor: 'rgba(2, 76, 170, 0.1)',
-                        p: 1,
-                        borderRadius: 2,
-                        display: 'flex',
-                      }}
-                    >
-                      <LocationOnRounded sx={{ color: '#024CAA', fontSize: 24 }} />
-                    </Box>
-                    <Stack spacing={0.5} flex={1}>
-                      <Typography variant="caption" sx={{ color: '#024CAA', fontWeight: 600 }}>
-                        From
-                      </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                        {from?.label}
-                      </Typography>
-                    </Stack>
-                  </Box>
-
-                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <ArrowForwardRounded sx={{ color: '#024CAA', fontSize: 24 }} />
-                  </Box>
-
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Box
-                      sx={{
-                        bgcolor: 'rgba(2, 76, 170, 0.1)',
-                        p: 1,
-                        borderRadius: 2,
-                        display: 'flex',
-                      }}
-                    >
-                      <LocationOnRounded sx={{ color: '#024CAA', fontSize: 24 }} />
-                    </Box>
-                    <Stack spacing={0.5} flex={1}>
-                      <Typography variant="caption" sx={{ color: '#024CAA', fontWeight: 600 }}>
-                        To
-                      </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 700 }}>
-                        {to?.label}
-                      </Typography>
-                    </Stack>
-                  </Box>
-                </Stack>
-              </Paper>
-
-              {/* Tickets */}
-              <Box>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    fontWeight: 700,
-                    color: '#024CAA',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                  }}
-                >
-                  <ConfirmationNumberRounded />
-
-                  Selected Tickets
-                </Typography>
-                <Stack spacing={1}>
-                  {ticketDetails.map(
-                    (ticket) =>
-                      ticket.numberOfTickets > 0 && (
-                        <Paper
-                          key={ticket.ticketType}
-                          elevation={0}
-                          sx={{
-                            p: 1.5,
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            borderRadius: 2,
-                            bgcolor: 'rgba(2, 76, 170, 0.02)',
-                          }}
-                        >
-                          <Stack spacing={0.5}>
-                            <Typography sx={{ fontWeight: 700, color: '#024CAA', fontSize: '1rem' }}>
-                              {ticket.ticketType}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Quantity
-                            </Typography>
-                          </Stack>
-                          <Box
-                            sx={{
-                              bgcolor: '#024CAA',
-                              px: 2,
-                              py: 0.5,
-                              borderRadius: 2,
-                              minWidth: 36,
-                            }}
-                          >
-                            <Typography sx={{ fontWeight: 700, color: 'white', textAlign: 'center' }}>
-                              {ticket.numberOfTickets}
-                            </Typography>
-                          </Box>
-                        </Paper>
-                      )
+            {/* Live summary */}
+            <aside className="bk-summary" aria-label="Booking summary">
+              <div className="bk-pass">
+                <div className="bk-pass__top">
+                  <div className="bk-pass__row">
+                    <small>Your trip</small>
+                    <em>{passengerCount} {passengerCount === 1 ? 'passenger' : 'passengers'}</em>
+                  </div>
+                  <div className="bk-pass__route">
+                    <span><small>From</small><strong title={from?.label}>{from?.label || 'Select stop'}</strong></span>
+                    <span className="bk-pass__line"><i /><ArrowRight size={16} /></span>
+                    <span><small>To</small><strong title={to?.label}>{to?.label || 'Select stop'}</strong></span>
+                  </div>
+                </div>
+                <div className="bk-pass__rip" />
+                <div className="bk-pass__bottom">
+                  {summaryPassengers.length ? (
+                    <ul className="bk-lines">
+                      {summaryPassengers.map((p) => (
+                        <li key={p.key}><span>{p.label}</span><span>× {p.value}</span></li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="bk-muted">Add passengers to see your fare.</p>
                   )}
-                </Stack>
-              </Box>
+                  <div className="bk-total">
+                    <span>Estimated total</span>
+                    <strong className={preview.loading ? 'is-loading' : ''}>{previewText()}</strong>
+                  </div>
+                  {reviewButton()}
+                </div>
+              </div>
 
-              <Divider />
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: "#024CAA",
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Price Breakdown
-                </Typography>
-                <Tooltip title="More Information">
-                  <IconButton
-                    onClick={handleOpenTableModal}
-                    size="small"
-                    sx={{
-                      color: "#133E87",
-                      '&:hover': {
-                        bgcolor: 'rgba(2, 76, 170, 0.08)'
-                      }
-                    }}
-                  >
-                    <InfoOutlinedIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-
-              <Divider />
-
-              {/* Important Info */}
-              <Box>
-                <Stack spacing={1}>
-                  {/* <Paper
-                      elevation={0}
-                      sx={{
-                        p: 1.5,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1.5,
-                        bgcolor: 'rgba(255, 152, 0, 0.08)',
-                        borderRadius: 2,
-                      }}
-                    >
-
-                      <AccessTimeFilledRounded sx={{ color: 'warning.main', fontSize: 24 }} />
-                      <Typography sx={{ fontWeight: 600, color: 'warning.dark', fontSize: '0.9rem' }}>
-                        Ticket valid for 3 hours.
-                      </Typography>
-                    </Paper> */}
-
-                  {/* <Paper
-            elevation={0}
-            sx={{
-              p: 1.5,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.5,
-              bgcolor: '#155E95',
-              borderRadius: 2,
-            }}
-          >
-            <PaymentRounded sx={{ color: 'white', fontSize: 24 }} />
-            <Typography sx={{ fontWeight: 600, color: 'white', fontSize: '0.9rem' }}>
-              Razorpay Checkout is not supported on IE.
-            </Typography>
-          </Paper> */}
-                  {/* <Alert
-                    severity="warning"
-                    sx={{ mb: 3, borderRadius: 2 }}
-                    icon={<Warning />}
-                  >
-                    Ticket is valid for only 3 hours
-                  </Alert>
-                  <Alert
-                    severity="info"
-                    sx={{ mb: 3, borderRadius: 2 }}
-                    icon={<InfoIcon />}
-                  >
-                    Razorpay Checkout is not supported on IE.
-                  </Alert> */}
-                </Stack>
-              </Box>
-              {/* Grand Total */}
-              <Divider />
-
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 2,
-                  background: 'linear-gradient(45deg, #024CAA 30%, #0077CC 90%)',
-                  borderRadius: 2,
-                }}
-              >
-                <Stack spacing={1}>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.9)' }}>
-                    Grand Total
-                  </Typography>
-                  <Typography variant="h5" sx={{ fontWeight: 800, color: 'white' }}>
-                    ₹ {grandTotal}
-                  </Typography>
-                </Stack>
-              </Paper>
-            </Stack>
-          </Paper>
+              <ul className="bk-trust">
+                <li><QrCode size={16} /> QR ticket issued instantly after payment</li>
+                <li><ShieldCheck size={16} /> Secure checkout via Razorpay</li>
+                <li><Zap size={16} /> Scan at the gate, no paper needed</li>
+              </ul>
+              <Link to="/bookedTicket" className="bk-link">View my recent tickets <ArrowRight size={14} /></Link>
+            </aside>
+          </div>
         </Container>
 
-        <Box
-          sx={{
-            p: 3,
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 2,
-            backgroundColor: 'white',
-            borderTop: '1px solid',
-            borderColor: 'divider'
-          }}
-        >
-          <Button
-            onClick={handleCloseModal}
-            variant="outlined"
-            size="large"
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: 500,
-              color: 'text.secondary',
-              borderColor: 'divider',
-              '&:hover': {
-                borderColor: 'text.secondary',
-                backgroundColor: 'grey.50'
-              }
-            }}
-          >
-            Cancel
-          </Button>
+        {/* Mobile sticky bar */}
+        <div className={`bk-mobilebar${canReview ? ' is-on' : ''}`}>
+          <div>
+            <small>{passengerCount} {passengerCount === 1 ? 'passenger' : 'passengers'}</small>
+            <strong>{previewText()}</strong>
+          </div>
+          {reviewButton()}
+        </div>
+      </div>
 
-          {!confirmloading ? (
-            <Button
-              onClick={handleConfirmPurchase}
-              variant="contained"
-              size="large"
-              disabled={confirmloading}
-              startIcon={<PaymentsOutlined size={20} />}
-              sx={{
-                borderRadius: 2,
-                textTransform: 'none',
-                fontWeight: 600,
-                backgroundColor: 'primary.main',
-                boxShadow: 2,
-                minWidth: 160,
-                '&:hover': {
-                  backgroundColor: 'primary.dark',
-                  boxShadow: 4,
-                  transform: 'translateY(-1px)',
-                },
-                transition: 'all 0.2s ease-in-out'
-              }}
-            >
-              Proceed to Pay
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              size="large"
-              disabled
-              sx={{
-                borderRadius: 2,
-                minWidth: 160,
-                backgroundColor: 'primary.main'
-              }}
-            >
-              <CircularProgress size={24} sx={{ color: 'white' }} />
-            </Button>
-          )}
-        </Box>
+      {/* Review & pay */}
+      <Dialog open={openModal} onClose={confirmloading ? undefined : handleCloseModal} maxWidth="sm" fullWidth fullScreen={isPhone} PaperProps={{ className: 'bk-dialog' }}>
+        <div className="bk-review">
+          <div className="bk-review__head">
+            <div>
+              <span className="bk-eyebrow bk-eyebrow--light">Step 3 of 3</span>
+              <h2>Review &amp; pay</h2>
+            </div>
+            <IconButton onClick={handleCloseModal} disabled={confirmloading} aria-label="Close"><X size={18} /></IconButton>
+          </div>
 
-      </Dialog>
+          <div className="bk-review__route">
+            <div><small>From</small><strong>{from?.label}</strong></div>
+            <ArrowRight size={18} />
+            <div><small>To</small><strong>{to?.label}</strong></div>
+          </div>
 
-      {/* Detailed Price Breakdown Dialog */}
-      <Dialog
-        open={openTableModal}
-        onClose={handleCloseTableModal}
-        maxWidth="md"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 2,
-            overflow: 'hidden'
-          }
-        }}
-      >
-        <DialogTitle
-          sx={{
-            background: "#0A5EB0",
-            color: 'white',
-            py: 2,
-            textAlign: 'center',
-            fontWeight: 600
-          }}
-        >
-          Price Break Down
-        </DialogTitle>
-
-        <DialogContent sx={{ p: 3 }}>
-          <TableContainer
-            className='mt-3'
-            component={Paper}
-            elevation={0}
-            variant="outlined"
-            sx={{ borderRadius: 2 }}
-          >
-            <Table>
-              <TableHead>
-                <TableRow
-                  sx={{
-                    bgcolor: 'rgba(96, 139, 193, 0.1)',
-                    '& th': {
-                      fontWeight: 600,
-                      color: '#608BC1'
-                    }
-                  }}
-                >
-                  <TableCell align="center" sx={{ width: '5%' }}>#</TableCell>
-                  <TableCell>Ticket Type</TableCell>
-                  <TableCell align="center">Number of Tickets</TableCell>
-                  <TableCell align="center">Discount per Ticket(₹)</TableCell>
-                  <TableCell align="center">Total Discount(₹)</TableCell>
-                  <TableCell align="center">Net Payable(₹)</TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {ticketDetails.map((ticket, index) => (
-                  <TableRow
-                    key={ticket.ticketType}
-                    sx={{
-                      '&:nth-of-type(odd)': {
-                        bgcolor: 'rgba(96, 139, 193, 0.03)'
-                      },
-                      '&:hover': {
-                        bgcolor: 'rgba(96, 139, 193, 0.08)'
-                      }
-                    }}
-                  >
-                    <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell>{ticket.ticketType}</TableCell>
-                    <TableCell align="center">{ticket.numberOfTickets}</TableCell>
-                    <TableCell align="center">{ticket.discountAmountPerTicket}</TableCell>
-                    <TableCell align="center">{ticket.totalDiscountAmount}</TableCell>
-                    <TableCell align="center">{ticket.total}</TableCell>
-                  </TableRow>
+          {/* Cost breakdown: cards on phones, a table from 600px up */}
+          <div className="bk-bd">
+            <h3 className="bk-bd__title">Cost breakdown</h3>
+            <table className="bk-bd__table">
+              <thead>
+                <tr>
+                  <th scope="col">Passenger</th>
+                  <th scope="col">Tickets</th>
+                  <th scope="col">Discount / ticket</th>
+                  <th scope="col">Total discount</th>
+                  <th scope="col">Net payable</th>
+                </tr>
+              </thead>
+              <tbody>
+                {breakdown.map((t) => (
+                  <tr key={t.ticketType}>
+                    <th scope="row" data-label="Passenger">{TYPE_LABEL[t.ticketType] || t.ticketType}</th>
+                    <td data-label="Tickets">{t.numberOfTickets}</td>
+                    <td data-label="Discount / ticket">{inr(t.discountAmountPerTicket)}</td>
+                    <td data-label="Total discount" className={Number(t.totalDiscountAmount) > 0 ? 'is-green' : ''}>
+                      {Number(t.totalDiscountAmount) > 0 ? `−${inr(t.totalDiscountAmount)}` : inr(0)}
+                    </td>
+                    <td data-label="Net payable" className="is-strong">{inr(t.total)}</td>
+                  </tr>
                 ))}
-              </TableBody>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row">Total</th>
+                  <td data-label="Tickets">{breakdownTickets}</td>
+                  <td aria-hidden="true" />
+                  <td data-label="Total discount" className={breakdownDiscount > 0 ? 'is-green' : ''}>
+                    {breakdownDiscount > 0 ? `−${inr(breakdownDiscount)}` : inr(0)}
+                  </td>
+                  <td data-label="Net payable" className="is-strong">{inr(grandTotal)}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
 
-              <TableFooter>
-                <TableRow
-                  sx={{
-                    bgcolor: 'rgba(96, 139, 193, 0.1)',
-                    '& td': {
-                      fontWeight: 600,
-                      color: '#608BC1'
-                    }
-                  }}
-                >
-                  <TableCell colSpan={5} align="right">
-                    Grand Total
-                  </TableCell>
-                  <TableCell align="center">
-                    {grandTotal}
-                  </TableCell>
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </TableContainer>
-        </DialogContent>
+          <div className="bk-review__total">
+            <span>Total payable</span>
+            <strong>{inr(grandTotal)}</strong>
+          </div>
 
-        <DialogActions
-          sx={{
-            p: 2,
-            bgcolor: 'rgba(96, 139, 193, 0.05)'
-          }}
-        >
-          <Button
-            onClick={handleCloseTableModal}
-            variant="contained"
-            sx={{
-              bgcolor: "#234EBB",
-              px: 4,
-              py: 1,
-              fontSize: '13px',
-              fontWeight: 600,
-              '&:hover': {
-                bgcolor: "#1a3b8e"
-              }
-            }}
-          >
-            Ok
-          </Button>
-        </DialogActions>
+          <div className="bk-review__actions">
+            <button type="button" className="bk-btn bk-btn--ghost" onClick={handleCloseModal} disabled={confirmloading}>Back</button>
+            <button type="button" className="bk-btn bk-btn--primary" onClick={handleConfirmPurchase} disabled={confirmloading}>
+              {confirmloading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : <><Lock size={16} /> Pay {inr(grandTotal)}</>}
+            </button>
+          </div>
+          <p className="bk-review__note"><ShieldCheck size={14} /> You’ll complete payment in Razorpay’s secure window.</p>
+        </div>
       </Dialog>
-
     </Layout>
   );
 };

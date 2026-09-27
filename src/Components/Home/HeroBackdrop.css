@@ -1,0 +1,226 @@
+/* ------------------------------------------------------------------ */
+/* Hero backdrop: skyline + two bus lanes                              */
+/* ------------------------------------------------------------------ */
+.hero-main > .hbd {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  height: 230px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ---------- Skyline: two copies side by side, drifting left forever ---------- */
+.hbd-skyline {
+  position: absolute;
+  left: 0;
+  bottom: 64px;
+  display: flex;
+  width: 200%;
+  height: 150px;
+  animation: hbdDrift 140s linear infinite;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 70%);
+  mask-image: linear-gradient(180deg, transparent, #000 70%);
+}
+
+.hbd-skyline__svg {
+  width: 50%;
+  height: 100%;
+  fill: rgba(37, 99, 235, 0.07);
+}
+
+@keyframes hbdDrift {
+  to { transform: translateX(-50%); }
+}
+
+/* ---------- Bus shape ---------- */
+.hbd-bus {
+  display: block;
+  width: 132px;
+  height: 48px;
+  overflow: visible;
+}
+
+.hbd-bus__body { fill: #2563EB; }
+.hbd-bus__windows { fill: #DBEAFE; opacity: 0.95; }
+.hbd-bus__stripe { fill: #1D4ED8; }
+.hbd-bus__wheel { fill: #334155; stroke: #F1F5F9; stroke-width: 3; }
+
+.hbd-bus--blue {
+  filter: drop-shadow(0 8px 10px rgba(15, 23, 42, 0.18));
+}
+
+.hbd-bus--ghost .hbd-bus__body,
+.hbd-bus--ghost .hbd-bus__stripe { fill: #94A3B8; }
+.hbd-bus--ghost .hbd-bus__windows { fill: #F8FAFC; opacity: 1; }
+.hbd-bus--ghost .hbd-bus__wheel { fill: #94A3B8; stroke: #F8FAFC; }
+
+/* ---------- Far lane: small buses heading left, never stopping ---------- */
+.hbd-far {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 66px;
+  height: 30px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.hbd-far__run {
+  position: absolute;
+  inset: 0;
+  opacity: 0.45;
+  animation: hbdFar 27s linear infinite;
+  animation-delay: var(--d);
+}
+
+.hbd-far__run .hbd-bus {
+  width: 70px;
+  height: 26px;
+  transform: scaleX(-1);
+}
+
+@keyframes hbdFar {
+  from { transform: translateX(calc(100% + 20px)); }
+  to { transform: translateX(-90px); }
+}
+
+/* ---------- Near lane: dedicated BRTS lane with a QR station ---------- */
+.hbd-road {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  background:
+    linear-gradient(180deg, rgba(37, 99, 235, 0.07), rgba(37, 99, 235, 0.12)),
+    #F8FAFC;
+  border-top: 1px solid rgba(37, 99, 235, 0.18);
+}
+
+/* lane markings */
+.hbd-road::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0 26px, transparent 26px 52px);
+}
+
+.hbd-near__run {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  animation: hbdNear 16s infinite;
+  animation-delay: var(--d);
+}
+
+/* arrive (ease out) -> dwell at the station -> depart (ease in) */
+@keyframes hbdNear {
+  0% { transform: translateX(-150px); animation-timing-function: cubic-bezier(0.25, 0.6, 0.35, 1); }
+  36% { transform: translateX(22%); animation-timing-function: linear; }
+  48% { transform: translateX(22%); animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.5); }
+  100% { transform: translateX(calc(100% + 20px)); }
+}
+
+/* Station sits where the bus stops: 22% + half a bus. */
+.hbd-station {
+  position: absolute;
+  left: calc(22% + 66px);
+  bottom: 56px;
+  width: 150px;
+  height: 40px;
+  transform: translateX(-50%);
+}
+
+.hbd-station__roof {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 6px;
+  border-radius: 6px;
+  background: #334155;
+}
+
+.hbd-station__roof::before,
+.hbd-station__roof::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  width: 3px;
+  height: 34px;
+  background: #CBD5E1;
+}
+
+.hbd-station__roof::before { left: 10px; }
+.hbd-station__roof::after { right: 10px; }
+
+.hbd-station small {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #2563EB;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+/* Gate light: pulses green while a bus is at the stop (twice per 16s cycle) */
+.hbd-station__gate {
+  position: absolute;
+  top: 12px;
+  right: 22px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #CBD5E1;
+  animation: hbdGate 8s infinite;
+}
+
+.hbd-station__gate i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #22C55E;
+  opacity: 0;
+  animation: hbdGateRing 8s infinite;
+}
+
+@keyframes hbdGate {
+  0%, 70% { background: #CBD5E1; box-shadow: none; }
+  74%, 94% { background: #22C55E; box-shadow: 0 0 12px rgba(34, 197, 94, 0.8); }
+  98%, 100% { background: #CBD5E1; box-shadow: none; }
+}
+
+@keyframes hbdGateRing {
+  0%, 73% { opacity: 0; transform: scale(1); }
+  74% { opacity: 1; transform: scale(1); }
+  86%, 100% { opacity: 0; transform: scale(3); }
+}
+
+@media (max-width: 600px) {
+  .hero-main > .hbd { height: 190px; }
+  .hbd-skyline { height: 110px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hbd-skyline,
+  .hbd-far__run,
+  .hbd-near__run,
+  .hbd-station__gate,
+  .hbd-station__gate i {
+    animation: none;
+  }
+
+  .hbd-near__run { transform: translateX(22%); }
+  .hbd-near__run ~ .hbd-near__run,
+  .hbd-far__run { display: none; }
+}

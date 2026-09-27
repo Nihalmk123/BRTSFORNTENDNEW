@@ -30,8 +30,14 @@ import EditProfile from './Components/EditProfile';
 import ForgotPassword from './Components/Registration/ForgotPassword';
 import PaymentInfo from './Components/PaymentInfo';
 import Whatsapp from './Components/Whatsapp';
+import { useEffect } from 'react';
+import { initScrollReveal } from './lib/scrollReveal';
 
 function App() {
+  useEffect(() => {
+    initScrollReveal();
+  }, []);
+
   return (
     <>
       {/* <Preloader/>   */}

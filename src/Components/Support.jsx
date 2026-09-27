@@ -1,102 +1,114 @@
-import React from 'react'
-import Layout from './Layout/Layout'
-import { Helmet } from 'react-helmet-async'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Card,
+  Grid,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
+import { CreditCard, LifeBuoy, Ticket, UserPlus, Inbox } from 'lucide-react';
+import Layout from './Layout/Layout';
+import PageHero from './UI/PageHero';
+import Section from './UI/Section';
 
-const Support = () => {
-  return (
-    <Layout>
-      <Helmet>
-        <title>Support</title>
-        <meta name='description' content='Beginner friendly page for learning React Helmet.' />
-      </Helmet>
-      <section className="bsb-about-6 py-md-5 py-xl-6">
-        <div className="container">
-          <div className="row justify-content-md-center">
-            <div className="col-12 col-md-10 col-lg-8 col-xl-7 col-xl-5">
-              <h5 className="main_headings display-5 fw-bold line-height text-center display-6 highlighted-secondary">Raise Ticket</h5>
-              <hr className="w-50 mx-auto mb-xl-5 border-dark-subtle" />
-            </div>
-          </div>
-        </div>
-        <div className="container">
-          <div className="row gy-4 gy-lg-0 align-items-start">
-            {/* Left Column: Accordion */}
-            <div className="col-12 col-lg-9">
-              <div className="row justify-content-xl-end">
-                <div className="col-12 col-xl-11">
-                  <div className="accordion accordion-flush" id="accordionAbout6" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-                    <div className="accordion-item mb-4 border border-dark">
-                      <h2 className="accordion-header" id="headingOne">
-                        <button className="accordion-button bg-transparent fs-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                          Problem Related to Signup?
-                        </button>
-                      </h2>
-                      <div id="collapseOne" className="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionAbout6">
-                        <div className="accordion-body">
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit. Est dolorum id quisquam dolorem. Nemo possimus odit iure beatae voluptates voluptatum veniam quo et reprehenderit perspiciatis a pariatur, modi ex earum, neque dolor consectetur quas vero expedita non nam. Vero repudiandae dolorum eveniet, eaque assumenda libero dolorem itaque velit nesciunt ut?
-                          <a className='mx-2 fw-bold' href="">Raise Ticket</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="accordion-item mb-4 border border-dark">
-                      <h2 className="accordion-header" id="headingTwo">
-                        <button className="accordion-button collapsed bg-transparent fs-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                          Issue Related to Purchasing Ticket?
-                        </button>
-                      </h2>
-                      <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionAbout6">
-                        <div className="accordion-body">
-                          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Excepturi nam ad impedit ex qui corrupti sapiente, aliquid, ratione commodi eligendi beatae neque! Assumenda architecto, unde laudantium, sed ipsa tempora doloribus voluptas nemo ratione sit facilis quos iusto at optio? Sed harum impedit qui repudiandae tempore libero ipsum iure exercitationem? Eum.
-                          <a className='mx-2 fw-bold' href="">Raise Ticket</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="accordion-item mb-4 border border-dark">
-                      <h2 className="accordion-header" id="headingThree">
-                        <button className="accordion-button collapsed bg-transparent fs-4 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                          Problem with Payment?
-                        </button>
-                      </h2>
-                      <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionAbout6">
-                        <div className="accordion-body">
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit. Est dolorum id quisquam dolorem. Nemo possimus odit iure beatae voluptates voluptatum veniam quo et reprehenderit perspiciatis a pariatur, modi ex earum, neque dolor consectetur quas vero expedita non nam. Vero repudiandae dolorum eveniet, eaque assumenda libero dolorem itaque velit nesciunt ut?
-                          <a className='mx-2 fw-bold' href="">Raise Ticket</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+const TOPICS = [
+  {
+    icon: <UserPlus size={20} />,
+    title: 'Problem related to sign up?',
+    body: 'Trouble creating or verifying your account? Tell us what happened and our team will help you get set up.',
+  },
+  {
+    icon: <Ticket size={20} />,
+    title: 'Issue purchasing a ticket?',
+    body: 'If a booking failed or your QR ticket didn’t appear, share the details and we’ll look into it right away.',
+  },
+  {
+    icon: <CreditCard size={20} />,
+    title: 'Problem with payment?',
+    body: 'For failed or duplicate payments, raise a ticket with the transaction details so we can resolve it quickly.',
+  },
+];
 
-            {/* Right Column: Tickets */}
-            <div className="col-12 col-lg-3">
-              <div className="card p-3 d-flex flex-row align-items-center mb-3 support-tickets">
-                <div>
-                  <h5 className="card-title">Ticket Title</h5>
-                  <p className="card-text text-dark">Ticket desc..</p>
-                  <div className="d-flex flex-row align-items-center">
-                    <p className="me-3 fw-bold">Start Date: <span>02/05/2024</span></p>
-                    <p className="me-3 fw-bold">End Date: <span>02/05/2024</span></p>
-                  </div>
-                </div>
-              </div>
-              <div className="card p-3 d-flex flex-row align-items-center mb-3 support-tickets">
-                <div>
-                  <h5 className="card-title">Ticket Title</h5>
-                  <p className="card-text text-dark">Ticket desc..</p>
-                  <div className="d-flex flex-row align-items-center">
-                    <p className="me-3 fw-bold">Start Date: <span>02/05/2024</span></p>
-                    <p className="me-3 fw-bold">End Date: <span>02/05/2024</span></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </Layout>
-  )
-}
+const Support = () => (
+  <Layout>
+    <Helmet>
+      <title>Support</title>
+      <meta name="description" content="Get help with SmartBus ticketing." />
+    </Helmet>
 
-export default Support
+    <PageHero
+      eyebrow="Help center"
+      title="How can we help?"
+      subtitle="Find answers to common issues or raise a ticket with our support team."
+    />
+
+    <Section tone="muted" sx={{ pt: { xs: 5, md: 7 } }}>
+      <Grid container spacing={4} alignItems="flex-start">
+        <Grid item xs={12} md={8} data-aos="fade-right">
+          <Stack spacing={2}>
+            {TOPICS.map((t, i) => (
+              <Accordion
+                key={t.title}
+                defaultExpanded={i === 0}
+                disableGutters
+                elevation={0}
+                sx={{
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: '14px !important',
+                  '&::before': { display: 'none' },
+                  transition: 'border-color .3s ease, box-shadow .3s ease',
+                  '&.Mui-expanded': { borderColor: 'rgba(37,99,235,0.35)', boxShadow: '0 12px 30px -12px rgba(37,99,235,0.2)' },
+                }}
+              >
+                <AccordionSummary expandIcon={<ExpandMore />} sx={{ px: 3, py: 1 }}>
+                  <Stack direction="row" spacing={2} alignItems="center">
+                    <Box className="icon-tile" sx={{ width: 40, height: 40, borderRadius: '12px' }}>{t.icon}</Box>
+                    <Typography fontWeight={700}>{t.title}</Typography>
+                  </Stack>
+                </AccordionSummary>
+                <AccordionDetails sx={{ px: 3, pb: 3, pt: 0 }}>
+                  <Typography color="text.secondary" sx={{ mb: 2 }}>{t.body}</Typography>
+                  <Button component={Link} to="/contact" size="small" variant="outlined">
+                    Raise Ticket
+                  </Button>
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </Stack>
+        </Grid>
+
+        <Grid item xs={12} md={4} data-aos="fade-left">
+          <Stack spacing={3}>
+            <Card sx={{ p: 4, textAlign: 'center' }}>
+              <Box className="icon-tile" sx={{ mb: 2, mx: 'auto' }}><Inbox size={22} /></Box>
+              <Typography fontWeight={700} gutterBottom>Your support tickets</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Tickets you raise will show up here.
+              </Typography>
+            </Card>
+            <Card sx={{ p: 4, background: 'linear-gradient(135deg, #0F172A, #1E3A8A)', border: 'none' }}>
+              <Box sx={{ color: '#93C5FD', mb: 2 }}><LifeBuoy size={26} /></Box>
+              <Typography fontWeight={700} sx={{ color: '#fff' }} gutterBottom>Still need help?</Typography>
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', mb: 3 }}>
+                Our team is happy to assist with anything not covered here.
+              </Typography>
+              <Button component={Link} to="/contact" variant="contained" fullWidth sx={{ bgcolor: '#fff', color: 'primary.main', '&:hover': { bgcolor: '#EFF6FF' } }}>
+                Contact Support
+              </Button>
+            </Card>
+          </Stack>
+        </Grid>
+      </Grid>
+    </Section>
+  </Layout>
+);
+
+export default Support;

@@ -1,0 +1,138 @@
+/* ------------------------------------------------------------------ */
+/* Section dots (wide screens) + sticky book bar (phones)               */
+/* ------------------------------------------------------------------ */
+.pn-dots {
+  position: fixed;
+  top: 50%;
+  right: 22px;
+  z-index: 50;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  transform: translateY(-50%);
+}
+
+@media (min-width: 1280px) {
+  .pn-dots { display: flex; }
+}
+
+.pn-dots button {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* the dot itself */
+.pn-dots button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.55);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
+  transition: height 0.3s ease, margin 0.3s ease, background 0.3s ease;
+}
+
+.pn-dots button.is-on::before {
+  height: 20px;
+  margin-top: -10px;
+  background: #2563EB;
+}
+
+.pn-dots span {
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #0F172A;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(6px, -50%);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.pn-dots button:hover span,
+.pn-dots button:focus-visible span {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+/* ---------- Mobile book bar ---------- */
+.pn-bar {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px 10px 16px;
+  border-radius: 18px;
+  background: rgba(11, 18, 32, 0.92);
+  color: #E2E8F0;
+  box-shadow: 0 20px 40px -16px rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(120%);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+@media (max-width: 899.98px) {
+  .pn-bar { display: flex; }
+
+  /* lift the global scroll-to-top button above the bar */
+  body.pn-bar-on .topButton {
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    transition: bottom 0.3s ease;
+  }
+}
+
+.pn-bar.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.pn-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pn-bar span svg { color: #60A5FA; }
+
+.pn-bar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #2563EB;
+  color: #FFFFFF;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pn-bar,
+  .pn-dots button::before,
+  .pn-dots span { transition: none; }
+}
